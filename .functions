@@ -1,0 +1,393 @@
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Function Definitions
+# 1. I decided to put my functions into a file .functions just to keep them
+#    separate from my entire .bashrc file. This is because I like the idea
+#    of being able to debug new things separately.
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# For checking licenses.
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function licenses {
+    /project/hw/bin/lmstat -a -c /cad/flexlm/Synopsys.dir/license.dat | /bin/less
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Color settings for prompts.
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function Prompt_Settings {
+    local GRAY="\[\033[1;30m\]"
+    local LIGHT_GRAY="\[\033[0;37m\]"
+    local CYAN="\[\033[0;36m\]"
+    local LIGHT_CYAN="\[\033[1;36m\]"
+    local NO_COLOUR="\[\033[0m\]"
+    local BRIGHTGREEN="\[\033[1;32m\]"
+    local BLUE=$(tput setaf 4)
+    local WHITE=$(tput setaf 7 )
+#   local RED=$(tpu setaf 1 )
+#   #Green
+    
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Turns on and off the full path at the top of the title bar.
+#
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function sprompt {
+    TITLEBAR="\[\033]0;\u@\H: \w\007\]"
+#    GITPROMPT='$(__git_ps1 " (%s)")'
+    GITPROMPT=""
+    export TITLEBAR
+    if [ "$1" == "on" ]; then
+        export MY_PROMPT="${SHORT_PROMPT}${GIT_PROMPT}"
+    else
+        export MY_PROMPT="${LONG_PROMPT}${GIT_PROMPT}"
+    fi
+
+    export PS1=${MY_PROMPT}${TITLEBAR}
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#
+#
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function lprompt {
+    export PS1=${MY_PROMPT}${TITLEBAR}
+}
+
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# I use this to display a specific title...
+#
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function xtitle {
+# Turn off the menu prompt
+    export PS1=${MY_PROMPT}   
+    echo -e "\033]0;$@\007"
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Turning off the Xtitle
+#
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function notitle {
+    export PS1=$MY_PROMPT
+}
+
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Function for looking up names
+#
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function name {
+    /usr/local/contrib/bin/phonebook $@
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# For Loading aliases...
+#
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function ldalias {
+    local alias_cmd
+    local alias_name
+    while read -r line; do
+#            echo "Line is $line"
+            `echo $line | grep -v "^ *#" >&1 > /dev/null`
+            if [ $? ] ; then
+                alias_name=`echo $line | perl -ne 's/(.*?)=.*/$1/; print;'`
+                if [ ! -z "${alias_name}" ] ; then
+                    alias_cmd=`echo $line | perl -ne 's/.*?=(.*)$/$1/; print;'`
+                    if [ ! -z "${alias_cmd}" ] ; then
+#                    echo "Evalueating"
+#                    echo "alias ${alias_name}=${alias_cmd}"
+                        echo "alias ${alias_name}=${alias_cmd}" >> ${HOME}/.bash_alias
+                        eval "alias ${alias_name}=${alias_cmd} " >&1 > /dev/null
+                    fi
+                fi
+            fi
+    done < $1
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# function for switching on tcsh mode
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function cadence {
+    exec /usr/local/bin/tcsh
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Alias for the dir command
+#
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function directories {
+     /bin/ls -al $1 | grep "^d"  | perl -ne 's/^(\S+\s+){8}(\S+.*)$/$2/g;print;' | grep -vP "^.{1,2}$" 
+}
+
+
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#
+#
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function dirs {
+     local OLDIFS=$IFS
+     IFS="
+"
+     for i in $(directories $1) ; do echo "$i"; done
+     IFS=$OLDIFS
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#  For debugging allocation of memory
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function dmalloc { 
+eval `command /usr/bin//dmalloc $*` 
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Cleans up the PATH environmental variable
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function pclean {
+    PATH=`${MY_CAD}/clean_path.pl $PATH $@`
+    export PATH
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Turn on xtitle displays
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function xtitle_on {
+    export PS1="\h \W % \[\033]0;\u@\H: \w\007\]"
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Display information about each file and directory...
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function dir_stats {
+        for i in `/bin/ls`; do du -sm $i ; done
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Displays all the colors of the rainbow...er,... of a Terminal
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function All_Colors {
+ T='gYw'   # The test text
+ echo -e "\n                 40m     41m     42m     43m\
+      44m     45m     46m     47m";
+    for FGs in '    m' '   1m' '  30m' '1;30m' '  31m' '1;31m' '  32m' \
+            '1;32m' '  33m' '1;33m' '  34m' '1;34m' '  35m' '1;35m' \
+                '  36m' '1;36m' '  37m' '1;37m';
+    do FG=${FGs// /}
+    echo -en " $FGs \033[$FG  $T  "
+    for BG in 40m 41m 42m 43m 44m 45m 46m 47m;
+        do echo -en "$EINS \033[$FG\033[$BG  $T  \033[0m";
+    done
+    echo;
+    done
+    echo
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Lists all of the files in a directory... useful for "for" loops
+# 1. Make sure you egrep -v for the "total" string...or else you will
+#    get 1 blank entry... which ain't so good.
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function files {
+    /bin/ls -l | egrep -v "^d|total" | awk '{ print $9 }' | egrep -v "^ *$ "
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Lists all of the directories in reverse order...so that the most recent
+# access is at the bottom
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function rdirs {
+    local a=`dirs $1`
+    /opt/local/bin/ls --color=auto -ltdr $a
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Lists all of the files in reverse order... so that the most recent
+# access is at the bottom
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function rfiles {
+    local files=`files`
+    ll -ltr $files
+}
+
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Not completed yet...
+# My new LS function
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+function cls {
+    if [ -n `grep d ${1}` ] ; then
+    # Know to use directory only
+	ll | awk 'print {$9}'
+    fi
+    /bin/ls $1 -aF
+
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Just prints out the week days for the next 10 weeks..
+# Useful if you are writing up your weekly status...
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function weekdays {
+    perl -MTime::Local -MDate::Manip -MTime::localtime -e '
+    $tm = localtime();
+    $sub = $tm->wday;
+    for( $i = -$sub + 1; $i < 70; $i += 7 ) {
+    $tm = localtime();
+    $t = timelocal( @{$tm}[0..2], $i + $tm->mday, @{$tm}[4..5] );
+    $d = ParseDate("epoch $t");
+    $t = timelocal( @{$tm}[0..2], $i + $tm->mday + 4, @{$tm}[4..5] );
+    $t1 = UnixDate( $d, "%m/%d/%Y");
+    $d = ParseDate("epoch $t");
+    $t2 = UnixDate( $d, "%m/%d/%Y");
+    print "$t1 - $t2\n";
+    }
+    '
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Setting up spice environments
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function spice_env {
+    export LM_LICENSE_FILE=/cad/flexlm/Avanti.dir/license.dat
+    alias hspice='/cad/avanti/current/bin/hspice'
+    alias awaves='/cad/avanti/current/bin/awaves'
+}
+
+function Unixtime {
+        echo $@ | perl -MDate::Manip -e '
+                $t = <>;
+                chomp $t;
+                $date = ParseDate( $t );
+                if( $date eq "" ) {
+                        print "Bad format\n";
+                        exit;
+                }
+                print UnixDate( $date, "%s\n" ); 
+        '
+}       
+
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# For loading
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function ldenv {
+    unset my_paths
+    for i in `cat $1`
+    do
+        my_paths=`echo $i | awk 'BEGIN {FS ="=" ; OFS=""}{ print "export ",$1,"=",$2}'`
+        eval $my_paths
+    done
+}
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# For reading in sourced csh files
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function setenv {
+    export $1=$2
+}
+
+function doit {
+        ngspice -r out < $@
+
+}
+
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Find out what is my own system name
+#
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function jamesd-home {
+    local host
+    host=`finger -p jamesd | grep vpn | head -1 | perl -ne 's/.*(gw\d+-vpn-\d+)\..*/$1/; print '`
+    if [ ! -z "$host" ] ; then
+        echo $host
+    fi
+}
+
+
+#alias n="$HOME/Programming/bin/diary.pl"
+
+function assistant {
+    open /Developer/Applications/Qt/Assistant.app
+}
+
+function qmakesetup {
+  qmake -project
+  qmake -spec macx-g++
+  echo -ne "mac{\n  CONFIG -= app_bundle\n}\n" >> *.pro
+}
+
+function scm_ps1 {
+    local s=
+#    if [[ -d ".svn" ]] ; then
+#        s=\(svn:$(svn info | sed -n -e '/^Revision: \([0-9]*\).*$/s//\1/p' )\)
+#    elif [[ -d ".git" ]];  then
+    if [[ -d ".git" ]] ; then
+        s=$(__git_ps1 "(git:%s)")
+    fi
+    echo -n "$s"
+}
+#
+#
+#
+function svn_ps1 {
+   local s=
+    if [[ -d ".svn" ]] ; then
+        s=\(svn:$(svn info | sed -n -e '/^Revision: \([0-9]*\).*$/s//\1/p' )\)
+    fi  
+    echo -n "$s"
+}
+
+
+function git_ps1 {
+   local s=
+    if [[ -d ".git" ]] ; then
+        s=$(__git_ps1 "(git:%s)")
+    fi  
+    echo -n "$GREEN$s${RESET}"
+}
+
+
+function amacs
+{
+     # Create the files as needed -- not as good as raw emacs, but acceptable
+     for f in "$@"
+     do
+ 	test -e $f || touch $f
+     done
+     open -a /Applications/Aquamacs.app "$@"
+ }
+
+
+function rm () {
+  local path
+  for path in "$@"; do
+    # ignore any arguments
+    if [[ "$path" = -* ]]; then :
+    else
+      local dst=${path##*/}
+      # append the time if necessary
+      while [ -e ~/.Trash/"$dst" ]; do
+        dst="$dst "$(date +%H-%M-%S)
+      done
+      mv "$path" ~/.Trash/"$dst"
+    fi
+  done
+}
+
+
+function get_perl_functions () {
+    perl -0007 -e '(@g ) = <> =~ /\n?\s*(sub\s+.*\n\}|sub\s+\S+(?:\(.*?\))\{.*?\}\s*;\s*)/gs; 
+print @g; ' $@ | perl -ne 'if( s/^.*sub\s+(\S+).*$/$1/ ) { print; } '
+}
+
+
+function get_function_in_file () {
+     between.pl -s "sub\s+${1}" -e "^}" -f $2  -i
+}
+

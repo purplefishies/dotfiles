@@ -1,0 +1,19 @@
+#  Generic Alias commands for both TCSH and BASH...
+#
+lock="xscreensaver-command -lock"
+ls="/opt/local/bin/ls -F --color=always"
+ll='ls -al --color=always'
+cd..='cd ..'
+lt='/opt/local/bin/ls -altr'
+l='ll'                    #
+lh='ll --si -r'           # For displaying Nice labels
+c='clear'
+..='cd ..'
+phonebook='/usr/local/contrib/bin/phonebook'
+openbook='/cad/cadence/IC_4.43/tools/bin/openbook'
+mci='/bin/ci'
+mco='/bin/co'
+ipy='ipython'
+grake="rake -I$HOME/.rake "
+rake="rake -I$HOME/.rake "
+d="diary.pl"

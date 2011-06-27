@@ -1,0 +1,92 @@
+set bind-tty-special-chars off
+
+"\C-h": backward-delete-char
+"\C-?": backward-delete-char
+"\C-x\C-?": backward-kill-line
+"\C-b": backward-kill-word
+"\C-f": backward-word
+"\M-b": backward-word
+"\C-a": beginning-of-line
+"\C-xe": call-last-kbd-macro
+"\M-c": capitalize-word
+"\C-xu": capitalize-word
+"\C-]": character-search
+"\C-[": backward-character-search
+"\C-l": clear-screen
+"\C-i": complete
+"\C-d": delete-char
+"\C-r": reverse-search-history
+"\C-s": forward-search-history
+
+"\C-g": forward-word
+"\M-f": forward-word
+"\M-g": glob-complete-word
+"\C-x*": glob-expand-word
+"\C-xg": glob-list-expansions
+
+"\M-^": history-expand-line
+# history-search-backward (not bound)
+# history-search-forward (not bound)
+"\M-#": insert-comment
+"\M-*": insert-completions
+"\M-.": insert-last-argument
+"\M-_": insert-last-argument
+"\C-k": kill-line
+"\C-w": kill-region
+# kill-whole-line (not bound)
+"\C-n": kill-word
+"\M-d": kill-word
+# magic-space (not bound)
+# menu-complete (not bound)
+"\M-OB": next-history
+"\M-[B": next-history
+"\M-n": non-incremental-forward-search-history
+# non-incremental-forward-search-history-again (not bound)
+"\M-p": non-incremental-reverse-search-history
+# non-incremental-reverse-search-history-again (not bound)
+"\C-o": operate-and-get-next
+# overwrite-mode (not bound)
+# paste-from-clipboard (not bound)
+"\C-x!": possible-command-completions
+"\M-=": possible-completions
+"\M-?": possible-completions
+"\C-x/": possible-filename-completions
+"\C-x@": possible-hostname-completions
+"\C-x~": possible-username-completions
+"\C-x$": possible-variable-completions
+"\C-p": previous-history
+"\M-OA": previous-history
+"\M-[A": previous-history
+"\C-q": quoted-insert
+"\C-v": quoted-insert
+"\C-x\C-r": re-read-init-file
+# redraw-current-line (not bound)
+
+"\M-\C-r": revert-line
+"\M-r": revert-line
+"\C-@": set-mark
+"\M-\C-e": shell-expand-line
+"\C-x(": start-kbd-macro
+# tab-insert (not bound)
+"\M-&": tilde-expand
+"\C-t": transpose-chars
+"\M-t": transpose-words
+# tty-status (not bound)
+"\C-x\C-u": undo
+"\C-_": undo
+# universal-argument (not bound)
+"\C-u": unix-line-discard
+# unix-word-rubout (not bound)
+"\M-u": upcase-word
+"\C-y": yank
+"\M-.": yank-last-arg
+"\M-_": yank-last-arg
+"\M-\C-y": yank-nth-arg
+"\M-y": yank-pop
+
+$if bsh
+"\C-xe": rlwrap-call-editor
+$endif
+
+
+set bell-style none 
