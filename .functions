@@ -131,8 +131,7 @@ function directories {
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function dirs {
      local OLDIFS=$IFS
-     IFS="
-"
+     local IFS=$(echo -ne '\n\t')
      for i in $(directories $1) ; do echo "$i"; done
      IFS=$OLDIFS
 }
@@ -201,7 +200,10 @@ function files {
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function rdirs {
     local a=`dirs $1`
+    local OLDFS=${IFS}
+    local IFS=$(echo -ne "\n\t")
     /opt/local/bin/ls --color=auto -ltdr $a
+    IFS=${OLDFS}
 }
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -322,11 +324,8 @@ function qmakesetup {
   echo -ne "mac{\n  CONFIG -= app_bundle\n}\n" >> *.pro
 }
 
-function scm_ps1 {
+function git_ps1 {
     local s=
-#    if [[ -d ".svn" ]] ; then
-#        s=\(svn:$(svn info | sed -n -e '/^Revision: \([0-9]*\).*$/s//\1/p' )\)
-#    elif [[ -d ".git" ]];  then
     if [[ -d ".git" ]] ; then
         s=$(__git_ps1 "(git:%s)")
     fi
@@ -344,13 +343,13 @@ function svn_ps1 {
 }
 
 
-function git_ps1 {
-   local s=
-    if [[ -d ".git" ]] ; then
-        s=$(__git_ps1 "(git:%s)")
-    fi  
-    echo -n "$GREEN$s${RESET}"
-}
+# function git_ps1 {
+#    local s=
+#     if [[ -d ".git" ]] ; then
+#         s=$(__git_ps1 "(git:%s)")
+#     fi  
+#     echo -n "$GREEN$s${RESET}"
+# }
 
 
 function amacs
