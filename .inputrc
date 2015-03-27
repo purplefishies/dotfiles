@@ -11,26 +11,41 @@ set bind-tty-special-chars off
 "\M-c": capitalize-word
 "\C-xu": capitalize-word
 "\C-]": character-search
+
+$if 
 "\C-[": backward-character-search
+"\M-g": glob-complete-word
+"\C-x*": glob-expand-word
+"\C-xg": glob-list-expansions
+"\M-^": history-expand-line
+"\M-.": insert-last-argument
+"\M-_": insert-last-argument
+"\C-o": operate-and-get-next
+"\C-x!": possible-command-completions
+"\C-x/": possible-filename-completions
+"\C-x@": possible-hostname-completions
+"\C-x~": possible-username-completions
+"\C-x$": complete-variable
+"\M-\C-e": shell-expand-line
+$endif
+
 "\C-l": clear-screen
 "\C-i": complete
 "\C-d": delete-char
 "\C-r": reverse-search-history
 "\C-s": forward-search-history
-
 "\C-g": forward-word
 "\M-f": forward-word
-"\M-g": glob-complete-word
-"\C-x*": glob-expand-word
-"\C-xg": glob-list-expansions
 
-"\M-^": history-expand-line
+
+
+
+
 # history-search-backward (not bound)
 # history-search-forward (not bound)
 "\M-#": insert-comment
 "\M-*": insert-completions
-"\M-.": insert-last-argument
-"\M-_": insert-last-argument
+
 "\C-k": kill-line
 "\C-w": kill-region
 # kill-whole-line (not bound)
@@ -44,16 +59,16 @@ set bind-tty-special-chars off
 # non-incremental-forward-search-history-again (not bound)
 "\M-p": non-incremental-reverse-search-history
 # non-incremental-reverse-search-history-again (not bound)
-"\C-o": operate-and-get-next
+
 # overwrite-mode (not bound)
 # paste-from-clipboard (not bound)
-"\C-x!": possible-command-completions
+
 "\M-=": possible-completions
 "\M-?": possible-completions
-"\C-x/": possible-filename-completions
-"\C-x@": possible-hostname-completions
-"\C-x~": possible-username-completions
-"\C-x$": possible-variable-completions
+
+
+
+
 "\C-p": previous-history
 "\M-OA": previous-history
 "\M-[A": previous-history
@@ -65,7 +80,7 @@ set bind-tty-special-chars off
 "\M-\C-r": revert-line
 "\M-r": revert-line
 "\C-@": set-mark
-"\M-\C-e": shell-expand-line
+
 "\C-x(": start-kbd-macro
 # tab-insert (not bound)
 "\M-&": tilde-expand

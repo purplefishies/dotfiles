@@ -1,3 +1,4 @@
+#!/bin/bash
 #****************************************************************************
 # config::name= .bashrc
 # config::desc= Jimbo's Bash settings....
@@ -20,22 +21,41 @@
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-PERL="/opt/local/bin/perl"
+#
+# Disable the STOP command, because i use Control-S to forward search
+# through history.
+# For debuggin
+#set -xv
+
+if [ -t 0 ] ; then
+    stty stop ''
+    stty start ''
+    stty -ixon
+    stty -ixoff
+
+    #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    # Color settings
+    #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    WHITE=$(tput setaf 7 )
+    RED=$(tput setaf 1 )
+    GREEN=$(tput setaf 2 )
+    RESET=$(tput sgr0 )
+    YELLOW=$(tput setaf 3)
+    BOLD=$(tput bold)
+fi
+
+
+PERL="/usr/bin/perl"
 MY_OS=`uname -s`
 MY_TEST="test"
 
-MY_ID=`/usr/bin/id | /opt/local/bin/perl -ne 's/^\S+=\d+\((\S+?)\).*/$1/; print;'`
-my_version_num=`echo $BASH_VERSION | /opt/local/bin/perl -ne 's/^(\d+)\..*/$1/; print ; '`
+MY_ID=`id | perl -ne 's/^\S+=\d+\((\S+?)\).*/$1/; print;'`
+my_version_num=`echo $BASH_VERSION | /usr/bin/perl -ne 's/^(\d+)\..*/$1/; print ; '`
 MY_CAD="${HOME}/Scripts/CAD"
 BASH_VRS=`echo $BASH_VERSION | sed 's/^\([0-9]\)\..*/\1/'`
-ECHO="/usr/local/bin/echo"
 
-WHITE=$(tput setaf 7 )
-RED=$(tput setaf 1 )
-GREEN=$(tput setaf 2 )
-RESET=$(tput sgr0 )
-BOLD=$(tput bold)
-
+export DEBFULLNAME="Jimi Damon"
+export DEBEMAIL="jdamon@accesio.com"
 
 if [ 1 ] ; then
 # Before
@@ -44,34 +64,22 @@ else
     MY_PROMPT="${RED}\h ${WHITE}\w % "
 fi
 
-
-LONG_PROMPT='\[$RED\]\h \[$RESET\]\w \[$GREEN$BOLD\]$(__git_ps1 "(%s)")\[$RESET\]% '
-SHORT_PROMPT='\[$RED\]\h \[$RESET\]\W \[$GREEN$BOLD\]$(__git_ps1 "(%s)")\[$RESET\]% '
-
-export PS1="${RED}\h \w ${WHITE} % "
-
-
-unset path_string
-
-
-
-
-# Loading functions...
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-source $HOME/.functions
+#
+# Diff Application
+#
+export DIFF_APP=kompare
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Loading Aliases....
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-if [ "${HOME}/.alias" -nt "${HOME}/.bash_alias" ] ; then
+if [[ "${HOME}/.alias" -nt "${HOME}/.bash_alias" ]] ; then
     if [ -f "${HOME}/.bash_alias" ]; then
         rm "${HOME}/.bash_alias"
     fi
     ldalias "${HOME}/.alias"
-elif [ -f "${HOME}/.bash_alias" ]; then
+elif [[ -f "${HOME}/.bash_alias" ]]; then
     source ${HOME}/.bash_alias >&1 >/dev/null
 else
     ldalias "${HOME}/.alias"
@@ -84,11 +92,8 @@ fi
 test -f ${HOME}/.env && ldenv ${HOME}/.env
 
 
-
-sprompt
-
-export SWIFT_MDIR=/Users/jdamon/p4/depot/SQA/nSWIFT/
-export TQTEST_MDIR=/Users/jdamon/p4/depot/SQA/TQTEST/
+export SWIFT_MDIR=$HOME/Projects/testing_test/
+export TQTEST_MDIR=$HOME/Projects/testing_test/
 
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -98,29 +103,107 @@ unset lowos
 
 alias hsp='/cad/avanti/2003.03-SP1/linux/hspice'
 
+#
+# Linux Path stuff
+#
 
 
-export PATH="/usr/firefox:"
-#export PATH="$PATH:/usr/java/jdk1.5.0_12/bin"
-#export JAVA_HOME="/usr/java/jdk1.5.0_12"
-#export JAVA_HOME="/usr/java/jdk1.6.0_02"
-export GROOVY_HOME="/usr/java/groovy-1.0"
-#export PATH="$JAVA_HOME/bin:$PATH"
-export PATH="$GROOVY_HOME/bin:$PATH"
-export PATH=$PATH:/usr/java/jswat-4.2/bin
-export PATH=$PATH:/usr/local/lib/xcircuit-3.4/man//
-export PATH=$PATH:/usr/local/root/bin
-#export PATH=$PATH:/Library/PostgreSQL/8.4/bin
-export PATH=$PATH:/usr/local/pgsql/bin/
-export PATH=$PATH:$HOME/Scripts
 
-
-export PATH=$PATH:"/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/sw/bin:/usr/X11R6/bin:/Library/PostgreSQL/bin:/usr/lib/lapack:"
+# export PATH=$PATH:"/bin:/sbin:/usr/bin:/usr/local/bin:/usr/sbin:/sw/bin:/usr/X11R6/bin:/Library/PostgreSQL/bin:/usr/lib/lapack:"
+# export PATH=$PATH:"/bin:/sbin:/usr/bin:/usr/local/bin:/usr/sbin:/sw/bin:/usr/X11R6/bin:/Library/PostgreSQL/bin:/usr/lib/lapack:"
+export PATH="/sbin:/bin:/usr/bin:/usr/local/bin:/usr/sbin:"
+export PATH="$PATH:$HOME/Scripts"
+export PATH="$PATH:/usr/games"
 
 export PATH="$PATH:/usr/lib/lapack"
 export PATH="$PATH:/opt/local/bin"
 export PATH="$PATH:/System/Library/Frameworks/Python.framework/Versions/2.6/bin"
 export PATH="$PATH:/Developer/Tools/Qt"
+export PATH="$PATH:$HOME/Tools/bin"
+
+# Android stuff
+export ANDROID_HOME=${HOME}/Tools/android-sdk-linux
+export ANDROID_SDK=${HOME}/Tools/android-sdk-linux
+export ANDROID_NDK=${HOME}/Tools/android-ndk-r10
+export ANDROID_SDK_HOME=$ANDROID_SDK
+export ANDROID_NDK_HOME=$ANDROID_NDK
+
+export ANDROID_NDK_ROOT=${HOME}/Tools/android-ndk-r10
+export ANDROID_TOOLS_DIR=$ANDROID_SDK/tools
+
+export PATH=$PATH:$ANDROID_SDK/build-tools/17.0.0
+export PATH=$PATH:$ANDROID_SDK/platform-tools
+export PATH=$PATH:$ANDROID_NDK_HOME
+
+
+export PATH=$PATH:/usr/java/jswat-4.2/bin
+
+
+
+
+export PATH=$PATH:/usr/local/root/bin
+export PATH=$PATH:/usr/local/pgsql/bin/
+export PATH=$PATH:/usr/share/ant/bin/
+
+export MODULESHOME=
+
+#export PATH="$PATH:${MODULESHOME}/bin"
+
+if [[ -f "/etc/bash_completion" ]] ; then
+    source "/etc/bash_completion"
+fi
+
+if [[ -f "/usr/share/bash-completion/bash_completion" ]] ; then
+    source "/usr/share/bash-completion/bash_completion"
+fi
+
+if [[ -f "/usr/Modules/3.2.9/init/bash" ]] ; then
+    source /usr/Modules/3.2.9/init/bash
+fi
+
+
+if [[ -f "/usr/share/modules/init/bash" ]] ; then
+    source /usr/share/modules/init/bash
+fi
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Loading functions...
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+if [ -f $HOME/.functions ] ; then
+    source $HOME/.functions
+    aio
+fi
+
+LONG_PROMPT='\[$RED\]\h \[$RESET\]\w '
+SHORT_PROMPT='\[$RED\]\h \[$RESET\]\W '
+STEALTH_PROMPT='\[$RED\]\h \[$RESET\] '
+GIT_COLOR='\[$GREEN$BOLD\]'
+SVN_COLOR='\[$YELLOW$BOLD\]'
+
+if [[ "$(type -t __svn_ps1 )" == "function" ]] ; then
+    LONG_PROMPT=${LONG_PROMPT}${SVN_COLOR}'$(__svn_ps1)'
+    SHORT_PROMPT=${SHORT_PROMPT}${SVN_COLOR}'$(__svn_ps1)'
+else
+
+    echo "Can't find definition for __svn_ps1"
+    function __svn_ps1() {
+        ""
+    }
+fi
+
+if [[ "$(type -t __git_ps1 )" == "function" ]] ; then
+    LONG_PROMPT=${LONG_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
+    SHORT_PROMPT=${SHORT_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
+    STEALTH_PROMPT=${STEALTH_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
+    tty -s && export PS1=$LONG_PROMPT
+else
+    echo "Can't find definition for __git_ps1...ignoring"    
+    LONG_PROMPT=${LONG_PROMPT}'\[$RESET\]% '
+    SHORT_PROMPT=${SHORT_PROMPT}'\[$RESET\]% '
+    STEALTH_PROMPT=${STEALTH_PROMPT}'\[$RESET\]% '
+    tty -s && export PS1=$LONG_PROMPT
+fi
+
 
 #
 # Pager configuration
@@ -129,66 +212,117 @@ export PAGER=less
 export LESS=-X
 
 
-export LS_COLORS="no=00:fi=00:di=00;36:*.pdf=01;33:ln=01;36:pi=40;33:so=00;35:do=00;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=01;05;37;41:su=37;41:sg=30;43:tw=30;42:ow=34;42:st=37;44:ex=00;32:*.cmd=00;32:*.exe=00;32:*.com=00;32:*.btm=00;32:*.bat=00;32:*.sh=00;32:*.csh=00;32:*.tar=00;31:*.tgz=00;31:*.svgz=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.lzma=00;31:*.zip=00;31:*.z=00;31:*.Z=00;31:*.dz=00;31:*.gz=00;31:*.bz2=00;31:*.tbz2=00;31:*.bz=00;31:*.tz=00;31:*.deb=00;31:*.rpm=00;31:*.jar=01;32:*.rar=00;31:*.ace=00;31:*.zoo=00;31:*.cpio=00;31:*.7z=00;31:*.rz=00;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=00;35:*.ppm=00;35:*.tga=00;35:*.xbm=00;35:*.xpm=00;35:*.tif=00;35:*.tiff=00;35:*.png=01;35:*.mng=00;35:*.pcx=00;35:*.mov=00;35:*.mpg=00;35:*.mpeg=00;35:*.m2v=00;35:*.mkv=00;35:*.ogm=00;35:*.mp4=00;35:*.m4v=00;35:*.mp4v=00;35:*.vob=00;35:*.qt=00;35:*.nuv=00;35:*.wmv=00;35:*.asf=00;35:*.rm=00;35:*.rmvb=00;35:*.flc=00;35:*.avi=00;35:*.fli=00;35:*.gl=00;35:*.dl=00;35:*.xcf=00;35:*.xwd=00;35:*.yuv=00;35:*.svg=00;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:"
+if [ -f "$HOME/.ls_colors" ] ; then
+    eval $( dircolors -b $HOME/.ls_colors )
+else
+    export LS_COLORS="no=00:fi=00:di=00;36:*.pdf=01;33:ln=01;36:pi=40;33:so=00;35:do=00;35:bd=40;33;01:cd=40;33;01:or=40;21;01:mi=01;05;37;41:su=37;41:sg=30;43:tw=30;42:ow=34;42:st=37;44:ex=00;32:*.cmd=00;32:*.exe=00;32:*.com=00;32:*.btm=00;32:*.bat=00;32:*.sh=00;32:*.csh=00;32:*.tar=00;31:*.tgz=00;31:*.svgz=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.lzma=00;31:*.zip=00;31:*.z=00;31:*.Z=00;31:*.dz=00;31:*.gz=00;31:*.bz2=00;31:*.tbz2=00;31:*.bz=00;31:*.tz=00;31:*.deb=00;31:*.rpm=00;31:*.jar=01;32:*.rar=00;31:*.ace=00;31:*.zoo=00;31:*.cpio=00;31:*.7z=00;31:*.rz=00;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=00;35:*.ppm=00;35:*.tga=00;35:*.xbm=00;35:*.xpm=00;35:*.tif=00;35:*.tiff=00;35:*.png=01;35:*.mng=00;35:*.pcx=00;35:*.mov=00;35:*.mpg=00;35:*.mpeg=00;35:*.m2v=00;35:*.mkv=00;35:*.ogm=00;35:*.mp4=00;35:*.m4v=00;35:*.mp4v=00;35:*.vob=00;35:*.qt=00;35:*.nuv=00;35:*.wmv=00;35:*.asf=00;35:*.rm=00;35:*.rmvb=00;35:*.flc=00;35:*.avi=00;35:*.fli=00;35:*.gl=00;35:*.dl=00;35:*.xcf=00;35:*.xwd=00;35:*.yuv=00;35:*.svg=00;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:"
+fi
+
 
 export LSCOLORS="Exfxcxdxbxegedabagacad"
 
-
-#source settings.sh
-#source $HOME/.bash_stuff/
-
-source $HOME/.bash_stuff/cdargs/cdargs-bash.sh
-source /etc/bash_completion
-
-histdir=$HOME/.hist
-if [[ ! -d $histdir ]]  ; then
-    mkdir -p $histdir
+if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
+    source $HOME/.bash_stuff/cdargs/cdargs-bash.sh
 fi
 
-export HISTFILESIZE=10000
-export HISTSIZE=5000
-export HISTFILE=$HOME/.bash_history
+if [[ -f "/etc/bash_completion" ]] ; then
+    source /etc/bash_completion
+else
+    echo "Can't find file /etc/bash_completion to source...please install"
+fi
+
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# My Custom History settings
+#
+# 1. I want to save all history for posterity into $HOME/.bashcmd_history
+#
+# 2. I want to only save original commands
+#
+# 3. Ignore some things that I don't want to save
+#
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+shopt -s histappend
+export HISTTIMEFORMAT='+%c %z '
+export HISTFILESIZE=100000
+export HISTSIZE=100000
+export HISTFILENAME=.bash_history
+export HISTFILENEWNAME=bash_history
+export HISTPREFIX=""
+export HISTFILE=$HOME/${HISTFILENAME}
 export HISTCONTROL="ignoredups:erasedups"
 export HISTIGNORE="mark*:ls:ll:history:history *:source .bashrc"
-#export HIST_START=$(date '+%H%M%S')
+export HISTDIRECTORY=$HOME/.bashcmd_history 
+export HIST_RESET_OFFSET=2000
+export HIST_ROLLOVER_SIZE=10000
+
+
 shopt -s histappend
-export PROMPT_COMMAND="history -a"
+if [ ! -d "$HISTDIRECTORY" ] ; then
+    mkdir $HISTDIRECTORY
+fi
+
+function save_history() { 
+    cp "$HISTFILE" "${HISTDIRECTORY}/${HISTPREFIX}${HISTFILENEWNAME}_$(date '+%m_%d_%Y_%H%M%S')"
+}
+
+function rollover_history() { 
+    history -a
+    if [[ $(history | wc -l | awk '{print $1}') -gt $HIST_ROLLOVER_SIZE ]] ; 
+    then
+        save_history
+        tail -$HIST_RESET_OFFSET ${HISTFILE} > "${HISTFILE}.tmp"
+        /bin/mv -f "${HISTFILE}.tmp" ${HISTFILE}
+        history -c >/dev/null
+        history -r >/dev/null
+    fi
+}
+export PROMPT_COMMAND="rollover_history"
 
 # Load the old history
 history -n 
 
-#if [ -f ${histdir}/histfile.$PPID ] ; then
-#    export HISTFILE=${histdir}/histfile.$PPID
-#else 
-#    export HISTFILE=${histdir}/histfile.$$
-#fi
+
+export ALTERNATE_EDITOR=emacs 
+export EDITOR=emacsclient 
+export VISUAL=emacsclient
+
+function emacs {
+    /usr/bin/emacsclient  $1 >/dev/null
+}
 
 export EDITOR=emacs
 export PGDATA=$HOME/PostgreSQL
 export R_HOME=/usr/lib/R
 
-export CLASSPATH="/Developer/SDKs/android-sdk-mac_86/platforms/android-8/android.jar:"
-export CLASSPATH="${CLASSPATH}:/usr/share/java/junit-4.6/junit.jar"
+
+export ECLIPSE_PLUGIN_HOME=/home/jdamon/Tools/eclipse/plugins
+
+if [ -f "${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.jar" ] ; then
+    export CLASSPATH=${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.jar
+fi
 
 
-if [ -f /tools/mxlcad/gnutools/etc/bash_completion ] ; then
+if [ -f "/tools/mxlcad/gnutools/etc/bash_completion" ] ; then
   . /tools/mxlcad/gnutools/etc/bash_completion
 fi
 
 export MANPATH=/opt/local/man:$MANPATH:/opt/n1ge6/man:/usr/man
 export MANPATH=$MANPATH:/Library/Frameworks/R.framework/Versions/2.12/Resources
-export LESS=-X
+export MANPATH="/home/jdamon/Downloads/llvm/docs/CommandGuide/man/man1:/home/jdamon/Downloads/root/man/man1:/home/jdamon/perl5/man/man1:/opt/novell/groupwise/client/java/man/man1:/opt/novell/man/man1:/usr/Modules/3.2.9/share/man/man1:/usr/local/share/man:/usr/share/man"
+
+export LESS="-X -R"
 export LC_ALL="C"
 export LESSCHARSET=utf-8
 
-stty eof ""
+
 
 export RI="--format ansi --width 100"
 
 export SVN_EDITOR=xemacs
 
 
-if [ -d $HOME/.bash ] ; then
+if [ -d "$HOME/.bash" ] ; then
     for i in `/bin/ls $HOME/.bash/*.sh` ; do
         . $i
     done
@@ -205,24 +339,97 @@ export SDK_ROOT=/Developer/SDKs/android-sdk-mac_86
 export PATH=$PATH:$SDK_ROOT/tools/
 export PATH=$PATH:/opt/local/lib/mysql5/bin
 
+# 
+# Android
 
-export MODULEPATH=/Users/jdamon/Dropbox/SysAdmin/Modules
-MODULEHOME=/Users/jdamon/Dropbox/SysAdmin/Modules
-if [ -f /Users/jdamon/Dropbox/SysAdmin/tcl/init/bash.sh ] ; then
-    source /Users/jdamon/Dropbox/SysAdmin/tcl/init/bash.sh
+
+
+if [ -d "$ANDROID_TOOLS_DIR" ] ; then
+    export PATH=$PATH:/home/jdamon/Tools/android-sdk-linux/tools
 fi
 
-if [ -f /opt/local/etc/bash_completion ]; then
+
+
+
+if [ -f "/opt/local/etc/bash_completion" ]; then
     . /opt/local/etc/bash_completion
 fi
 
-if [ -f /opt/local/etc/profile.d/cdargs-bash.sh ]; then
+if [ -f "/opt/local/etc/profile.d/cdargs-bash.sh" ]; then
     source /opt/local/etc/profile.d/cdargs-bash.sh
 fi
 
 export PERL5LIB="${HOME}/perl5/lib/perl5:${HOME}"
-export GIT_EXTERNAL_DIFF=/opt/local/bin/opendiff.sh
+export GIT_EXTERNAL_DIFF=$HOME/Scripts/opendiff.sh
 
-#export PATH
+alias ack='/usr/bin/ack-grep'
 
-alias prove='/usr/bin/prove.bak'
+if [ "$TERM" == "xterm" ] 
+then 
+     export EDITOR=emacsclient
+else 
+     export EDITOR=emacs
+fi
+
+export PATH=$PATH:/usr/share/apache-maven-3.0.5/bin
+export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+
+export TEXINPUTS="/home/jdamon/Dropbox/Projects/Learning/Courses/heat_transfer:"
+export POWERLINE_CONFIG_COMMAND=/usr/local/bin/powerline-config
+
+fd=0
+if [[ -t "$fd" || -p /dev/stdin ]]
+then
+    shopt -s direxpand
+    shopt -s cdable_vars
+    shopt -s cmdhist
+    shopt -s cdspell
+fi
+
+if [ "$COLORTERM" == "gnome-terminal" ] || [ "$COLORTERM" == "xfce4-terminal" ]
+then
+    TERM=xterm-256color
+#    TERM=screen-256color-italic
+elif [ "$COLORTERM" == "rxvt-xpm" ]
+then
+    TERM=rxvt-256color
+fi
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+if [ -f "$HOME/.rvm/scripts/rvm" ] ; then
+    source $HOME/.rvm/scripts/rvm
+fi
+
+sprompt on
+
+export MODULEHOME=${HOME}/Modules
+export MODULESHOME=${HOME}/Modules
+if [ -f "${HOME}/Dropbox/Projects/SysAdmin/tcl/init/bash" ] ; then
+   source ${HOME}/Dropbox/Projects/SysAdmin/tcl/init/bash
+fi
+export MODULEPATH=$HOME/Modules
+
+if [ -n "$TMUX" ]; then
+    function refresh {
+        export $(tmux show-environment | grep "^SSH_AUTH_SOCK")
+        export $(tmux show-environment | grep "^DISPLAY")
+    }
+else
+    function refresh { 
+        echo -ne ""
+    }
+fi
+
+function reload {
+    module purge
+    module load preconfig/usb-development-latest-ai16
+    cdb mcbridelib/..
+    . sourceme.sh
+    cd -
+}
+
+# print_goodbye() { 
+#     echo "Goodbye"
+#     history -a
+# }
+# trap print_goodbye EXIT

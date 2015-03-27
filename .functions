@@ -22,11 +22,16 @@ function Prompt_Settings {
     local LIGHT_CYAN="\[\033[1;36m\]"
     local NO_COLOUR="\[\033[0m\]"
     local BRIGHTGREEN="\[\033[1;32m\]"
-    local BLUE=$(tput setaf 4)
-    local WHITE=$(tput setaf 7 )
-#   local RED=$(tpu setaf 1 )
-#   #Green
-    
+}
+
+function rename_fen { 
+    local file=$@
+    cp ${file} $(sha1sum ${file} | perl -ne 's/^(.{8}).*/$1/;print;').fen
+}
+
+function save_firmware {
+    local file=$@
+    cp ${file} ${file}.$(sha1sum ${file} | perl -ne 's/^(.{8}).*/$1/;print;')
 }
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -35,24 +40,40 @@ function Prompt_Settings {
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function sprompt {
     TITLEBAR="\[\033]0;\u@\H: \w\007\]"
-#    GITPROMPT='$(__git_ps1 " (%s)")'
-    GITPROMPT=""
     export TITLEBAR
     if [ "$1" == "on" ]; then
-        export MY_PROMPT="${SHORT_PROMPT}${GIT_PROMPT}"
+        export MY_PROMPT=${SHORT_PROMPT}
     else
-        export MY_PROMPT="${LONG_PROMPT}${GIT_PROMPT}"
+        export MY_PROMPT=${LONG_PROMPT}
     fi
 
-    export PS1=${MY_PROMPT}${TITLEBAR}
+    tty -s && export PS1=${MY_PROMPT}${TITLEBAR}
 }
+
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Turns on and off the full path at the top of the title bar.
+#
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function stealth {
+    TITLEBAR="\[\033]0;\u@\H: \w\007\]"
+    export TITLEBAR
+    if [ "$1" == "on" ]; then
+        export MY_PROMPT=${STEALTH_PROMPT}
+    else
+        export MY_PROMPT=${SHORT_PROMPT}
+    fi
+
+    tty -s && export PS1=${MY_PROMPT}${TITLEBAR}
+}
+
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 #
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function lprompt {
-    export PS1=${MY_PROMPT}${TITLEBAR}
+    tty -s && export PS1=${MY_PROMPT}${TITLEBAR}
 }
 
 
@@ -62,7 +83,7 @@ function lprompt {
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function xtitle {
 # Turn off the menu prompt
-    export PS1=${MY_PROMPT}   
+    tty -s && export PS1=${MY_PROMPT}   
     echo -e "\033]0;$@\007"
 }
 
@@ -71,7 +92,7 @@ function xtitle {
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function notitle {
-    export PS1=$MY_PROMPT
+    tty -s && export PS1=$MY_PROMPT
 }
 
 
@@ -119,22 +140,52 @@ function cadence {
 # Alias for the dir command
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function directories {
-     /bin/ls -al $1 | grep "^d"  | perl -ne 's/^(\S+\s+){8}(\S+.*)$/$2/g;print;' | grep -vP "^.{1,2}$" 
+function dir {
+    /bin/ls -alF  $1 | grep "^d"
 }
 
-
-
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 #
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function _dirs {
+#    /bin/ls -l | grep "^d" | perl -a -ne 'print "@F[8..$#F]\n"'
+    local dir
+    local filter="[^\.]"
+    if [[ "$1" != ""  ]] && [ -d "$1" ]  ; then
+#        echo "Using dir '$@'"
+        dir=$1
+        if [[ $# == 2 ]] ; then
+#            echo "using custom filter"
+            filter=$2
+        fi
+    else
+        dir=.
+#        filter="[^\.]"
+    fi
+#    echo "Using filter '${filter}'"
+    ruby -e "print Dir.entries(\"${dir}\").find_all { 
+            |i| File.directory?(\"${dir}/#{i}\") &&
+                i =~ /^${filter}/
+            }.map{ |i| 
+               if \"${dir}\" == \"\"  || \"${dir}\" == \".\"
+                  i
+               else
+                  File.expand_path(\"${dir}/#{i}\") 
+               end
+
+            }.join(\"\n\") + \"\n\""
+ }
+
 function dirs {
-     local OLDIFS=$IFS
-     local IFS=$(echo -ne '\n\t')
-     for i in $(directories $1) ; do echo "$i"; done
-     IFS=$OLDIFS
+    local IFS=$(echo -ne "\n\r")
+    if [ $# == 1 ] ; then
+        \ls -d $(_dirs $1)
+    else
+        \ls -d $(_dirs . )
+    fi
 }
+
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 #  For debugging allocation of memory
@@ -155,7 +206,7 @@ function pclean {
 # Turn on xtitle displays
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function xtitle_on {
-    export PS1="\h \W % \[\033]0;\u@\H: \w\007\]"
+    tty -s && export PS1="\h \W % \[\033]0;\u@\H: \w\007\]"
 }
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -199,11 +250,9 @@ function files {
 # access is at the bottom
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function rdirs {
-    local a=`dirs $1`
-    local OLDFS=${IFS}
-    local IFS=$(echo -ne "\n\t")
-    /opt/local/bin/ls --color=auto -ltdr $a
-    IFS=${OLDFS}
+    local a=`dirs`
+    local IFS=$(echo -ne "\n\r")
+    ls -Gltdr --color=auto $(_dirs $1 $2)
 }
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -214,7 +263,6 @@ function rfiles {
     local files=`files`
     ll -ltr $files
 }
-
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Not completed yet...
@@ -295,73 +343,29 @@ function setenv {
 
 function doit {
         ngspice -r out < $@
+}
 
+function open {
+ gnome-open "$@"
+}	 
+
+function search {
+  tracker-search "$@"
+}
+function mdfind {
+  tracker-search "$@"
 }
 
 
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Find out what is my own system name
-#
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function jamesd-home {
-    local host
-    host=`finger -p jamesd | grep vpn | head -1 | perl -ne 's/.*(gw\d+-vpn-\d+)\..*/$1/; print '`
-    if [ ! -z "$host" ] ; then
-        echo $host
-    fi
+function mydo {
+   flags=$@
+   local IFS
+   IFS="\n"
+   for i in $@ ; do
+      flags="$flags $i"
+      echo "$i"
+   done
 }
-
-
-#alias n="$HOME/Programming/bin/diary.pl"
-
-function assistant {
-    open /Developer/Applications/Qt/Assistant.app
-}
-
-function qmakesetup {
-  qmake -project
-  qmake -spec macx-g++
-  echo -ne "mac{\n  CONFIG -= app_bundle\n}\n" >> *.pro
-}
-
-function git_ps1 {
-    local s=
-    if [[ -d ".git" ]] ; then
-        s=$(__git_ps1 "(git:%s)")
-    fi
-    echo -n "$s"
-}
-#
-#
-#
-function svn_ps1 {
-   local s=
-    if [[ -d ".svn" ]] ; then
-        s=\(svn:$(svn info | sed -n -e '/^Revision: \([0-9]*\).*$/s//\1/p' )\)
-    fi  
-    echo -n "$s"
-}
-
-
-# function git_ps1 {
-#    local s=
-#     if [[ -d ".git" ]] ; then
-#         s=$(__git_ps1 "(git:%s)")
-#     fi  
-#     echo -n "$GREEN$s${RESET}"
-# }
-
-
-function amacs
-{
-     # Create the files as needed -- not as good as raw emacs, but acceptable
-     for f in "$@"
-     do
- 	test -e $f || touch $f
-     done
-     open -a /Applications/Aquamacs.app "$@"
- }
-
 
 function rm () {
   local path
@@ -379,14 +383,50 @@ function rm () {
   done
 }
 
-
-function get_perl_functions () {
-    perl -0007 -e '(@g ) = <> =~ /\n?\s*(sub\s+.*\n\}|sub\s+\S+(?:\(.*?\))\{.*?\}\s*;\s*)/gs; 
-print @g; ' $@ | perl -ne 'if( s/^.*sub\s+(\S+).*$/$1/ ) { print; } '
+function work() { 
+    export DIARY_TYPE="work"
+}
+function personal() {
+    export DIARY_TYPE="personal"
+}
+function aio() {
+    export DIARY_TYPE="aio"
 }
 
-
-function get_function_in_file () {
-     between.pl -s "sub\s+${1}" -e "^}" -f $2  -i
+function __svn_ps1() {
+    local s=
+    if [[ -d ".svn" ]] ; then
+        local r=`__svn_rev`
+        local b=`__svn_branch`
+        s=" ($b:$r)"
+    fi
+    echo -n "$s"
 }
 
+# Outputs the current trunk, branch, or tag
+function __svn_branch() {
+    local url=
+    if [[ -d .svn ]]; then
+        url=`svn info | awk '/URL:/ {print $2}'`
+        if [[ $url =~ trunk ]]; then
+            echo trunk
+        elif [[ $url =~ /branches/ ]]; then
+            echo $url | sed -e 's#^.*/\(branches/.*\)/.*$#\1#'
+        elif [[ $url =~ /tags/ ]]; then
+            echo $url | sed -e 's#^.*/\(tags/.*\)/.*$#\1#'
+        fi
+    fi
+}
+
+# Outputs the current revision
+function __svn_rev() {
+    local r=$(svn info | awk '/Revision:/ {print $2}')
+    
+    if [ ! -z $SVN_SHOWDIRTYSTATE ]; then
+        local svnst flag
+        svnst=$(svn status | grep '^\s*[?ACDMR?!]')
+        [ -z "$svnst" ] && flag=*
+        r=$r$flag
+    fi
+    echo $r
+}
