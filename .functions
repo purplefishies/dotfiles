@@ -430,3 +430,15 @@ function __svn_rev() {
     fi
     echo $r
 }
+
+function show_fen() { 
+    fenfile=$1
+    echo -ne "epdload ${fenfile}\nexit\n" | gnuchess -g -q
+}
+
+function gdb() {
+    if [ ! -z GDB_SOURCE_DIRS ] ; then
+        search_dirs=$(echo $GDB_SOURCE_DIRS | perl -F: -ane 'print map {"-d $_ "} @F ')
+    fi
+    /usr/bin/gdb ${search_dirs} "$@"
+}
