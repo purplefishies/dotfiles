@@ -1,0 +1,60 @@
+[user]
+	name = Jimi Damon
+	email = jdamon@accesio.com
+[color]
+	ui = auto
+
+[color "branch"]
+  current = yellow reverse
+  local = white bold
+  remote = green
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+[color "status"]
+  added = yellow bold
+  changed = green
+  untracked = cyan
+
+[color]
+  ui = true
+[color "diff"]
+  whitespace = red reverse
+[core]
+  whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
+
+#[diff]
+#        tool = opendiff
+#[difftool "opendiff"]
+##          cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+
+
+[alias]
+        stat = status
+        ci = commit
+        br = branch
+        co = checkout
+        df = diff
+        lg = log -p
+        glg = log --graph --oneline --decorate
+        week = log --after=\"one week ago\"  --pretty=format=\"The author of %Cred%h%Creset was %Cgreen%an%Creset, %ar%n%s%n\"
+        wl = log --after=\"last friday\"  --pretty=format:\"The author of %Cred%h%Creset was %Cgreen%an%Creset, %ar%n%s%n\"
+        llog = log --date=local --pretty=format=oneline
+        plog = log --pretty=format:\"%Cgreen%h%Creset %s\"
+        phlog = log --pretty=format:\"%Cgreen%h%Creset %Cred%ar%Creset %s\"
+        phulog = log --pretty=format:\"%Cgreen%h%Creset %C(blue bold)%an %Cred%ar%Creset %s\"   
+        untracked = ls-files --others --exclude-standard
+        ls-untracked = ls-files --others --exclude-standard
+
+
+[credential]
+	helper = cache --timeout=3600
+[filter "indent"]
+[filter "indent"]
+[filter "indent"]
+[rerere]
+	enabled = true
+[push]
+	default = matching
