@@ -475,3 +475,5 @@ if [ -f ${HOME}/Scripts/rand_tmux_color.rb ] ; then
     export TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb)
 fi
 
+alias tmux='TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb) tmux -2'
+
