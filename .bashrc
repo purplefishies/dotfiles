@@ -124,11 +124,11 @@ export PATH="$PATH:$HOME/Tools/bin"
 # Android stuff
 export ANDROID_HOME=${HOME}/Tools/android-sdk-linux
 export ANDROID_SDK=${HOME}/Tools/android-sdk-linux
-export ANDROID_NDK=${HOME}/Tools/android-ndk-r10
+export ANDROID_NDK=${HOME}/Tools/android-ndk-r10e
 export ANDROID_SDK_HOME=$ANDROID_SDK
 export ANDROID_NDK_HOME=$ANDROID_NDK
 
-export ANDROID_NDK_ROOT=${HOME}/Tools/android-ndk-r10
+export ANDROID_NDK_ROOT=${HOME}/Tools/android-ndk-r10e
 export ANDROID_TOOLS_DIR=$ANDROID_SDK/tools
 
 export PATH=$PATH:$ANDROID_SDK/build-tools/17.0.0
@@ -145,7 +145,7 @@ export PATH=$PATH:/usr/local/root/bin
 export PATH=$PATH:/usr/local/pgsql/bin/
 export PATH=$PATH:/usr/share/ant/bin/
 
-export MODULESHOME=
+export MODULESHOME=$HOME/Modules
 
 #export PATH="$PATH:${MODULESHOME}/bin"
 
@@ -256,6 +256,7 @@ export HISTDIRECTORY=$HOME/.bashcmd_history
 export HIST_RESET_OFFSET=2000
 export HIST_ROLLOVER_SIZE=10000
 
+unset R_HOME
 
 shopt -s histappend
 if [ ! -d "$HISTDIRECTORY" ] ; then
@@ -282,7 +283,6 @@ export PROMPT_COMMAND="rollover_history"
 # Load the old history
 history -n 
 
-
 export ALTERNATE_EDITOR=emacs 
 export EDITOR=emacsclient 
 export VISUAL=emacsclient
@@ -293,7 +293,6 @@ function emacs {
 
 export EDITOR=emacs
 export PGDATA=$HOME/PostgreSQL
-export R_HOME=/usr/lib/R
 
 
 export ECLIPSE_PLUGIN_HOME=/home/jdamon/Tools/eclipse/plugins
@@ -374,7 +373,7 @@ fi
 export PATH=$PATH:/usr/share/apache-maven-3.0.5/bin
 export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
 
-export TEXINPUTS="/home/jdamon/Dropbox/Projects/Learning/Courses/heat_transfer:"
+export TEXINPUTS="/home/jdamon/Latex://;"
 export POWERLINE_CONFIG_COMMAND=/usr/local/bin/powerline-config
 
 fd=0
@@ -414,10 +413,20 @@ if [ -n "$TMUX" ]; then
         export $(tmux show-environment | grep "^SSH_AUTH_SOCK")
         export $(tmux show-environment | grep "^DISPLAY")
     }
+    
+
 else
     function refresh { 
         echo -ne ""
     }
+    function set_tmux_environment {
+        for i in SSH_AUTH_SOCK SSH_AGENT_PID DISPLAY; 
+        do
+            cmd="tmux set-environment $i \$${i}"
+            eval $cmd
+        done
+    }
+
 fi
 
 function reload {
@@ -428,8 +437,41 @@ function reload {
     cd -
 }
 
+function cleantex {
+    for i in *.tex
+    do
+        j=$(echo $i | perl -ne 's/\..*//g;print;')
+        echo "Cleaning $j.tex"
+        rm -f $j.{aux,pdf,pdf,dvi,log,out} 2> /dev/null
+
+    done
+    echo "Cleaning ~ files"
+    rm -f *~ 2>/dev/null
+}
+
+function getkey {
+    if [ "$2" == "" ] ; then
+        echo "Usage: getkey KEY FILE"
+        break
+    else
+        grep $1 $2 | perl -ane 'print $F[1];'
+    fi
+}
+
+
 # print_goodbye() { 
 #     echo "Goodbye"
 #     history -a
 # }
 # trap print_goodbye EXIT
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+if [ -f ${HOME}/dotfiles/android_bc ] ; then
+    source ${HOME}/dotfiles/android_bc
+fi
+
+if [ -f ${HOME}/Scripts/rand_tmux_color.rb ] ; then
+    export TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb)
+fi
+
