@@ -1,0 +1,33 @@
+# Adapted from <http://willcode4beer.com/tips.jsp?set=tabMaven>
+function _rake()
+{
+  COMPREPLY=()
+  local cur=${COMP_WORDS[COMP_CWORD]}
+  local rake="$1"
+
+  if [[ ${cur} == -* ]] ; then   # complete long options
+    local opts='--classic-namespace --describe --dry-run --execute \
+      --execute-print --execute-continue --libdir --prereqs --quiet --rakefile \
+      --rakelibdir --rakelib --require --rules --no-search --nosearch --silent \
+      --quiet --system --no-system --nosystem --tasks --trace --verbose \
+      --version --help'
+    COMPREPLY=($(compgen -W '$opts' -- $cur))
+    return 0
+
+  else                            # complete tasks
+    # Work-around bash_completion issue where bash interprets a colon
+    # as a separator.
+    # Work-around borrowed from the darcs work-around for the same
+    # issue.
+    local colonprefixes=${cur%"${cur##*:}"}
+    local tasks="$(rake -s -T | awk '/^rake / {print $2}')"
+    COMPREPLY=($(compgen -W '$tasks' -- $cur))
+    local i=${#COMPREPLY[*]}
+    while [ $((--i)) -ge 0 ]; do
+      COMPREPLY[$i]=${COMPREPLY[$i]#"$colonprefixes"}
+    done
+
+    return 0
+  fi
+} &&
+complete -o bashdefault -o default -F _rake rake

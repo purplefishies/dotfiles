@@ -1,0 +1,79 @@
+# Debian GNU/Linux cowbuilder(1) completion
+# Copyright 2007 Cyril Brulebois <cyril.brulebois@enst-bretagne.fr>
+#
+# This script can be distributed under the same license as the
+# cowdancer or bash packages.
+#
+# adapted to pbuilder, the license is GPLv2 or later.
+# Copyright 2007 Junichi Uekawa <dancer@debian.org>
+
+have pbuilder && {
+_pbuilder()
+{
+    local cur prev command i
+
+    COMPREPLY=()
+    _get_comp_words_by_ref cur prev
+
+
+    if [[ $COMP_CWORD -eq 1 ]]; then
+        COMPREPLY=( $( compgen -W '--create --update --build --login --execute \
+            --dumpconfig create update build login execute dumpconfig' -- "$cur" ) )
+        return 0
+    fi
+
+    _expand || return 0
+
+    # find the last option flag
+    if [[ $cur != -* ]]; then
+        i=$COMP_CWORD
+        while [[ $prev != -* && $i != 2 ]]; do
+            i=$((i-1))
+            prev=${COMP_WORDS[i-1]}
+        done
+    fi
+
+    command=${COMP_WORDS[1]}
+
+    case $prev in
+        --basetgz)
+            # tgz file completion
+            _filedir 'tgz'
+            return 0
+            ;;
+        --configfile|--logfile)
+            # Any file
+            _filedir
+            return 0
+            ;;
+        --buildplace|--buildresults)
+            # Any directory
+            _filedir -d
+            return 0
+            ;;
+        *)
+            # Provide available flags
+            COMPREPLY=( $( compgen -W '--basetgz --buildplace --mirror --othermirror \
+                --http-proxy --distribution --architecture --components --buildresult \
+                --aptcache --removepackages --extrapackages --configfile --hookdir \
+                --debemail --debbuildopts --logfile --pkgname-logfile --aptconfdir \
+                --timeout --override-config  --binary-arch --preserve-buildplace \
+                --bindmounts --debug --twice --autocleanaptcache --compressprog \
+                --debootstrapopts --save-after-login --save-after-exec --debootstrap' \
+                -- "$cur" ) )
+            if [[ $prev = @(--aptcache|--hookdir) ]]; then
+                # Optionally provide a directory
+                _filedir -d
+            fi
+            if [[ $cur != -* && $command == @(--build|build) ]]; then
+                # dsc file completion
+                _filedir "dsc"
+            fi
+            return 0
+            ;;
+    esac
+
+    return 0
+}
+complete -F _pbuilder pbuilder
+}

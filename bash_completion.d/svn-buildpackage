@@ -1,0 +1,25 @@
+# -*- shell-script -*-
+
+# experimental svn-buildpackage bash completion
+
+# author: Eddy Petrișor
+
+# created by modification of Martin Pool's bzr.simple bash completion
+# with inspiration from David Roundy's darcs completion script
+
+have=$(type svn-buildpackage 2>/dev/null|| true )
+
+_svnbp_commands() 
+{
+     svn-buildpackage --help | grep '^  --' | sed 's:^\s*\(--[-a-zA-Z]*\)\s.*$:\1:g'
+}
+
+_svnbp() 
+{
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
+    COMPREPLY=( $( compgen -W "$(_svnbp_commands)" | grep "^$cur") )
+}
+
+[ "$have" ] && complete -F _svnbp -o default svn-buildpackage
+
