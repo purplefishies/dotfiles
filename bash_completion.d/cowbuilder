@@ -1,0 +1,49 @@
+# Debian GNU/Linux cowbuilder(1) completion
+# Copyright 2007 Cyril Brulebois <cyril.brulebois@enst-bretagne.fr>
+# Copyright 2011 David Paleino <dapal@debian.org>
+#
+# This script can be distributed under the same license as the
+# cowdancer or bash packages.
+
+have cowbuilder &&
+_cowbuilder()
+{
+    local initialcommand initialcommand_options cur prev words other_options distribution
+
+    COMPREPLY=()
+    _get_comp_words_by_ref cur prev words
+    initialcommand=${words[1]}
+    initialcommand_options='--create --update --build --login --execute'
+    other_options='--dumpconfig --distribution --mirror --basepath --architecture'
+    distribution='sid sarge etch woody lenny squeeze'
+
+    case $prev in
+	--distribution)
+	    COMPREPLY=( $(compgen -W "$distribution" | grep "^$cur"  ) )
+	    return 0
+	    ;;
+	--basepath)
+	    _filedir -d
+	    return 0
+	    ;;
+	*)
+	    ;;
+    esac
+
+    case $initialcommand in
+        --build)
+            COMPREPLY=( $( compgen -W "$other_options" -- "$cur" )
+                        $( compgen -o filenames -G "$cur*.dsc" ) )
+            ;;
+        --execute)
+            COMPREPLY=( $( compgen -W "$other_options" -- "$cur" )
+                        $( compgen -o filenames -G "$cur*" ) )
+            ;;
+        *)
+            COMPREPLY=( $( compgen -W "$initialcommand_options $other_options" -- "$cur" ) )
+            ;;
+    esac
+
+    return 0
+} &&
+complete -F _cowbuilder cowbuilder

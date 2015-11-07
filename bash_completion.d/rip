@@ -1,0 +1,1617 @@
+#-*- mode: shell-script;-*-
+
+# Programmed completion for bash to use rip
+
+
+
+_rip_complete_rip_accurip_show()
+{
+    options="--help -h"
+    optionsboolean="-h --help"
+    optionsvalue=""
+    commands=""
+    completed=false
+
+    debug "function _rip_complete_rip_accurip_show"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_accurip_show_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_accurip_show: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_accurip()
+{
+    options="--help -h"
+    optionsboolean="-h --help"
+    optionsvalue=""
+    commands="show"
+    completed=false
+
+    debug "function _rip_complete_rip_accurip"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_accurip_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_accurip: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_image_encode()
+{
+    options="--help --output-directory --profile -O -h"
+    optionsboolean="-h --help"
+    optionsvalue="-O --output-directory --profile"
+    commands=""
+    completed=false
+
+    debug "function _rip_complete_rip_image_encode"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_image_encode_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_image_encode: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_image_retag()
+{
+    options="--help -h"
+    optionsboolean="-h --help"
+    optionsvalue=""
+    commands=""
+    completed=false
+
+    debug "function _rip_complete_rip_image_retag"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_image_retag_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_image_retag: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_image_verify()
+{
+    options="--help -h"
+    optionsboolean="-h --help"
+    optionsvalue=""
+    commands=""
+    completed=false
+
+    debug "function _rip_complete_rip_image_verify"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_image_verify_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_image_verify: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_image()
+{
+    options="--help -h"
+    optionsboolean="-h --help"
+    optionsvalue=""
+    commands="encode retag verify"
+    completed=false
+
+    debug "function _rip_complete_rip_image"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_image_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_image: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_drive_list()
+{
+    options="--help -h"
+    optionsboolean="-h --help"
+    optionsvalue=""
+    commands=""
+    completed=false
+
+    debug "function _rip_complete_rip_drive_list"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_drive_list_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_drive_list: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_drive()
+{
+    options="--help -h"
+    optionsboolean="-h --help"
+    optionsvalue=""
+    commands="list"
+    completed=false
+
+    debug "function _rip_complete_rip_drive"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_drive_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_drive: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_cd_rip()
+{
+    options="--disc-template --help --offset --output-directory --profile --toc-pickle --track-template --unknown -O -T -U -h -o"
+    optionsboolean="-h --help -U --unknown"
+    optionsvalue="-o --offset -O --output-directory -T --toc-pickle --track-template --disc-template --profile"
+    commands=""
+    completed=false
+
+    debug "function _rip_complete_rip_cd_rip"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_cd_rip_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_cd_rip: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_cd()
+{
+    options="--device --help -d -h"
+    optionsboolean="-h --help"
+    optionsvalue="-d --device"
+    commands="rip"
+    completed=false
+
+    debug "function _rip_complete_rip_cd"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_cd_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_cd: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_offset_find()
+{
+    options="--device --help --offsets -d -h -o"
+    optionsboolean="-h --help"
+    optionsvalue="-o --offsets -d --device"
+    commands=""
+    completed=false
+
+    debug "function _rip_complete_rip_offset_find"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_offset_find_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_offset_find: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_offset()
+{
+    options="--help -h"
+    optionsboolean="-h --help"
+    optionsvalue=""
+    commands="find"
+    completed=false
+
+    debug "function _rip_complete_rip_offset"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_offset_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_offset: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_debug_encode()
+{
+    options="--help --profile -h"
+    optionsboolean="-h --help"
+    optionsvalue="--profile"
+    commands=""
+    completed=false
+
+    debug "function _rip_complete_rip_debug_encode"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_debug_encode_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_debug_encode: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip_debug()
+{
+    options="--help -h"
+    optionsboolean="-h --help"
+    optionsvalue=""
+    commands="encode"
+    completed=false
+
+    debug "function _rip_complete_rip_debug"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_debug_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip_debug: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+_rip_complete_rip()
+{
+    options="--help --version -h -v"
+    optionsboolean="-h --help -v --version"
+    optionsvalue=""
+    commands="accurip cd debug drive image offset"
+    completed=false
+
+    debug "function _rip_complete_rip"
+    debug "args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+    shift
+    debug "after shift: args '$@'"
+    debug "ARG1 '$1'"
+    debug "ARG2 '$2'"
+
+
+    while [[ "$completed" == "false" ]]
+    do
+        if [[ "$1" == -* ]]
+        then
+            # handle as argument
+            debug "handling argument $#"
+            # found will be set to true when the current argument fully matches
+            # an option, causing us to swallow it
+            found=false
+            # first check for boolean options
+            for option in $optionsboolean
+            do
+                debug "matching option $option to args $1"
+                if [[ "$option" == "$1" ]]
+                then
+                    debug "found full boolean option $option, eating"
+                    found=true
+                    shift
+                fi
+            done
+            # then check for valued options
+            if [[ "$found" == false ]]
+            then
+                for option in $optionsvalue
+                do
+                    debug "matching option $option to args $1"
+                    if [[ "$option" == "$1" ]]
+                    then
+                        found=true
+                        if [[ $# -eq 1 ]]
+                        then
+                            # a valued option with no value
+                            # we can't complete this since we don't know what
+                            # values the option takes
+                            completed=true
+                            COMPREPLY=()
+                        else
+                            # eat option and its value
+                            shift 2
+                        fi
+                    fi
+                done
+            fi
+            if [[ "$found" == false ]]
+            then
+                debug "completing argument"
+                COMPREPLY=( $( compgen -W "$options" -- $1 ) )
+                debug "COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            fi
+        else
+            # handle as command
+            debug "handle as command"
+            found=false
+            if [[ $# -eq 0 ]]; then
+                # completing this command
+                COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                debug "command, COMPREPLY ${COMPREPLY[*]}"
+                completed=true
+            else
+                for command in $commands
+                do
+                    debug "matching arg $1 against command $command"
+                    if [[ "$command" == "$1" ]]
+                    then
+                        debug "found full command, delegating"
+                         # completing a subcommand, delegate
+                        debug "delegate, $# args, 1 is $1"
+                        _rip_complete_rip_$1 $@
+                        debug "delegated, COMPREPLY ${COMPREPLY[*]}"
+                        found=true
+                    fi
+                done
+                # if not found, we must still be wanting to complete the
+                # current partial command
+                if [[ "$found" == false ]]
+                then
+                    COMPREPLY=( $( compgen -W "$commands" -- $1 ) )
+                    completed=true
+                fi
+            fi
+        fi
+        debug "function _rip_complete_rip: COMPREPLY ${COMPREPLY[*]}"
+    done
+        
+}
+
+
+# helper debug function
+debug()
+{
+    if [[ ! -z "$DEBUG" ]]
+    then
+        echo $@
+    fi
+}
+
+# main entry point
+# dispatches to a command-specific function, passing in the rest of the
+# command line as arguments, starting with the command name being called
+_rip()
+{
+        COMPREPLY=()
+        # pass as a list, not as a single string
+        _rip_complete_rip ${COMP_WORDS[*]}
+}
+
+complete -F _rip -o default rip
+
