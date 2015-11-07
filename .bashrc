@@ -251,7 +251,7 @@ export HISTFILENEWNAME=bash_history
 export HISTPREFIX=""
 export HISTFILE=$HOME/${HISTFILENAME}
 export HISTCONTROL="ignoredups:erasedups"
-export HISTIGNORE="mark*:ls:ll:history:history *:source .bashrc"
+export HISTIGNORE="mark*:ls:ll:history:history *:source .bashrc:clear_last_history"
 export HISTDIRECTORY=$HOME/.bashcmd_history 
 export HIST_RESET_OFFSET=2000
 export HIST_ROLLOVER_SIZE=10000
@@ -264,7 +264,12 @@ if [ ! -d "$HISTDIRECTORY" ] ; then
 fi
 
 function save_history() { 
-    cp "$HISTFILE" "${HISTDIRECTORY}/${HISTPREFIX}${HISTFILENEWNAME}_$(date '+%m_%d_%Y_%H%M%S')"
+    cp "$HISTFILE" "${HISTDIRECTORY}/${HISTPREFIX}${HISTFILENEWNAME}_$(date '+%Y_%m_%d_%H%M%S')"
+}
+
+function clear_last_history() {
+    history -d $(history | tail -1 | perl -pne 's/^\s*(\d+)\b.*$/$1/;')
+    history -d $(history | tail -1 | perl -pne 's/^\s*(\d+)\b.*$/$1/;')
 }
 
 function rollover_history() { 
@@ -288,7 +293,7 @@ export EDITOR=emacsclient
 export VISUAL=emacsclient
 
 function emacs {
-    /usr/bin/emacsclient  $1 >/dev/null
+    /usr/bin/emacsclient "$@" >/dev/null
 }
 
 export EDITOR=emacs
