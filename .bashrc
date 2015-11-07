@@ -14,19 +14,6 @@
 #                1. New prompt which displays infor`mation to the Title.
 #****************************************************************************
 
-
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Variables that I use for configuring my setup.
-# 1. Why use Sed ... when Perl is available ??
-#
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-#
-# Disable the STOP command, because i use Control-S to forward search
-# through history.
-# For debuggin
-#set -xv
-
 if [ -t 0 ] ; then
     stty stop ''
     stty start ''
@@ -53,9 +40,6 @@ MY_ID=`id | perl -ne 's/^\S+=\d+\((\S+?)\).*/$1/; print;'`
 my_version_num=`echo $BASH_VERSION | /usr/bin/perl -ne 's/^(\d+)\..*/$1/; print ; '`
 MY_CAD="${HOME}/Scripts/CAD"
 BASH_VRS=`echo $BASH_VERSION | sed 's/^\([0-9]\)\..*/\1/'`
-
-export DEBFULLNAME="Jimi Damon"
-export DEBEMAIL="jdamon@accesio.com"
 
 if [ 1 ] ; then
 # Before
@@ -107,10 +91,6 @@ alias hsp='/cad/avanti/2003.03-SP1/linux/hspice'
 # Linux Path stuff
 #
 
-
-
-# export PATH=$PATH:"/bin:/sbin:/usr/bin:/usr/local/bin:/usr/sbin:/sw/bin:/usr/X11R6/bin:/Library/PostgreSQL/bin:/usr/lib/lapack:"
-# export PATH=$PATH:"/bin:/sbin:/usr/bin:/usr/local/bin:/usr/sbin:/sw/bin:/usr/X11R6/bin:/Library/PostgreSQL/bin:/usr/lib/lapack:"
 export PATH="/sbin:/bin:/usr/bin:/usr/local/bin:/usr/sbin:"
 export PATH="$PATH:$HOME/Scripts"
 export PATH="$PATH:/usr/games"
@@ -160,7 +140,6 @@ fi
 if [[ -f "/usr/Modules/3.2.9/init/bash" ]] ; then
     source /usr/Modules/3.2.9/init/bash
 fi
-
 
 if [[ -f "/usr/share/modules/init/bash" ]] ; then
     source /usr/share/modules/init/bash
@@ -319,8 +298,6 @@ export LESS="-X -R"
 export LC_ALL="C"
 export LESSCHARSET=utf-8
 
-
-
 export RI="--format ansi --width 100"
 
 export SVN_EDITOR=xemacs
@@ -345,15 +322,11 @@ export PATH=$PATH:/opt/local/lib/mysql5/bin
 
 # 
 # Android
-
-
+#
 
 if [ -d "$ANDROID_TOOLS_DIR" ] ; then
     export PATH=$PATH:/home/jdamon/Tools/android-sdk-linux/tools
 fi
-
-
-
 
 if [ -f "/opt/local/etc/bash_completion" ]; then
     . /opt/local/etc/bash_completion
