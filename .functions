@@ -445,3 +445,15 @@ function gdb() {
     # echo "/usr/bin/gdb ${search_dirs} \"$@\""
     /usr/bin/gdb ${search_dirs} "$@"
 }
+
+function history_compress() {      
+    cp $1 $1.bak;     
+    keep=${USE_IXHASH};     
+    export USE_IXHASH=1;     
+    cat $1 | unique.pl | perl  -0400 -pne 's/#\d{10}\n(?=#\d{10}\n)/$1/gsm;' | sponge $1;     
+    if [ "$keep" != "" ] ; then         
+        export USE_IXHASH=${keep};     
+    else         
+        unset USE_IXHASH;     
+    fi; 
+}
