@@ -29,6 +29,30 @@ function rename_fen {
     cp ${file} $(sha1sum ${file} | perl -ne 's/^(.{8}).*/$1/;print;').fen
 }
 
+function fen_name {
+    local file=$@
+    echo $(sha1sum ${file} | perl -ne 's/^(.{8}).*/$1/;print;').fen
+}
+
+function save_fen { 
+    local file=$@
+    cp -f ${file} $HOME/Downloads/CHESS/FenPuzzles/$(fen_name $file)
+}
+
+function show_fen {
+    local file=$@
+    echo -ne "epdload ${file}\nshow board\nexit\n" | gnuchess -g -q
+}
+
+function paste_fen {
+    local todir=$@
+    if [ "${todir}" == "" ] ; then
+        todir=$HOME/Downloads/CHESS/FenPuzzles/
+    fi
+    tmp=$(pbpaste | sha1sum ${file} | perl -ne 's/^(.{8}).*/$1/;print;')
+    pbpaste > ${todir}/${tmp}.fen
+}
+
 function save_firmware {
     local file=$@
     cp ${file} ${file}.$(sha1sum ${file} | perl -ne 's/^(.{8}).*/$1/;print;')
@@ -50,7 +74,6 @@ function sprompt {
     tty -s && export PS1=${MY_PROMPT}${TITLEBAR}
 }
 
-
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Turns on and off the full path at the top of the title bar.
 #
@@ -66,7 +89,6 @@ function stealth {
 
     tty -s && export PS1=${MY_PROMPT}${TITLEBAR}
 }
-
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 #
@@ -431,29 +453,8 @@ function __svn_rev() {
     echo $r
 }
 
-function show_fen() { 
-    fenfile=$1
-    echo -ne "epdload ${fenfile}\nexit\n" | gnuchess -g -q
-}
-
-function gdb() {
-    if [ ! -z GDB_SOURCE_DIRS ] ; then
-        search_dirs=$(echo -ne $GDB_SOURCE_DIRS | perl -F: -ane 'print map {"-d $_ "} @F ')
-    else
-        search_dirs=""
-    fi
-    # echo "/usr/bin/gdb ${search_dirs} \"$@\""
-    /usr/bin/gdb ${search_dirs} "$@"
-}
-
-function history_compress() {      
-    cp $1 $1.bak;     
-    keep=${USE_IXHASH};     
-    export USE_IXHASH=1;     
-    cat $1 | unique.pl | perl  -0400 -pne 's/#\d{10}\n(?=#\d{10}\n)/$1/gsm;' | sponge $1;     
-    if [ "$keep" != "" ] ; then         
-        export USE_IXHASH=${keep};     
-    else         
-        unset USE_IXHASH;     
-    fi; 
+function vnc_paris () { 
+    echo "Connecting to Paris at work"
+    echo "You will have to use connection Paris@tunnel"
+    ssh -A -L 5900:10.1.1.71:5900 69.199.148.22
 }
