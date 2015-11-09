@@ -74,6 +74,7 @@ function sprompt {
     tty -s && export PS1=${MY_PROMPT}${TITLEBAR}
 }
 
+
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Turns on and off the full path at the top of the title bar.
 #
@@ -89,6 +90,7 @@ function stealth {
 
     tty -s && export PS1=${MY_PROMPT}${TITLEBAR}
 }
+
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 #
@@ -457,4 +459,26 @@ function vnc_paris () {
     echo "Connecting to Paris at work"
     echo "You will have to use connection Paris@tunnel"
     ssh -A -L 5900:10.1.1.71:5900 69.199.148.22
+}
+
+function gdb() {
+    if [ ! -z GDB_SOURCE_DIRS ] ; then
+        search_dirs=$(echo -ne $GDB_SOURCE_DIRS | perl -F: -ane 'print map {"-d $_ "} @F ')
+    else
+        search_dirs=""
+    fi
+    # echo "/usr/bin/gdb ${search_dirs} \"$@\""
+    /usr/bin/gdb ${search_dirs} "$@"
+}
+
+function history_compress() {      
+    cp $1 $1.bak;     
+    keep=${USE_IXHASH};     
+    export USE_IXHASH=1;     
+    cat $1 | unique.pl | perl  -0400 -pne 's/#\d{10}\n(?=#\d{10}\n)/$1/gsm;' | sponge $1;     
+    if [ "$keep" != "" ] ; then         
+        export USE_IXHASH=${keep};     
+    else         
+        unset USE_IXHASH;     
+    fi; 
 }
