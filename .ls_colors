@@ -506,7 +506,7 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 # backups
 .BUP 38;5;241
 .bak 38;5;241
-.o 38;5;241 # *nix Object file (shared libraries, core dumps etc)
+.o 38;5;235 # *nix Object file (shared libraries, core dumps etc)
 # temporary files
 .swp 38;5;244
 .swo 38;5;244
