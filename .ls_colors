@@ -77,6 +77,7 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 .info 38;5;184
 .markdown 38;5;184
 .md 38;5;184
+.Rmd 38;5;125;1
 .mkd 38;5;184
 .nfo 38;5;184
 .pod 38;5;184
@@ -340,7 +341,9 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 # }}}
 # archives {{{1
 .7z 38;5;40
-.a 38;5;40
+.a 38;5;35
+.so 38;5;208;1
+.mexa64 38;5;208;1
 .arj 38;5;40
 .bz2 38;5;40
 .gz 38;5;40
@@ -506,7 +509,7 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 # backups
 .BUP 38;5;241
 .bak 38;5;241
-.o 38;5;235 # *nix Object file (shared libraries, core dumps etc)
+.o 38;5;239 # *nix Object file (shared libraries, core dumps etc)
 # temporary files
 .swp 38;5;244
 .swo 38;5;244
