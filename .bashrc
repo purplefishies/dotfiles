@@ -51,7 +51,7 @@ fi
 #
 # Diff Application
 #
-export DIFF_APP=kompare
+export DIFF_APP=bcompare
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Loading Aliases....
@@ -267,19 +267,8 @@ export PROMPT_COMMAND="rollover_history"
 # Load the old history
 history -n 
 
-export ALTERNATE_EDITOR=emacs 
-export EDITOR=emacsclient 
-export VISUAL=emacsclient
 
-function emacs {
-    /usr/bin/emacsclient "$@" >/dev/null
-}
-
-export EDITOR=emacs
-export PGDATA=$HOME/PostgreSQL
-
-
-export ECLIPSE_PLUGIN_HOME=/home/jdamon/Tools/eclipse/plugins
+export ECLIPSE_PLUGIN_HOME=$HOME/Tools/eclipse/plugins
 
 if [ -f "${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.jar" ] ; then
     export CLASSPATH=${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.jar
@@ -300,9 +289,6 @@ export LESSCHARSET=utf-8
 
 export RI="--format ansi --width 100"
 
-export SVN_EDITOR=xemacs
-
-
 if [ -d "$HOME/.bash" ] ; then
     for i in `/bin/ls $HOME/.bash/*.sh` ; do
         . $i
@@ -315,7 +301,7 @@ export PERL6LIB=$HOME/Programming/Perl/lib:/tools/mxlcad/CPAN/lib/perl5/site_per
 
 export COMP_WORDBREAKS=${COMP_WORDBREAKS/\:/}
 
-export GREP_OPTIONS="--color=auto"
+export GREP_OPTIONS="--color=auto -d skip"
 export SDK_ROOT=/Developer/SDKs/android-sdk-mac_86
 export PATH=$PATH:$SDK_ROOT/tools/
 export PATH=$PATH:/opt/local/lib/mysql5/bin
@@ -341,11 +327,14 @@ export GIT_EXTERNAL_DIFF=$HOME/Scripts/opendiff.sh
 
 alias ack='/usr/bin/ack-grep'
 
-if [ "$TERM" == "xterm" ] 
-then 
-     export EDITOR=emacsclient
+if [ "$DISPLAY" ] ; then
+    export EDITOR="emacs"
+    export ALTERNATE_EDITOR="emacs"      
+    export VISUAL="emacsclient -t -c -a emacs"
 else 
-     export EDITOR=emacs
+    export ALTERNATE_EDITOR=""      
+    export EDITOR="emacsclient -t"
+    export VISUAL="emacsclient -t -c -a emacs"
 fi
 
 export PATH=$PATH:/usr/share/apache-maven-3.0.5/bin
@@ -455,3 +444,4 @@ fi
 
 alias tmux='TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb) tmux -2'
 
+module load r/3.1
