@@ -1371,3 +1371,13 @@
 )
 
 (set-default 'preview-scale-function 1.9 )
+
+(defun bisque-background()
+  "Switches to bisque background for better vision"
+  (interactive) 
+  (set-background-color "bisque")
+  (custom-set-faces
+  '(hl-line ((t (:background "tan1"))))
+  '(font-lock-string-face ((t (:foreground "medium orchid"))))
+  )
+)
