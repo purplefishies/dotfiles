@@ -379,6 +379,7 @@ if [ -n "$TMUX" ]; then
     function refresh {
         export $(tmux show-environment | grep "^SSH_AUTH_SOCK")
         export $(tmux show-environment | grep "^DISPLAY")
+        export $(tmux show-environment | grep "^DBUS_SESSION_BUS_ADDRESS")
     }
     
 
@@ -387,7 +388,7 @@ else
         echo -ne ""
     }
     function set_tmux_environment {
-        for i in SSH_AUTH_SOCK SSH_AGENT_PID DISPLAY; 
+        for i in SSH_AUTH_SOCK SSH_AGENT_PID DISPLAY DBUS_SESSION_BUS_ADDRESS; 
         do
             cmd="tmux set-environment $i \$${i}"
             eval $cmd
