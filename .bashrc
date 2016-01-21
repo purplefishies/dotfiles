@@ -54,20 +54,34 @@ fi
 export DIFF_APP=bcompare
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Loading functions...
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+if [ -f $HOME/.functions ] ; then
+    source $HOME/.functions
+    aio
+fi
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Loading Aliases....
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
 
 if [[ "${HOME}/.alias" -nt "${HOME}/.bash_alias" ]] ; then
     if [ -f "${HOME}/.bash_alias" ]; then
         rm "${HOME}/.bash_alias"
     fi
-    ldalias "${HOME}/.alias"
+    if [ "$(type -t ldalias)" ] ; then
+        ldalias "${HOME}/.alias"
+    fi
 elif [[ -f "${HOME}/.bash_alias" ]]; then
     source ${HOME}/.bash_alias >&1 >/dev/null
 else
-    ldalias "${HOME}/.alias"
+    if [ "$(type -t ldalias)" ] ; then
+        ldalias "${HOME}/.alias"
+    fi
 fi
+
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
 # Setting up the PATH environment and Environmental variables
@@ -145,13 +159,6 @@ if [[ -f "/usr/share/modules/init/bash" ]] ; then
     source /usr/share/modules/init/bash
 fi
 
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Loading functions...
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-if [ -f $HOME/.functions ] ; then
-    source $HOME/.functions
-    aio
-fi
 
 LONG_PROMPT='\[$RED\]\h \[$RESET\]\w '
 SHORT_PROMPT='\[$RED\]\h \[$RESET\]\W '
