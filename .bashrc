@@ -452,4 +452,6 @@ fi
 
 alias tmux='TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb) tmux -2'
 
-module load r/3.1
+if [ -n "$(type -t module )" ] ; then
+    module load r/3.1
+fi
