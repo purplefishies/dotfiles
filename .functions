@@ -65,10 +65,14 @@ function save_firmware {
 function sprompt {
     TITLEBAR="\[\033]0;\u@\H: \w\007\]"
     export TITLEBAR
-    if [ "$1" == "on" ]; then
-        export MY_PROMPT=${SHORT_PROMPT}
+    if [ -f $HOME/.prompt ] ; then
+        export MY_PROMPT=$(cat .prompt)
     else
-        export MY_PROMPT=${LONG_PROMPT}
+        if [ "$1" == "on" ]; then
+            export MY_PROMPT=${SHORT_PROMPT}
+        else
+            export MY_PROMPT=${LONG_PROMPT}
+        fi
     fi
 
     tty -s && export PS1=${MY_PROMPT}${TITLEBAR}
