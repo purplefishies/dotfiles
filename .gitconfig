@@ -49,6 +49,8 @@
         ls-untracked = ls-files --others --exclude-standard
         suno = status -uno        
         dt = difftool
+        new-files  = ls-files -o  --exclude-standard
+        ls-files-u = ls-files --others --exclude-standard
 
 [credential]
 	helper = cache --timeout=3600
