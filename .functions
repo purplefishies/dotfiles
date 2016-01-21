@@ -379,7 +379,11 @@ function doit {
 }
 
 function open {
- gnome-open "$@"
+  if [[ $(uname -o) == "Cygwin" ]] ; then
+	cygstart "$@"	
+  else 
+	gnome-open "$@"
+  fi
 }	 
 
 function search {
