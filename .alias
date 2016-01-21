@@ -13,3 +13,4 @@ ipy='ipython'
 grake="rake -I$HOME/.rake "
 rake="rake -I$HOME/.rake "
 d="diary.pl"
+emacs='emacsclient'
