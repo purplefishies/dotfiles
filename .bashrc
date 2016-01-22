@@ -159,6 +159,17 @@ if [[ -f "/usr/share/modules/init/bash" ]] ; then
     source /usr/share/modules/init/bash
 fi
 
+if [[ -f "${HOME}/.colors" ]] ; then
+    oldIFS=${IFS}
+    IFS=$(echo -ne "\b\n")
+    for i in $(cat "$HOME/.colors" ); do 
+        eval "$i"; 
+    done
+    if [[ "${oldIFS}"  != "" ]] ; then
+        IFS=$oldIFS
+    fi
+fi
+
 
 LONG_PROMPT='\[$RED\]\h \[$RESET\]\w '
 SHORT_PROMPT='\[$RED\]\h \[$RESET\]\W '

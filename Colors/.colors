@@ -1,0 +1,1 @@
+COOLRED=$(printf "\033[38;5;197m\n")
