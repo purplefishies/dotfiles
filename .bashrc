@@ -319,7 +319,6 @@ export PERL6LIB=$HOME/Programming/Perl/lib:/tools/mxlcad/CPAN/lib/perl5/site_per
 
 export COMP_WORDBREAKS=${COMP_WORDBREAKS/\:/}
 
-export GREP_OPTIONS="--color=auto -d skip"
 export SDK_ROOT=/Developer/SDKs/android-sdk-mac_86
 export PATH=$PATH:$SDK_ROOT/tools/
 export PATH=$PATH:/opt/local/lib/mysql5/bin
