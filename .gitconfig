@@ -74,3 +74,5 @@
 	tool = bc3
 [mergetool]
 	bc3 = trustExitCode
+[pager]
+	status = true
