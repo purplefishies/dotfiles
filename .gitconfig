@@ -5,18 +5,21 @@
 	ui = auto
 
 [color "branch"]
-  current = yellow reverse
+  current = 227 reverse
   local = white bold
   remote = green
 [color "diff"]
-  meta = yellow bold
+  meta = 227 bold
   frag = magenta bold
   old = red bold
   new = green bold
 [color "status"]
-  added = yellow bold
-  changed = green
-  untracked = cyan
+  added = 227 bold
+  changed = 42
+  untracked = 23
+  branch = 202 bold
+
+
 
 [color]
   ui = true
@@ -44,7 +47,7 @@
         llog = log --date=local --pretty=format=oneline
         plog = log --pretty=format:\"%Cgreen%h%Creset %s\"
         phlog = log --pretty=format:\"%Cgreen%h%Creset %Cred%ar%Creset %s\"
-        phulog = log --pretty=format:\"%Cgreen%h%Creset %C(blue bold)%an %Cred%ar%Creset %s\"   
+        phulog = log --pretty=format:\"%C(35)%h%Creset %C(blue bold)%ae %Cred%ar%Creset %s\"   
         untracked = ls-files --others --exclude-standard
         ls-untracked = ls-files --others --exclude-standard
         suno = status -uno        
