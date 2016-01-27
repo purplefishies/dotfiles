@@ -202,11 +202,6 @@ else
 fi
 
 
-#
-# Pager configuration
-#
-export PAGER=less
-export LESS=-X
 
 
 if [ -f "$HOME/.ls_colors" ] ; then
@@ -301,6 +296,10 @@ export MANPATH=/opt/local/man:$MANPATH:/opt/n1ge6/man:/usr/man
 export MANPATH=$MANPATH:/Library/Frameworks/R.framework/Versions/2.12/Resources
 export MANPATH="/home/jdamon/Downloads/llvm/docs/CommandGuide/man/man1:/home/jdamon/Downloads/root/man/man1:/home/jdamon/perl5/man/man1:/opt/novell/groupwise/client/java/man/man1:/opt/novell/man/man1:/usr/Modules/3.2.9/share/man/man1:/usr/local/share/man:/usr/share/man"
 
+#
+# Pager configuration
+#
+export PAGER=less
 export LESS="-X -R"
 export LC_ALL="C"
 export LESSCHARSET=utf-8
