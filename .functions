@@ -39,10 +39,6 @@ function save_fen {
     cp -f ${file} $HOME/Downloads/CHESS/FenPuzzles/$(fen_name $file)
 }
 
-function show_fen {
-    local file=$@
-    echo -ne "epdload ${file}\nshow board\nexit\n" | gnuchess -g -q
-}
 
 function paste_fen {
     local todir=$@
@@ -474,6 +470,28 @@ function vnc_paris () {
     ssh -A -L 5900:10.1.1.71:5900 69.199.148.22
 }
 
+function memcheck_gtest () {
+    for i in $(get_gtests.pl $1 ) 
+    do
+        valgrind --error-exitcode=231 --tool=memcheck --leak-check=full --show-reachable=yes $1 --gtest_filter=$i 2>/dev/null > /dev/null
+        if [[ $? != 0 ]] ; then 
+            echo -ne "${RED}$i${RESET}\n"; 
+        else 
+            echo -ne "${GREEN}$i${RESET}\n"; 
+        fi
+    done
+}
+function memcheck_directory () {
+    for i in *_test
+    do
+        valgrind --error-exitcode=231 --tool=memcheck --leak-check=full --show-reachable=yes $i 2>/dev/null > /dev/null
+        if [[ $? != 0 ]] ; then 
+            echo -ne "not ok # ${RED}$i${RESET}\n"; 
+        else 
+            echo -ne "ok     # ${GREEN}$i${RESET}\n"; 
+        fi
+    done
+}
 function gdb() {
     if [ ! -z GDB_SOURCE_DIRS ] ; then
         search_dirs=$(echo -ne $GDB_SOURCE_DIRS | perl -F: -ane 'print map {"-d $_ "} @F ')
