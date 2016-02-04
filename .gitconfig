@@ -27,15 +27,11 @@
   whitespace = red reverse
 [core]
   whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
-	pager = less -F -R -X
+  pager = less -F -R -X
+  abbrev = 12
 
-
-
-#[diff]
-#        tool = opendiff
-#[difftool "opendiff"]
-##          cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-
+[pretty]
+        fixes = Fixes: %h (\"%s\")
 
 [alias]
         stat = status
@@ -58,6 +54,7 @@
         new-files  = ls-files -o  --exclude-standard
         ls-files-u = ls-files --others --exclude-standard
 
+
 [credential]
 	helper = cache --timeout=3600
 [filter "indent"]
@@ -78,4 +75,4 @@
 [mergetool]
 	bc3 = trustExitCode
 [pager]
-	status = true
+        status = true
