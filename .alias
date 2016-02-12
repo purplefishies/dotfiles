@@ -1,9 +1,9 @@
 #  Generic Alias commands for both TCSH and BASH...
 #
 lock="xscreensaver-command -lock"
-ll='ls -al --color=always'
+ll='ls -l --color=always'
+lla='ls -al --color=always'
 cd..='cd ..'
-lt='/opt/local/bin/ls -altr'
 l='ll'
 lh='ll --si -r'           # For displaying Nice labels
 ls='ls --color=auto'
@@ -15,3 +15,4 @@ rake="rake -I$HOME/.rake "
 d="diary.pl"
 emacs='emacsclient'
 grep='grep --color=always -d skip'
+tree='tree -C'
