@@ -39,7 +39,6 @@ function save_fen {
     cp -f ${file} $HOME/Downloads/CHESS/FenPuzzles/$(fen_name $file)
 }
 
-
 function paste_fen {
     local todir=$@
     if [ "${todir}" == "" ] ; then
@@ -408,9 +407,9 @@ function rm () {
     else
       local dst=${path##*/}
       # append the time if necessary
-      while [ -e ~/.Trash/"$dst" ]; do
-        dst="$dst "$(date +%H-%M-%S)
-      done
+      if [ -e ~/.Trash/"${dst}" ]  ; then
+          dst="${dst} $(date +%Y-%m-%d_%H%M%S)"
+      fi
       mv "$path" ~/.Trash/"$dst"
     fi
   done
