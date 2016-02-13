@@ -16,3 +16,6 @@ d="diary.pl"
 emacs='emacsclient'
 grep='grep --color=always -d skip'
 tree='tree -C'
+pbcopy='xsel --clipboard --input'
+pbpaste='xsel --clipboard --output'
+
