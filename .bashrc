@@ -132,16 +132,12 @@ export PATH=$PATH:$ANDROID_NDK_HOME
 
 export PATH=$PATH:/usr/java/jswat-4.2/bin
 
-
-
-
 export PATH=$PATH:/usr/local/root/bin
 export PATH=$PATH:/usr/local/pgsql/bin/
 export PATH=$PATH:/usr/share/ant/bin/
 
 export MODULESHOME=$HOME/Modules
 
-#export PATH="$PATH:${MODULESHOME}/bin"
 
 if [[ -f "/etc/bash_completion" ]] ; then
     source "/etc/bash_completion"
@@ -151,12 +147,8 @@ if [[ -f "/usr/share/bash-completion/bash_completion" ]] ; then
     source "/usr/share/bash-completion/bash_completion"
 fi
 
-if [[ -f "/usr/Modules/3.2.9/init/bash" ]] ; then
-    source /usr/Modules/3.2.9/init/bash
-fi
-
-if [[ -f "/usr/share/modules/init/bash" ]] ; then
-    source /usr/share/modules/init/bash
+if [[ -f "$HOME/.bash_stuff/modules/init/bash" ]] ; then
+    source "$HOME/.bash_stuff/modules/init/bash"
 fi
 
 if [[ -f "${HOME}/.colors" ]] ; then
