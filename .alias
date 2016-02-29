@@ -1,7 +1,7 @@
 #  Generic Alias commands for both TCSH and BASH...
 #
 lock="xscreensaver-command -lock"
-ll='ls -l --color=always'
+ll='ls -l '
 lla='ls -al --color=always'
 cd..='cd ..'
 l='ll'
@@ -14,7 +14,6 @@ grake="rake -I$HOME/.rake "
 rake="rake -I$HOME/.rake "
 d="diary.pl"
 emacs='emacsclient'
-grep='grep --color=always -d skip'
 tree='tree -C'
 pbcopy='xsel --clipboard --input'
 pbpaste='xsel --clipboard --output'
