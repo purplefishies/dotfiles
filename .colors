@@ -1,0 +1,8 @@
+COOLRED=$(printf "\033[38;5;197m\n")
+COOLGREEN=$(printf "\033[38;5;35m\n")
+COOLPURPLE=$(printf "\033[38;5;93m\n")
+IRISHGREEN=$(printf "\033[38;5;29m\n")
+IRISHORANGE=$(printf "\033[38;5;208m\n")
+JORDYBLUE=$(printf "\033[38;5;74m\n")
+
+
