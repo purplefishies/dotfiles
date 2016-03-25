@@ -3,4 +3,5 @@ COOLGREEN=$(printf "\033[38;5;35m\n")
 COOLPURPLE=$(printf "\033[38;5;93m\n")
 IRISHGREEN=$(printf "\033[38;5;29m\n")
 IRISHORANGE=$(printf "\033[38;5;208m\n")
+SILVERTREE=$(printf "\033[38;5;72m\n")
 
