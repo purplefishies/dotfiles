@@ -201,6 +201,8 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 .S 38;5;110
 # ?
 .sx 38;5;81
+# scala
+.scala 38;5;110
 # interface file in GHC - https://github.com/trapd00r/LS_COLORS/pull/9
 .hi 38;5;110
 # haskell
