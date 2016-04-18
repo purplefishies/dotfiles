@@ -115,6 +115,7 @@ export PATH="$PATH:/System/Library/Frameworks/Python.framework/Versions/2.6/bin"
 export PATH="$PATH:/Developer/Tools/Qt"
 export PATH="$PATH:$HOME/Tools/bin"
 
+export PERLDB_OPTS=HistFile=$HOME/.perldb.hist
 # Android stuff
 export ANDROID_HOME=${HOME}/Tools/android-sdk-linux
 export ANDROID_SDK=${HOME}/Tools/android-sdk-linux
@@ -396,7 +397,7 @@ else
         echo -ne ""
     }
     function set_tmux_environment {
-        for i in SSH_AUTH_SOCK SSH_AGENT_PID DISPLAY DBUS_SESSION_BUS_ADDRESS; 
+        for i in SSH_AUTH_SOCK DISPLAY DBUS_SESSION_BUS_ADDRESS; 
         do
             cmd="tmux set-environment $i \$${i}"
             eval $cmd
@@ -435,11 +436,7 @@ function getkey {
 }
 
 
-# print_goodbye() { 
-#     echo "Goodbye"
-#     history -a
-# }
-# trap print_goodbye EXIT
+export GREP_OPTIONS="--color=auto -d skip"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
