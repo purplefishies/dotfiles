@@ -133,6 +133,9 @@ export PATH=$PATH:$ANDROID_NDK_HOME
 
 export PATH=$PATH:/usr/java/jswat-4.2/bin
 
+
+
+
 export PATH=$PATH:/usr/local/root/bin
 export PATH=$PATH:/usr/local/pgsql/bin/
 export PATH=$PATH:/usr/share/ant/bin/
