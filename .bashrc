@@ -187,9 +187,6 @@ else
     tty -s && export PS1=$LONG_PROMPT
 fi
 
-
-
-
 if [ -f "$HOME/.ls_colors" ] ; then
     eval $( dircolors -b $HOME/.ls_colors )
 else
@@ -274,7 +271,6 @@ if [ -f "${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.ja
     export CLASSPATH=${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.jar
 fi
 
-
 if [ -f "/tools/mxlcad/gnutools/etc/bash_completion" ] ; then
   . /tools/mxlcad/gnutools/etc/bash_completion
 fi
@@ -308,7 +304,6 @@ export PATH=$PATH:/opt/local/lib/mysql5/bin
 # 
 # Android
 #
-
 if [ -d "$ANDROID_TOOLS_DIR" ] ; then
     export PATH=$PATH:${HOME}/Tools/android-sdk-linux/tools
 fi
