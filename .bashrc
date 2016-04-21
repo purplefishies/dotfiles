@@ -109,8 +109,9 @@ export PATH="$PATH:/usr/games"
 
 export PATH="$PATH:/usr/lib/lapack"
 export PATH="$PATH:/opt/local/bin"
-export PATH="$PATH:/System/Library/Frameworks/Python.framework/Versions/2.6/bin"
-export PATH="$PATH:/Developer/Tools/Qt"
+if [ -d "/System/Library/Frameworks/Python.framework/Versions/2.6/bin" ] ; then
+    export PATH="$PATH:/System/Library/Frameworks/Python.framework/Versions/2.6/bin"
+fi
 export PATH="$PATH:$HOME/Tools/bin"
 
 export PERLDB_OPTS=HistFile=$HOME/.perldb.hist
@@ -127,12 +128,6 @@ export ANDROID_TOOLS_DIR=$ANDROID_SDK/tools
 export PATH=$PATH:$ANDROID_SDK/build-tools/17.0.0
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
-
-
-export PATH=$PATH:/usr/java/jswat-4.2/bin
-
-
-
 
 export PATH=$PATH:/usr/local/root/bin
 export PATH=$PATH:/usr/local/pgsql/bin/
