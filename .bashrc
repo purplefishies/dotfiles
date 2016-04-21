@@ -346,7 +346,7 @@ fi
 export PATH=$PATH:/usr/share/apache-maven-3.0.5/bin
 export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
 
-export TEXINPUTS="/home/jdamon/Latex://;"
+export TEXINPUTS="$HOME/Latex://;"
 export POWERLINE_CONFIG_COMMAND=/usr/local/bin/powerline-config
 
 fd=0
