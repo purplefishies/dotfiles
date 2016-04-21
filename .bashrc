@@ -306,10 +306,6 @@ if [ -d "$HOME/.bash" ] ; then
     done
 fi
 
-
-
-export PERL6LIB=$HOME/Programming/Perl/lib:/tools/mxlcad/CPAN/lib/perl5/site_perl:/tools/mxlcad/CPAN/lib/perl5/5.8.5:/tools/mxlcad/CPAN/lib:/tools/mxlcad/Perl:/tools/mxlcad/CPAN/:/tools/mxlcad/tools/share/filepp/modules:/tools/mxlcad/cadtools/lib/:
-
 export COMP_WORDBREAKS=${COMP_WORDBREAKS/\:/}
 
 export SDK_ROOT=/Developer/SDKs/android-sdk-mac_86
