@@ -288,7 +288,7 @@ fi
 
 export MANPATH=/opt/local/man:$MANPATH:/opt/n1ge6/man:/usr/man
 export MANPATH=$MANPATH:/Library/Frameworks/R.framework/Versions/2.12/Resources
-export MANPATH="/home/jdamon/Downloads/llvm/docs/CommandGuide/man/man1:/home/jdamon/Downloads/root/man/man1:/home/jdamon/perl5/man/man1:/opt/novell/groupwise/client/java/man/man1:/opt/novell/man/man1:/usr/Modules/3.2.9/share/man/man1:/usr/local/share/man:/usr/share/man"
+export MANPATH="${HOME}/Downloads/llvm/docs/CommandGuide/man/man1:${HOME}/Downloads/root/man/man1:${HOME}/perl5/man/man1:/opt/novell/groupwise/client/java/man/man1:/opt/novell/man/man1:/usr/Modules/3.2.9/share/man/man1:/usr/local/share/man:/usr/share/man"
 
 #
 # Pager configuration
@@ -317,7 +317,7 @@ export PATH=$PATH:/opt/local/lib/mysql5/bin
 #
 
 if [ -d "$ANDROID_TOOLS_DIR" ] ; then
-    export PATH=$PATH:/home/jdamon/Tools/android-sdk-linux/tools
+    export PATH=$PATH:${HOME}/Tools/android-sdk-linux/tools
 fi
 
 if [ -f "/opt/local/etc/bash_completion" ]; then
