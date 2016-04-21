@@ -128,11 +128,9 @@ export ANDROID_TOOLS_DIR=$ANDROID_SDK/tools
 export PATH=$PATH:$ANDROID_SDK/build-tools/17.0.0
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
-
-export PATH=$PATH:/usr/local/root/bin
-export PATH=$PATH:/usr/local/pgsql/bin/
-export PATH=$PATH:/usr/share/ant/bin/
-
+if [ -d /usr/share/ant/bin/ ] ; then
+    export PATH=$PATH:/usr/share/ant/bin/
+fi
 export MODULESHOME=$HOME/Modules
 
 if [[ -f "/etc/bash_completion" ]] ; then
