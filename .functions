@@ -53,6 +53,15 @@ function save_firmware {
     cp ${file} ${file}.$(sha1sum ${file} | perl -ne 's/^(.{8}).*/$1/;print;')
 }
 
+function make_nice_filenames {
+    local IFS=$(echo -ne "\n\r")
+    for i in $@
+    do
+        j=$(echo $i | perl -ne 's/ /_/g;print;' )
+        mv "$i" "$j"
+    done
+}
+
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Turns on and off the full path at the top of the title bar.
 #
@@ -525,4 +534,11 @@ function history_retouch() {
         j=$(echo $i | perl -ne 's/^.*history_(\d{4})_(\d{2})/$1-$2-1/g;print;' );          
         touch -d "$j" $i;
     done
+}
+
+function show_cursor()  {
+    printf "\033[?25h"
+}
+function hide_cursor() { 
+    printf "\033[?25l"
 }
