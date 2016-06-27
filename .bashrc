@@ -109,9 +109,7 @@ export PATH="$PATH:/usr/games"
 
 export PATH="$PATH:/usr/lib/lapack"
 export PATH="$PATH:/opt/local/bin"
-if [ -d "/System/Library/Frameworks/Python.framework/Versions/2.6/bin" ] ; then
-    export PATH="$PATH:/System/Library/Frameworks/Python.framework/Versions/2.6/bin"
-fi
+
 export PATH="$PATH:$HOME/Tools/bin"
 
 export PERLDB_OPTS=HistFile=$HOME/.perldb.hist
@@ -128,9 +126,10 @@ export ANDROID_TOOLS_DIR=$ANDROID_SDK/tools
 export PATH=$PATH:$ANDROID_SDK/build-tools/17.0.0
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
-if [ -d /usr/share/ant/bin/ ] ; then
-    export PATH=$PATH:/usr/share/ant/bin/
-fi
+
+
+
+
 export MODULESHOME=$HOME/Modules
 
 if [[ -f "/etc/bash_completion" ]] ; then
@@ -187,6 +186,9 @@ else
     tty -s && export PS1=$LONG_PROMPT
 fi
 
+
+
+
 if [ -f "$HOME/.ls_colors" ] ; then
     eval $( dircolors -b $HOME/.ls_colors )
 else
@@ -227,7 +229,7 @@ export HISTFILENEWNAME=bash_history
 export HISTPREFIX=""
 export HISTFILE=$HOME/${HISTFILENAME}
 export HISTCONTROL="ignoredups:erasedups"
-export HISTIGNORE="mark*:ls:ll:history:history *:source .bashrc:clear_last_history"
+export HISTIGNORE="mark *:ls:ll:history:history *:source .bashrc:clear_last_history"
 export HISTDIRECTORY=$HOME/.bashcmd_history 
 export HIST_RESET_OFFSET=2000
 export HIST_ROLLOVER_SIZE=10000
@@ -271,6 +273,7 @@ if [ -f "${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.ja
     export CLASSPATH=${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.jar
 fi
 
+
 if [ -f "/tools/mxlcad/gnutools/etc/bash_completion" ] ; then
   . /tools/mxlcad/gnutools/etc/bash_completion
 fi
@@ -304,6 +307,7 @@ export PATH=$PATH:/opt/local/lib/mysql5/bin
 # 
 # Android
 #
+
 if [ -d "$ANDROID_TOOLS_DIR" ] ; then
     export PATH=$PATH:${HOME}/Tools/android-sdk-linux/tools
 fi
