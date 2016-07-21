@@ -1,0 +1,113 @@
+alias #=#
+alias lock="xscreensaver-command -lock"
+alias ls="\ls -F --color=auto"
+alias ll='ls -l --color=auto'
+alias cd..='cd ..'
+alias lt='\ls -altr'
+alias l='ll' #
+alias lh='ll --si -r' # For displaying Nice labels
+alias c='clear'
+alias ..='cd ..'
+alias phonebook='/usr/local/contrib/bin/phonebook'
+alias openbook='/cad/cadence/IC_4.43/tools/bin/openbook'
+alias mci='/bin/ci'
+alias mco='/bin/co'
+alias mv='mv -i'
+alias ipy='ipython'
+alias grake="rake -I$HOME/.rake "
+alias rake="rake -I$HOME/.rake "
+alias d="diary.pl"
+alias open='gvfs-open'
+alias xemacs='emacs'
+alias pbcopy='xclip -i -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
+alias emacs='emacsclient'alias # Generic Alias commands for both TCSH and BASH...=# Generic Alias commands for both TCSH and BASH...
+alias #=#
+alias lock="xscreensaver-command -lock"
+alias ll='ls -al --color=always'
+alias cd..='cd ..'
+alias lt='/opt/local/bin/ls -altr'
+alias l='ll'
+alias lh='ll --si -r' # For displaying Nice labels
+alias ls='ls --color=auto'
+alias c='clear'
+alias ..='cd ..'
+alias ipy='ipython'
+alias grake="rake -I$HOME/.rake "
+alias rake="rake -I$HOME/.rake "
+alias d="diary.pl"
+alias emacs='emacsclient'
+alias grep='grep --color=always -d skip'
+alias # Generic Alias commands for both TCSH and BASH...=# Generic Alias commands for both TCSH and BASH...
+alias #=#
+alias lock="xscreensaver-command -lock"
+alias ll='ls -l --color=always'
+alias lla='ls -al --color=always'
+alias cd..='cd ..'
+alias l='ll'
+alias lh='ll --si -r' # For displaying Nice labels
+alias ls='ls --color=auto'
+alias c='clear'
+alias ..='cd ..'
+alias ipy='ipython'
+alias grake="rake -I$HOME/.rake "
+alias rake="rake -I$HOME/.rake "
+alias d="diary.pl"
+alias emacs='emacsclient'
+alias grep='grep --color=always -d skip'
+alias tree='tree -C'
+alias # Generic Alias commands for both TCSH and BASH...=# Generic Alias commands for both TCSH and BASH...
+alias #=#
+alias lock="xscreensaver-command -lock"
+alias ll='ls -l --color=always'
+alias lla='ls -al --color=always'
+alias cd..='cd ..'
+alias l='ll'
+alias lh='ll --si -r' # For displaying Nice labels
+alias ls='ls --color=auto'
+alias c='clear'
+alias ..='cd ..'
+alias ipy='ipython'
+alias grake="rake -I$HOME/.rake "
+alias rake="rake -I$HOME/.rake "
+alias d="diary.pl"
+alias emacs='emacsclient'
+alias grep='grep --color=always -d skip'
+alias tree='tree -C'
+alias # Generic Alias commands for both TCSH and BASH...=# Generic Alias commands for both TCSH and BASH...
+alias #=#
+alias lock="xscreensaver-command -lock"
+alias ll='ls -l --color=always'
+alias lla='ls -al --color=always'
+alias cd..='cd ..'
+alias l='ll'
+alias lh='ll --si -r' # For displaying Nice labels
+alias ls='ls --color=auto'
+alias c='clear'
+alias ..='cd ..'
+alias ipy='ipython'
+alias grake="rake -I$HOME/.rake "
+alias rake="rake -I$HOME/.rake "
+alias d="diary.pl"
+alias emacs='emacsclient'
+alias grep='grep --color=always -d skip'
+alias tree='tree -C'
+alias # Generic Alias commands for both TCSH and BASH...=# Generic Alias commands for both TCSH and BASH...
+alias #=#
+alias lock="xscreensaver-command -lock"
+alias ll='ls -l --color=always'
+alias lla='ls -al --color=always'
+alias cd..='cd ..'
+alias l='ll'
+alias lh='ll --si -r' # For displaying Nice labels
+alias ls='ls --color=auto'
+alias c='clear'
+alias ..='cd ..'
+alias ipy='ipython'
+alias grake="rake -I$HOME/.rake "
+alias rake="rake -I$HOME/.rake "
+alias d="diary.pl"
+alias emacs='emacsclient'
+alias grep='grep --color=auto -d skip'
+alias tree='tree -C'
+alias cp='cp -i'
