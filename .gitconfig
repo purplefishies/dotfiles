@@ -42,7 +42,7 @@
         br = branch
         co = checkout
         df = diff
-	trash = !mkdir -p $HOME/.Trash/$(date '+git_%Y%m%d%H%M%S') && git ls-files --others --exclude-standard | xargs mv -f -t $HOME/.Trash/$(date '+it_%Y%m%d%H%M%S')
+	trash = !mkdir -p $HOME/.Trash/$(date '+git_%Y%m%d%H%M%S') && git ls-files --others --exclude-standard | xargs mv -f -t $HOME/.Trash/$(date '+git_%Y%m%d%H%M%S')
         lg = log -p
         glg = log --graph --oneline --decorate
         week = log --after=\"one week ago\"  --pretty=format=\"The author of %Cred%h%Creset was %Cgreen%an%Creset, %ar%n%s%n\"
