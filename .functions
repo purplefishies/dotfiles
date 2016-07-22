@@ -414,10 +414,11 @@ function rm () {
     # ignore any arguments
     if [[ "$path" = -* ]]; then :
     else
-      local dst=${dst%%/*}
+      local dst=${path%%/*}
       dst=${dst##*/}
       # append the time if necessary
       if [ -e ~/.Trash/"${dst}" ]  ; then
+          # echo "Dst:${dst}"
           dst="${dst}_$(date +%Y-%m-%d_%H%M%S)"
       fi
       mv "$path" ~/.Trash/"$dst"
