@@ -1162,8 +1162,8 @@
                               auto-mode-alist))
  
  
-;(load "auctex.el" nil t t )
-;(load "preview-latex.el" nil t t )
+
+
  
  
 ; (add-hook 'LaTeX-mode-hook #'LaTeX-install-toolbar)
