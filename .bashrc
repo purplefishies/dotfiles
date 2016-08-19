@@ -378,6 +378,8 @@ if [ -n "$TMUX" ]; then
         export $(tmux show-environment | grep "^SSH_AUTH_SOCK")
         export $(tmux show-environment | grep "^DISPLAY")
         export $(tmux show-environment | grep "^DBUS_SESSION_BUS_ADDRESS")
+        export $(tmux show-environment | grep "^GPG_AGENT_INFO" )
+        export $(tmux show-environment | grep "^GNOME_KEYRING_CONTROL" )
     }
     
 
@@ -386,7 +388,7 @@ else
         echo -ne ""
     }
     function set_tmux_environment {
-        for i in SSH_AUTH_SOCK DISPLAY DBUS_SESSION_BUS_ADDRESS; 
+        for i in SSH_AUTH_SOCK DISPLAY DBUS_SESSION_BUS_ADDRESS GNOME_KEYRING_CONTROL GPG_AGENT_INFO ; 
         do
             cmd="tmux set-environment $i \$${i}"
             eval $cmd
