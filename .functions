@@ -538,6 +538,14 @@ function history_retouch() {
     done
 }
 
+function afind() {
+    find . -type f -name "$@"
+}
+
+function hfind() {
+    grep $@ $(ls $HISTDIRECTORY/* | tac)
+}
+
 function show_cursor()  {
     printf "\033[?25h"
 }
