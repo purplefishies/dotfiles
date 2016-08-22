@@ -26,3 +26,4 @@ alias tree='tree -C'
 alias cp='cp -i'
 alias lless='LESS="-R" less'
 alias ttree='tree --timefmt "${DARKGREY}%b %d %H:%M:%S${RESET}" '
+alias hist="ls $HISTDIRECTORY | tac"
