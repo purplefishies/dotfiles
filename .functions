@@ -543,7 +543,7 @@ function afind() {
 }
 
 function hfind() {
-    grep $@ $(ls $HISTDIRECTORY/* | tac)
+    grep -P -i $@ $(ls $HISTDIRECTORY/* | tac)
 }
 
 function show_cursor()  {
