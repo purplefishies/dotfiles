@@ -90,8 +90,7 @@ fi
 test -f ${HOME}/.env && ldenv ${HOME}/.env
 
 
-export SWIFT_MDIR=$HOME/Projects/testing_test/
-export TQTEST_MDIR=$HOME/Projects/testing_test/
+export GRADLE_OPTS="-Dorg.gradle.daemon=true"
 
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -123,11 +122,8 @@ export ANDROID_NDK_HOME=$ANDROID_NDK
 export ANDROID_NDK_ROOT=${HOME}/Tools/android-ndk-r10e
 export ANDROID_TOOLS_DIR=$ANDROID_SDK/tools
 
-export PATH=$PATH:$ANDROID_SDK/build-tools/17.0.0
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
-
-
 
 
 export MODULESHOME=$HOME/Modules
