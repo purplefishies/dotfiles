@@ -185,8 +185,7 @@ function dir {
 #
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function _dirs {
-#    /bin/ls -l | grep "^d" | perl -a -ne 'print "@F[8..$#F]\n"'
+function dirs {
     local dir
     local filter="[^\.]"
     if [[ "$1" != ""  ]] && [ -d "$1" ]  ; then
@@ -208,13 +207,13 @@ function _dirs {
                if \"${dir}\" == \"\"  || \"${dir}\" == \".\"
                   i
                else
-                  File.expand_path(\"${dir}/#{i}\") 
+                  File.new(\"${dir}/#{i}\").to_path
                end
 
             }.join(\"\n\") + \"\n\""
  }
 
-function dirs {
+function ldirs {
     local IFS=$(echo -ne "\n\r")
     if [ $# == 1 ] ; then
         \ls -d $(_dirs $1)
@@ -543,7 +542,7 @@ function afind() {
 }
 
 function hfind() {
-    grep -P -i $@ $(ls $HISTDIRECTORY/* | tac)
+    grep $@ $(ls $HISTDIRECTORY/* | tac)
 }
 
 function show_cursor()  {
