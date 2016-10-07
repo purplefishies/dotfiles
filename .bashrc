@@ -31,7 +31,6 @@ if [ -t 0 ] ; then
     BOLD=$(tput bold)
 fi
 
-
 PERL="/usr/bin/perl"
 MY_OS=`uname -s`
 MY_TEST="test"
@@ -66,7 +65,6 @@ fi
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-
 if [[ "${HOME}/.alias" -nt "${HOME}/.bash_alias" ]] ; then
     if [ -f "${HOME}/.bash_alias" ]; then
         rm "${HOME}/.bash_alias"
@@ -82,16 +80,13 @@ else
     fi
 fi
 
-
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
 # Setting up the PATH environment and Environmental variables
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 test -f ${HOME}/.env && ldenv ${HOME}/.env
 
-
-export GRADLE_OPTS="-Dorg.gradle.daemon=true"
-
+export GRADLE_OPTS="-Dorg.gradle.daemon=true,org.gradle.jvmargs=-Xmx2048M"
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Clearing temporary variables
@@ -102,7 +97,7 @@ unset lowos
 # Linux Path stuff
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-export PATH="/sbin:/bin:/usr/bin:/usr/local/bin:/usr/sbin:"
+export PATH="$PATH:/sbin:/bin:/usr/bin:/usr/local/bin:/usr/sbin:"
 export PATH="$PATH:$HOME/Scripts"
 export PATH="$PATH:/usr/games"
 
@@ -124,7 +119,6 @@ export ANDROID_TOOLS_DIR=$ANDROID_SDK/tools
 
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
-
 
 export MODULESHOME=$HOME/Modules
 
@@ -150,7 +144,6 @@ if [[ -f "${HOME}/.colors" ]] ; then
         IFS=$oldIFS
     fi
 fi
-
 
 LONG_PROMPT='\[$RED\]\h \[$RESET\]\w '
 SHORT_PROMPT='\[$RED\]\h \[$RESET\]\W '
@@ -182,9 +175,6 @@ else
     tty -s && export PS1=$LONG_PROMPT
 fi
 
-
-
-
 if [ -f "$HOME/.ls_colors" ] ; then
     eval $( dircolors -b $HOME/.ls_colors )
 else
@@ -204,7 +194,6 @@ if [[ -f "/etc/bash_completion" ]] ; then
 else
     echo "Can't find file /etc/bash_completion to source...please install"
 fi
-
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # My Custom History settings
@@ -262,13 +251,11 @@ export PROMPT_COMMAND="rollover_history"
 # Load the old history
 history -n 
 
-
 export ECLIPSE_PLUGIN_HOME=$HOME/Tools/eclipse/plugins
 
 if [ -f "${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.jar" ] ; then
     export CLASSPATH=${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.jar
 fi
-
 
 if [ -f "/tools/mxlcad/gnutools/etc/bash_completion" ] ; then
   . /tools/mxlcad/gnutools/etc/bash_completion
@@ -355,10 +342,6 @@ then
     TERM=rxvt-256color
 fi
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-if [ -f "$HOME/.rvm/scripts/rvm" ] ; then
-    source $HOME/.rvm/scripts/rvm
-fi
 
 sprompt on
 
@@ -422,7 +405,6 @@ function getkey {
     fi
 }
 
-
 export GREP_OPTIONS="--color=auto -d skip"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
@@ -440,3 +422,4 @@ alias tmux='TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb) tmux -2'
 if [ -n "$(type -t module )" ] ; then
     module load r/3.1
 fi
+
