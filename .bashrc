@@ -237,7 +237,7 @@ function clear_last_history() {
 
 function rollover_history() { 
     history -a
-    if [[ $(history | wc -l | awk '{print $1}') -gt $HIST_ROLLOVER_SIZE ]] ; 
+    if [[ $(history | /usr/bin/wc -l | /usr/bin/awk '{print $1}') -gt $HIST_ROLLOVER_SIZE ]] ; 
     then
         save_history
         tail -$HIST_RESET_OFFSET ${HISTFILE} > "${HISTFILE}.tmp"
@@ -342,7 +342,6 @@ then
     TERM=rxvt-256color
 fi
 
-
 sprompt on
 
 export MODULEHOME=${HOME}/Modules
@@ -423,3 +422,6 @@ if [ -n "$(type -t module )" ] ; then
     module load r/3.1
 fi
 
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
