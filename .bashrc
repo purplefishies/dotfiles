@@ -214,7 +214,7 @@ export HISTFILENEWNAME=bash_history
 export HISTPREFIX=""
 export HISTFILE=$HOME/${HISTFILENAME}
 export HISTCONTROL="ignoredups:erasedups"
-export HISTIGNORE="ls:ll:more *:lless *:history:history *:source .bashrc:clear_last_history"
+export HISTIGNORE="ls:ll:more *:lless *:history:history *:source .bashrc:clear_last_history:tmux *attach"
 export HISTDIRECTORY=$HOME/.bashcmd_history 
 export HIST_RESET_OFFSET=2000
 export HIST_ROLLOVER_SIZE=10000
@@ -307,6 +307,7 @@ export PERL5LIB="${HOME}/perl5/lib/perl5:${HOME}"
 export GIT_EXTERNAL_DIFF=$HOME/Scripts/opendiff.sh
 
 alias ack='/usr/bin/ack-grep'
+alias aack='/usr/bin/ack-grep --color'
 
 if [ "$DISPLAY" ] ; then
     export EDITOR="emacs"
