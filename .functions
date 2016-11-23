@@ -185,7 +185,8 @@ function dir {
 #
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function dirs {
+function _dirs {
+#    /bin/ls -l | grep "^d" | perl -a -ne 'print "@F[8..$#F]\n"'
     local dir
     local filter="[^\.]"
     if [[ "$1" != ""  ]] && [ -d "$1" ]  ; then
@@ -207,13 +208,13 @@ function dirs {
                if \"${dir}\" == \"\"  || \"${dir}\" == \".\"
                   i
                else
-                  File.new(\"${dir}/#{i}\").to_path
+                  File.expand_path(\"${dir}/#{i}\") 
                end
 
             }.join(\"\n\") + \"\n\""
  }
 
-function ldirs {
+function dirs {
     local IFS=$(echo -ne "\n\r")
     if [ $# == 1 ] ; then
         \ls -d $(_dirs $1)
@@ -418,7 +419,7 @@ function rm () {
       # append the time if necessary
       if [ -e ~/.Trash/"${dst}" ]  ; then
           # echo "Dst:${dst}"
-          dst="${dst}_$(date +%Y-%m-%d_%H%M%S.%6N)"
+          dst="${dst}_$(date +%Y-%m-%d_%H%M%S)"
       fi
       mv "$path" ~/.Trash/"$dst"
     fi
@@ -550,4 +551,12 @@ function show_cursor()  {
 }
 function hide_cursor() { 
     printf "\033[?25l"
+}
+
+function emacs {
+         emacsclient $* >/dev/null 2>&1
+}
+
+function eemacs {
+         emacsclient --create-frame $* >/dev/null 2>&1
 }
