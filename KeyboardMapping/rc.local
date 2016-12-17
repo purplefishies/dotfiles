@@ -1,0 +1,5 @@
+#!/bin/sh -e 
+
+/usr/bin/loadkeys /etc/keyboard/mymod.map
+
+exit 0
