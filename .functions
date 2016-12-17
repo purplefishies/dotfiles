@@ -67,7 +67,13 @@ function make_nice_filenames {
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function sprompt {
-    TITLEBAR="\[\033]0;\u@\H: \w\007\]"
+
+    if [[ $(tty | perl -pne 's@/dev/([^\d]+).*@$1@;' ) == "tty" ]] ; then
+        TITLEBAR=""
+    else
+        TITLEBAR="\[\033]0;\u@\H: \w\007\]"
+    fi
+
     export TITLEBAR
 
     if [ "$1" == "on" ]; then
@@ -550,4 +556,12 @@ function show_cursor()  {
 }
 function hide_cursor() { 
     printf "\033[?25l"
+}
+
+function emacs {
+         emacsclient $* >/dev/null 2>&1
+}
+
+function eemacs {
+         emacsclient --create-frame $* >/dev/null 2>&1
 }

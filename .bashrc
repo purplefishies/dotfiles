@@ -310,7 +310,7 @@ alias ack='/usr/bin/ack-grep'
 alias aack='/usr/bin/ack-grep --color'
 
 if [ "$DISPLAY" ] ; then
-    export EDITOR="emacs"
+    export EDITOR="emacsclient -t "
     export ALTERNATE_EDITOR="emacs"      
     export VISUAL="emacsclient -t -c -a emacs"
 else 
