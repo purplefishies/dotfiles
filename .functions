@@ -67,7 +67,13 @@ function make_nice_filenames {
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function sprompt {
-    TITLEBAR="\[\033]0;\u@\H: \w\007\]"
+
+    if [[ $(tty | perl -pne 's@/dev/([^\d]+).*@$1@;' ) == "tty" ]] ; then
+        TITLEBAR=""
+    else
+        TITLEBAR="\[\033]0;\u@\H: \w\007\]"
+    fi
+
     export TITLEBAR
 
     if [ "$1" == "on" ]; then
@@ -185,8 +191,7 @@ function dir {
 #
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function _dirs {
-#    /bin/ls -l | grep "^d" | perl -a -ne 'print "@F[8..$#F]\n"'
+function dirs {
     local dir
     local filter="[^\.]"
     if [[ "$1" != ""  ]] && [ -d "$1" ]  ; then
@@ -208,13 +213,13 @@ function _dirs {
                if \"${dir}\" == \"\"  || \"${dir}\" == \".\"
                   i
                else
-                  File.expand_path(\"${dir}/#{i}\") 
+                  File.new(\"${dir}/#{i}\").to_path
                end
 
             }.join(\"\n\") + \"\n\""
  }
 
-function dirs {
+function ldirs {
     local IFS=$(echo -ne "\n\r")
     if [ $# == 1 ] ; then
         \ls -d $(_dirs $1)
@@ -419,7 +424,7 @@ function rm () {
       # append the time if necessary
       if [ -e ~/.Trash/"${dst}" ]  ; then
           # echo "Dst:${dst}"
-          dst="${dst}_$(date +%Y-%m-%d_%H%M%S)"
+          dst="${dst}_$(date +%Y-%m-%d_%H%M%S.%6N)"
       fi
       mv "$path" ~/.Trash/"$dst"
     fi
