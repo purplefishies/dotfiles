@@ -269,6 +269,7 @@ export MANPATH="${HOME}/Downloads/llvm/docs/CommandGuide/man/man1:${HOME}/Downlo
 # Pager configuration
 #
 export PAGER=less
+export LESSOPEN="| /usr/bin/source-highlight-esc.sh %s "
 export LESS="-X -R"
 export LC_ALL="C"
 export LESSCHARSET=utf-8
@@ -405,6 +406,7 @@ function getkey {
     fi
 }
 
+export GREP_OPTIONS="--color=auto -d skip"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
