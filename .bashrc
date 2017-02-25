@@ -305,19 +305,19 @@ if [ -f "/opt/local/etc/profile.d/cdargs-bash.sh" ]; then
 fi
 
 export PERL5LIB="${HOME}/perl5/lib/perl5:${HOME}"
-export GIT_EXTERNAL_DIFF=$HOME/Scripts/opendiff.sh
+
 
 alias ack='/usr/bin/ack-grep'
 alias aack='/usr/bin/ack-grep --color'
 
 if [ "$DISPLAY" ] ; then
-    export EDITOR="emacsclient -t "
+    export EDITOR="$(which emacs) -nw "
     export ALTERNATE_EDITOR="emacs"      
-    export VISUAL="emacsclient -t -c -a emacs"
+    export VISUAL="$(which emacs) -nw "
 else 
     export ALTERNATE_EDITOR=""      
-    export EDITOR="emacsclient -t"
-    export VISUAL="emacsclient -t -c -a emacs"
+    export EDITOR="$(which emacs) -nw "
+    export VISUAL="$(which emacs) -nw "
 fi
 
 export PATH=$PATH:/usr/share/apache-maven-3.0.5/bin
@@ -338,7 +338,7 @@ fi
 if [ "$COLORTERM" == "gnome-terminal" ] || [ "$COLORTERM" == "xfce4-terminal" ]
 then
     TERM=xterm-256color
-#    TERM=screen-256color-italic
+    #TERM=screen-256color-italic
 elif [ "$COLORTERM" == "rxvt-xpm" ]
 then
     TERM=rxvt-256color
