@@ -12,10 +12,11 @@
   local = white bold
   remote = green
 [color "diff"]
-  meta = 227 bold
-  frag = magenta bold
-  old = red bold
-  new = green bold
+  meta = 210
+  frag = 45 bold
+  old = 197
+  new =  29
+  
 [color "status"]
   added = 227 bold
   changed = 42
@@ -42,7 +43,7 @@
         br = branch
         co = checkout
         df = diff
-	trash = !_tmpdir=$HOME/.Trash/$(date '+git_%Y%m%d%H%M%S') && mkdir ${_tmpdir} && git ls-files --others -z | xargs -0 --verbose mv -f -t ${_tmpdir} && unset _tmpdir
+	trash = !_tmpdir=$HOME/.Trash/$(date '+git_%Y%m%d%H%M%S') && mkdir ${_tmpdir} && git ls-files --others | xargs --verbose mv -f -t ${_tmpdir} && unset _tmpdir
         lg = log -p
         glg = log --graph --oneline --decorate
         week = log --after=\"one week ago\"  --pretty=format=\"The author of %Cred%h%Creset was %Cgreen%an%Creset, %ar%n%s%n\"
@@ -68,10 +69,7 @@
 	enabled = true
 [push]
 	default = matching
-[diff]
-[diff]
-[diff]
-	tool = bc3
+
 [difftool]
 	prompt = false
 [merge]
