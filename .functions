@@ -93,6 +93,40 @@ function sprompt {
     tty -s && export PS1=${MY_PROMPT}${TITLEBAR}
 }
 
+function load_colors {
+    if [[ -f "${HOME}/.colors" ]] ; then
+        oldIFS=${IFS}
+        IFS=$(echo -ne "\b\n")
+        for i in $(cat "$HOME/.colors" ); do 
+            eval "$i"; 
+        done
+        if [[ "${oldIFS}"  != "" ]] ; then
+            IFS=$oldIFS
+        fi
+    fi
+}
+
+function cprompt {
+    name=$1
+    local prompt
+    load_colors
+    if [[ $(tty | perl -pne 's@/dev/([^\d]+).*@$1@;' ) == "tty" ]] ; then
+        TITLEBAR=""
+    else
+        TITLEBAR="\[\033]0;\u@\H: \w\007\]"
+    fi
+
+    export TITLEBAR
+    entry=$(/bin/grep -P "^${name}:" $HOME/.prompts)
+    if [[ "$?" == "0" ]] ; then
+        prompt=$(echo $entry | perl -pne "s/^${name}://g" )
+        tty -s && export PS1=${prompt}${TITLEBAR}
+    else
+        sprompt on
+    fi
+}
+
+
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Turns on and off the full path at the top of the title bar.
