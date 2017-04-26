@@ -51,8 +51,8 @@
         llog = log --date=local --pretty=format=oneline
         plog = log --pretty=format:\"%Cgreen%h%Creset %s\"
         phlog = log --pretty=format:\"%Cgreen%h%Creset %Cred%ar%Creset %s\"
-        phulog = log --pretty=format:\"%C(35)%h%Creset %C(blue bold)%ae %Cred%ar%Creset %s\"   
-        untracked = ls-files --others --exclude-standard
+        phulog = log --pretty=format:\"%C(114)%h%Creset %C(bold 110)%ae %C(174)%ar%Creset %s\"   
+        untracked = ls-files --others --exclude-standard7
         ls-untracked = ls-files --others --exclude-standard
         suno = status -uno        
         dt = difftool
