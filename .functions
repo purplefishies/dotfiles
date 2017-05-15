@@ -453,14 +453,14 @@ function rm () {
     # ignore any arguments
     if [[ "$path" = -* ]]; then :
     else
-      local dst=${path%%/*}
-      dst=${dst##*/}
-      # append the time if necessary
-      if [ -e ~/.Trash/"${dst}" ]  ; then
-          # echo "Dst:${dst}"
-          dst="${dst}_$(date +%Y-%m-%d_%H%M%S.%6N)"
+      local dst=$(echo $path | perl -pne 's/^\s*((\.|\.\.)\/)*//' )
+      if [[ "$dst" !=  "" ]] ; then
+          dst=$(basename $dst)
+          if [ -e ~/.Trash/"${dst}" ]  ; then
+              dst="${dst}_$(date +%Y-%m-%d_%H%M%S.%6N)"
+          fi
+          mv "$path" ~/.Trash/${dst}
       fi
-      mv "$path" ~/.Trash/"$dst"
     fi
   done
 }
