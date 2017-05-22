@@ -599,3 +599,7 @@ function emacs {
 function eemacs {
          emacsclient --create-frame $* >/dev/null 2>&1
 }
+
+function diff {
+    git diff --no-index $@
+}
