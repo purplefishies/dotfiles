@@ -1,6 +1,6 @@
 default:\[$LAVENDER\]\h \[$RESET\]\W \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
 short:\[$LAVENDER\]\h \[$RESET\]\w \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
-debug:\[$LAVENDER\]\h $RESET${WHITE}${BOLD}[${RESET}${YELLOW} \t ${RESET}$WHITE$BOLD] \[$RESET\]\w \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
-debug-short:\[$LAVENDER\]\h $RESET${WHITE}${BOLD}[${RESET}${YELLOW} \t ${RESET}$WHITE$BOLD] \[$RESET\]\W \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
-ddebug:\[$LAVENDER\]\h $RESET${WHITE}${BOLD}[${RESET}${YELLOW} \D{%Y/%m/%d %H:%M:%S} ${RESET}$WHITE$BOLD] \[$RESET\]\w \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
+debug:\[$LAVENDER\]\h \[$RESET\]\[${WHITE}${BOLD}\][\[${RESET}${YELLOW}\] \t \[${RESET}${WHITE}${BOLD}] \]\[$RESET\]\w \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
+debug-short:\[$LAVENDER\]\h \[$RESET${WHITE}${BOLD}\][\[${RESET}${YELLOW}\] \t \[${RESET}$WHITE$BOLD\]] \[$RESET\]\W \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
+ddebug:\[$LAVENDER\]\h \[$RESET${WHITE}${BOLD}\][\[${RESET}${YELLOW}\] \D{%Y/%m/%d %H:%M:%S} \[${RESET}$WHITE$BOLD\]] \[$RESET\]\w \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
 
