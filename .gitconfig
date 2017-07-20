@@ -15,7 +15,8 @@
   frag = 45 bold
   old = 197
   new =  29
-  
+  commit = 105
+
 [color "status"]
   added = 227 bold
   changed = 42
