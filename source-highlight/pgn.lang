@@ -1,0 +1,21 @@
+
+state preproc delim '\['  '\]' begin
+	type = `([[:alpha:]]+)(?=[[:space:]]+)`
+	string = `"([^"]+)"`
+end
+
+
+(valquote,string,valquote) = `(")([^"]+)(")`
+
+keyword = `((\+)|(\+\+)|(\#)|(1[ \t]*-[ \t]*0)|(0[ \t]*-[ \t]*1))`
+
+symbol = `([[:digit:]]+\.(?=[ \t]+)|[[:digit:]]+\.\.\.(?=[ \t]+))`
+
+environment comment delim '\{' '\}' multiline begin
+comment = ".+"
+end
+
+environment classname delim '\(' '\)' multiline begin
+keyword = `((\+)|(\+\+)|(\#)|(1[ \t]*-[ \t]*0)|(0[ \t]*-[ \t]*1))`
+classname = ".+"
+end
