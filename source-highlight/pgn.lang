@@ -11,11 +11,17 @@ keyword = `((\+)|(\+\+)|(\#)|(1[ \t]*-[ \t]*0)|(0[ \t]*-[ \t]*1))`
 
 symbol = `([[:digit:]]+\.(?=[ \t]+)|[[:digit:]]+\.\.\.(?=[ \t]+))`
 
-environment comment delim '\{' '\}' multiline begin
-comment = ".+"
+
+
+
+environment classname delim '\(' '\)' multiline nested begin
+  keyword = `((\+)|(\+\+)|(\#)|(1[ \t]*-[ \t]*0)|(0[ \t]*-[ \t]*1))`
+  environment comment delim '\{' '\}' multiline nested begin
+    comment = ".+"
+  end
+  classname = ".+"
 end
 
-environment classname delim '\(' '\)' multiline begin
-keyword = `((\+)|(\+\+)|(\#)|(1[ \t]*-[ \t]*0)|(0[ \t]*-[ \t]*1))`
-classname = ".+"
+environment comment delim '\{' '\}' multiline nested begin
+  comment = ".+"
 end
