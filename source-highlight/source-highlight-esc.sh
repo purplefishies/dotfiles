@@ -29,4 +29,14 @@ else
 	NB=""
 fi
 
-source-highlight --outlang-def=esc${NB}.outlang --style-file=esc${NB}.style -i "$@"
+suffix=$(echo $1 | perl -pne 's/^.*\.(\S+)/$1/g;')
+#echo "${suffix}"
+
+if [[ -f "/usr/share/source-highlight/${suffix}.style" ]] ; then
+    stylefile=${suffix}.style
+else
+    stylefile=esc${NB}.style
+fi
+
+source-highlight --outlang-def=esc${NB}.outlang --style-file=${stylefile} -i "$@"
+
