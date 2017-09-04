@@ -9,9 +9,7 @@ end
 
 keyword = `((\+)|(\+\+)|(\#)|(1[ \t]*-[ \t]*0)|(0[ \t]*-[ \t]*1))`
 
-symbol = `([[:digit:]]+\.(?=[ \t]+)|[[:digit:]]+\.\.\.(?=[ \t]+))`
-
-
+symbol = `([[:digit:]]+(?=[ \t]*)\.\.\.(?=[ \t]*)|[[:digit:]]+(?=[ \t]*)\.(?=[ \t]*))`
 
 
 environment classname delim '\(' '\)' multiline nested begin

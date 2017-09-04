@@ -19,7 +19,7 @@
 
 normal "255" ;
 keyword "125";
-type yellow ;
+type "184" ;
 classname "245" ;
 constant yellow ;
 string "111" ;
@@ -28,7 +28,7 @@ specialchar red ;
 comment "238" ;
 number cyan ;
 preproc orange ;
-symbol "124" ;
+symbol "61" ;
 function blue ;
 cbracket "244";
 variable blue ;
