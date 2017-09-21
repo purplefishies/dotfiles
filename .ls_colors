@@ -47,7 +47,7 @@ DOOR 38;5;127
 EXEC 38;5;208;1
 FIFO 38;5;126
 FILE 38;5;253
-LINK 35
+LINK target
 MULTIHARDLINK 38;5;222;1
 # "NORMAL don't reset the bold attribute -
 # https://github.com/trapd00r/LS_COLORS/issues/11
@@ -89,6 +89,7 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 .msg 38;5;178
 .pgn 38;5;178
 .xml 38;5;178
+.xmi 38;5;123
 .json 38;5;178
 .yml 38;5;178
 # }}}
@@ -97,8 +98,8 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 .cbz 38;5;141
 .chm 38;5;141
 .djvu 38;5;141
-.pdf 38;5;141
-.PDF 38;5;141
+.pdf 38;5;141;1
+.PDF 38;5;141;1
 # words {{{3
 .docm 38;5;111;4
 .doc 38;5;111
@@ -345,7 +346,7 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 # archives {{{1
 .7z 38;5;40
 .a 38;5;35
-.so 38;5;41;1
+.so 38;5;208;1
 .mexa64 38;5;208;1
 .arj 38;5;40
 .bz2 38;5;40
