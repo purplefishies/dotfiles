@@ -355,11 +355,11 @@ export MODULEPATH=$HOME/Modules
 
 if [ -n "$TMUX" ]; then
     function refresh {
-        export $(tmux show-environment | grep "^SSH_AUTH_SOCK")
-        export $(tmux show-environment | grep "^DISPLAY")
-        export $(tmux show-environment | grep "^DBUS_SESSION_BUS_ADDRESS")
-        export $(tmux show-environment | grep "^GPG_AGENT_INFO" )
-        export $(tmux show-environment | grep "^GNOME_KEYRING_CONTROL" )
+        export $(tmux show-environment | grep "^SSH_AUTH_SOCK")  > /dev/null 2>&1
+        export $(tmux show-environment | grep "^DISPLAY")  > /dev/null 2>&1
+        export $(tmux show-environment | grep "^DBUS_SESSION_BUS_ADDRESS")  > /dev/null 2>&1
+        export $(tmux show-environment | grep "^GPG_AGENT_INFO" )  > /dev/null 2>&1
+        export $(tmux show-environment | grep "^GNOME_KEYRING_CONTROL" ) > /dev/null 2>&1
     }
     
 
