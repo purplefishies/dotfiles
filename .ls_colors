@@ -44,7 +44,7 @@ CAPABILITY 38;5;17
 CHR 38;5;113;1
 DIR 34
 DOOR 38;5;127
-EXEC 38;5;208;1
+EXEC 38;5;215;1
 FIFO 38;5;126
 FILE 38;5;253
 LINK target
@@ -90,7 +90,7 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 .pgn 38;5;178
 .xml 38;5;178
 .xmi 38;5;123
-.json 38;5;178
+.json 38;5;132
 .yml 38;5;178
 # }}}
 # binary {{{2
@@ -157,6 +157,7 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 # interpreted {{{2
 .ahk 38;5;29;1
 .py 38;5;41
+.rb 38;5;203;1
 # sql
 .msql 38;5;222
 .mysql 38;5;222
@@ -646,7 +647,6 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 .pi 38;5;7
 .plt 38;5;7
 .pm 38;5;7
-.rb 38;5;7
 .rdf 38;5;7
 .rst 38;5;7
 .ru 38;5;7

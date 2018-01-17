@@ -97,7 +97,7 @@ unset lowos
 # Linux Path stuff
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-export PATH="$PATH:/sbin:/bin:/usr/bin:/usr/local/bin:/usr/sbin:"
+export PATH="$PATH:/sbin:/bin:/usr/bin:/usr/local/bin:/usr/sbin"
 export PATH="$PATH:$HOME/Scripts"
 export PATH="$PATH:/usr/games"
 
@@ -105,6 +105,7 @@ export PATH="$PATH:/usr/lib/lapack"
 export PATH="$PATH:/opt/local/bin"
 
 export PATH="$PATH:$HOME/Tools/bin"
+export PATH="$PATH:$HOME/Scripts/Work"
 
 export PERLDB_OPTS=HistFile=$HOME/.perldb.hist
 # Android stuff
@@ -121,6 +122,12 @@ export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
 
 export MODULESHOME=$HOME/Modules
+
+
+
+if [[ -f "$HOME/.bash_stuff/modules/init/bash" ]] ; then
+    source "$HOME/.bash_stuff/modules/init/bash"
+fi
 
 if [[ -f "/etc/bash_completion" ]] ; then
     source "/etc/bash_completion"
@@ -264,7 +271,7 @@ fi
 export MANPATH=/opt/local/man:$MANPATH:/opt/n1ge6/man:/usr/man
 export MANPATH=$MANPATH:/Library/Frameworks/R.framework/Versions/2.12/Resources
 export MANPATH="${HOME}/Downloads/llvm/docs/CommandGuide/man/man1:${HOME}/Downloads/root/man/man1:${HOME}/perl5/man/man1:/opt/novell/groupwise/client/java/man/man1:/opt/novell/man/man1:/usr/Modules/3.2.9/share/man/man1:/usr/local/share/man:/usr/share/man"
-
+export MANPAGER=$HOME/Scripts/lless
 #
 # Pager configuration
 #
@@ -321,7 +328,7 @@ else
 fi
 
 export PATH=$PATH:/usr/share/apache-maven-3.0.5/bin
-export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 
 export TEXINPUTS="$HOME/Latex://;"
 export POWERLINE_CONFIG_COMMAND=/usr/local/bin/powerline-config
@@ -418,10 +425,6 @@ if [ -f ${HOME}/Scripts/rand_tmux_color.rb ] ; then
 fi
 
 alias tmux='TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb) tmux -2'
-
-if [ -n "$(type -t module )" ] ; then
-    module load r/3.1
-fi
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
