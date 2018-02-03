@@ -119,10 +119,24 @@ function cprompt {
     export TITLEBAR
     entry=$(/bin/grep -P "^${name}:" $HOME/.prompts)
     if [[ "$?" == "0" ]] ; then
-        prompt=$(echo $entry | perl -pne "s/^${name}://g" )
-        tty -s && export PS1=${prompt}${TITLEBAR}
+        case "$TERM" in
+            "dumb")
+                export PS1="> "
+                ;;
+            xterm*|rxvt*|eterm*|screen*)
+                prompt=$(echo $entry | perl -pne "s/^${name}://g" )
+                tty -s && export PS1=${prompt}${TITLEBAR}
+                ;;
+        esac
     else
-        sprompt on
+        case "$TERM" in
+            "dumb")
+                export PS1="> "
+                ;;
+            xterm*|rxvt*|eterm*|screen*)
+                tty -s && export PS1=${LONG_PROMPT}
+                ;;
+        esac
     fi
 }
 
@@ -448,21 +462,22 @@ function mydo {
 }
 
 function rm () {
-  local path
-  for path in "$@"; do
-    # ignore any arguments
-    if [[ "$path" = -* ]]; then :
-    else
-      local dst=$(echo $path | perl -pne 's/^\s*((\.|\.\.)\/)*//' )
-      if [[ "$dst" !=  "" ]] ; then
-          dst=$(basename $dst)
-          if [ -e ~/.Trash/"${dst}" ]  ; then
-              dst="${dst}_$(date +%Y-%m-%d_%H%M%S.%6N)"
-          fi
-          mv "$path" ~/.Trash/${dst}
-      fi
-    fi
-  done
+    local path
+    trashdir=$(readlink -f ~/.Trash/ )
+    for path in "$@"; do
+        # ignore any arguments
+        if [[ "$path" = -* ]]; then :
+        else
+            local dst=$(echo $path | perl -pne 's/^\s*((\.|\.\.)\/)*//' )
+            if [[ "$dst" !=  "" ]] ; then
+                dst=$(basename "$dst")
+                if [ -e ~/.Trash/"${dst}" ]  ; then
+                    dst="${dst}_$(date +%Y-%m-%d_%H%M%S.%6N)"
+                fi
+                mv "$path" "${trashdir}/${dst}"
+            fi
+        fi
+    done
 }
 
 function work() { 

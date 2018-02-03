@@ -173,13 +173,13 @@ if [[ "$(type -t __git_ps1 )" == "function" ]] ; then
     LONG_PROMPT=${LONG_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
     SHORT_PROMPT=${SHORT_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
     STEALTH_PROMPT=${STEALTH_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
-    tty -s && export PS1=$LONG_PROMPT
+    # tty -s && export PS1=$LONG_PROMPT
 else
     echo "Can't find definition for __git_ps1...ignoring"    
     LONG_PROMPT=${LONG_PROMPT}'\[$RESET\]% '
     SHORT_PROMPT=${SHORT_PROMPT}'\[$RESET\]% '
     STEALTH_PROMPT=${STEALTH_PROMPT}'\[$RESET\]% '
-    tty -s && export PS1=$LONG_PROMPT
+    # tty -s && export PS1=$LONG_PROMPT
 fi
 
 if [ -f "$HOME/.ls_colors" ] ; then
@@ -351,7 +351,7 @@ then
     TERM=rxvt-256color
 fi
 
-sprompt on
+cprompt default
 
 export MODULEHOME=${HOME}/Modules
 export MODULESHOME=${HOME}/Modules
