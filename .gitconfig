@@ -65,7 +65,8 @@
         dt = difftool
         new-files  = ls-files -o  --exclude-standard
         ls-files-u = ls-files --others --exclude-standard
-
+        common-ancestor = merge-base 
+        ancestor = merge-base
 
 [credential]
 	helper = cache --timeout=3600
@@ -86,3 +87,5 @@
         status = true
 [format]
 	signoff = true
+[log]
+	graphColors = 254,123,211,210,2,23,45,216,97,153,181,209,41,195,132,230,55
