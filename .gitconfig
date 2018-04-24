@@ -21,13 +21,16 @@
   added = 227 bold
   changed = 42
   untracked = 23
-  branch = 202 bold
+  branch = 167 bold
 
 [color "decorate"]
   head = 227 bold 
   branch  = 155 bold
   remoteBranch = 209 bold
   tag = 227 bold
+
+
+
 
 
 [color]
@@ -67,6 +70,10 @@
         ls-files-u = ls-files --others --exclude-standard
         common-ancestor = merge-base 
         ancestor = merge-base
+        list-tags-remote = ls-remote --tags origin
+        release-name = describe --always --abbrev=1
+        current-branch = rev-parse --abbrev-ref HEAD
+        log-since = "!f() { git log --oneline -n  $(($(git log --oneline $(git common-ancestor $(git current-branch) $1)..HEAD | wc -l)+1)) ;}; f" 
 
 [credential]
 	helper = cache --timeout=3600
