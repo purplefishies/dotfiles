@@ -36,7 +36,7 @@ function fen_name {
 
 function save_fen { 
     local file=$@
-    cp -f ${file} $HOME/Downloads/CHESS/FenPuzzles/$(fen_name $file)
+    cp -f ${file} $HOME/Projects/CHESS/FenPuzzles/$(fen_name $file)
 }
 
 function paste_fen {
@@ -597,7 +597,7 @@ function afind() {
 }
 
 function hfind() {
-    grep $@ $(ls $HISTDIRECTORY/* | tac)
+    grep --binary-files=text $@ $(ls $HISTDIRECTORY/* | tac)
 }
 
 function show_cursor()  {
@@ -608,12 +608,14 @@ function hide_cursor() {
 }
 
 function emacs {
-         emacsclient $* >/dev/null 2>&1
+         EMACSRUNNING=$(ps -ef |grep emacs | grep -v -P "(emacsclient|grep)" | wc -l)
+         if [[ $EMACSRUNNING == 0 ]] ; then
+            /usr/bin/emacs "$@"
+         else
+            emacsclient $@ >/dev/null 2>&1
+         fi       
 }
 
-function eemacs {
-         emacsclient --create-frame $* >/dev/null 2>&1
-}
 
 function diff {
     git diff --no-index $@
