@@ -9,14 +9,27 @@
         (format "/tmp/emacs%1.0f" uid)
       (format "/tmp/emacs%d" uid))))
 (require 'server)
-;; (server-ensure-safe-dir server-socket-dir)
-;; (server-start) 
+(server-ensure-safe-dir server-socket-dir)
+(server-start) 
 
 (if (display-graphic-p)
     (progn 
       (invert-face 'default)
       )
 )
+
+(require 'package)
+(when (>= emacs-major-version 24)
+  (require 'package)
+  (package-initialize)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  )
+
+;; (add-to-list 'package-archives
+;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+;; (when (< emacs-major-version 24)
+;;   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize)
 
 
 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -55,7 +68,12 @@
   ;; http://www.mail-archive.com/help-gnu-emacs@gnu.org/msg03577.html
  ))
 
-
+(defun now ()
+  "Insert string for the current time formatted like '2:34 PM' or 1507121460"
+  (interactive)                 ; permit invocation in minibuffer
+  (insert (format-time-string "%D %-I:%M %p")))
+  ;;(insert (format-time-string "%02y%02m%02d%02H%02M%02S")))
+  ;;(insert (format-time-string "%02y%02m%02d%02H%02M")))
 
 
 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -111,12 +129,12 @@
 ; Check for Doxymacs 
 ;
 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-(condition-case nil
-  (require 'doxymacs)
-  (setq doxymacs-doxygen-style "JavaDoc")
-  (add-hook 'c-mode-common-hook'doxymacs-mode)
-  (error nil)
-)
+;; (condition-case nil
+;;   (require 'doxymacs)
+;;   (setq doxymacs-doxygen-style "JavaDoc")
+;;   (add-hook 'c-mode-common-hook'doxymacs-mode)
+;;   (error nil)
+;; )
 
 
 ;; (setq tramp-default-method "ftp")
@@ -202,13 +220,20 @@
         )
   )
 
-(add-to-list 'load-path "/usr/share/emacs24/site-lisp/")
-(add-to-list 'load-path "/usr/share/emacs24/site-lisp/")
-(add-to-list 'load-path "/usr/share/emacs24/site-lisp/auto-complete")
+(add-to-list 'load-path "/home/jdamon/.emacs.d/share/emacs/site-lisp")
+
+;; (add-to-list 'load-path "/usr/share/emacs24/site-lisp/")
+;; (add-to-list 'load-path "/usr/share/emacs24/site-lisp/auto-complete");
 ;; (condition-case nil
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "/usr/share/emacs23/site-lisp//ac-dict")
 (ac-config-default)
+;; (error nil)
+;; )
+
+(add-to-list 'load-path "/home/jdamon/.emacs.d/neotree" )
+(require 'neotree)
+(global-set-key [f8] 'neotree-toggle)
 
 
 
@@ -1282,19 +1307,7 @@
 )
 
 
-;; (delete-file filename)
-(condition-case nil
-    (require 'package)
-  (add-to-list 'package-archives
-               '("melpa" . "http://melpa.milkbox.net/packages/") t)
-  (package-initialize)
-  (unless (package-installed-p 'scala-mode2)
-    (package-refresh-contents) (package-install 'scala-mode2))
-  (require 'scala-mode2)
-  (error nil))
-
-
-(add-hook 'c-mode-common-hook 'doxymacs-mode)
+;; (add-hook 'c-mode-common-hook 'doxymacs-mode)
 (add-hook 'c-mode-common-hook 'hl-line-mode)
 (add-hook 'c-mode-common-hook 'linum-mode)
 (add-hook 'c-mode-common-hook 'outline-minor-mode ) 
@@ -1309,20 +1322,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(c-basic-offset 4)
- '(c-default-style (quote ((c-mode . "gnu") (c++-mode . "gnu") (java-mode . "java") (awk-mode . "awk") (other . "linux"))))
- '(cperl-brace-offset -4)
- '(cperl-continued-brace-offset 0)
- '(cperl-continued-statement-offset 4)
- '(cperl-electric-parens (quote null))
- '(cperl-indent-level 4)
- '(cperl-indent-parens-as-block t)
- '(display-time-mode t)
- '(load-home-init-file t t)
- '(preview-gs-options (quote ("-q" "-dNOSAFER" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
- '(query-user-mail-address nil)
- '(toolbar-mail-reader (quote vm))
- '(user-mail-address "james.damon@accesio.com"))
+ '(markdown-command "pandoc ")
+ '(org-agenda-files nil)
+ '(org-modules
+   (quote
+    (org-bbdb org-bibtex org-ctags org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m org-drill org-learn)))
+ '(package-selected-packages
+   (quote
+    (cedit cdlatex ledger-import flycheck-ledger org-babel-eval-in-repl graphviz-dot-mode dot-mode org-drill-table dash yaml-mode scala-mode polymode passthword org-bullets org neotree markdown-mode json-mode groovy-mode gradle-mode gitignore-mode color-theme-modern cmake-mode chess bind-key auto-complete auctex))))
 
 (load-library "color-theme")
 ;
@@ -1336,22 +1343,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 143 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
- '(cperl-array-face ((((class color) (background light)) (:foreground "Blue" :bold t :italic t))))
- '(cperl-hash-face ((t (:foreground "slate blue" :slant italic :weight bold))))
- '(font-lock-comment-face ((t (:foreground "tomato"))))
- '(font-lock-constant-face ((t (:foreground "CadetBlue"))))
- '(font-lock-doc-face ((t (:foreground "forest green"))))
- '(font-lock-fic-face ((t (:stipple nil :foreground "Red" :inverse-video nil :underline t :slant normal :weight bold))) t)
- '(font-lock-function-name-face ((t (:foreground "sea green" :family "Monaco"))))
- '(font-lock-keyword-face ((t (:foreground "SkyBlue4"))))
- '(font-lock-string-face ((t (:foreground "plum"))))
- '(font-lock-variable-name-face ((t (:foreground "SkyBlue3"))))
- '(highlight ((t (:background "powderblue"))))
- '(hl-line ((t (:background "gray16"))))
- '(list-mode-item-selected ((t (:background "lightseagreen"))))
- '(region ((t (:background "CornFlowerBlue")))))
-(set-default-font "Monaco-14")
+ )
+(set-default-font "Monaco-12")
 
  
 (put 'upcase-region 'disabled nil)
@@ -1372,6 +1365,62 @@
 
 (set-default 'preview-scale-function 1.9 )
 
+(add-hook 'org-mode-hook
+          (lambda ()
+            (org-bullets-mode t )))
+
+(add-hook 'org-mode-hook 'outline-minor-mode)
+
+(setq org-directory "~/Projects/org")
+(setq org-hide-leading-stars t)
+(setq org-ellipsis "⤵")
+
+(setq org-src-fontify-natively t )
+(setq org-src-tab-acts-natively t )
+(setq org-src-window-setup 'current-window )
+(setq org-clock-persist 'history)
+(setq org-log-done t)
+
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/Projects/org/todo.org" "Tasks")
+         "* TODO %?\n%i\n   %a")
+        ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
+         "* %?\nEnterered on %U\n   %i\n   %a")
+        ("f" "Finished book"
+         table-line (file "~/Documents/notes/books-read.org")
+         "| %^{Title} | %^{Author} | %u |")
+        ("s" "Subscribe to an RSS feed"
+         plain
+         (file "~/Documents/rss/urls")
+         "%^{Feed URL} \"~%^{Feed name}\"")
+        ))
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   ))
+
+
+;(ledger . t)
+
+; Use this to save my location in files when i reopen them
+(save-place-mode t)
+
+(org-clock-persistence-insinuate)
+(defun org-archive-done-tasks ()
+  (interactive)
+  (org-map-entries
+   (lambda ()
+     (org-archive-subtree)
+     (setq org-map-continue-from (outline-previous-heading)))
+   "/DONE" 'tree))
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-cb" 'org-switchb)
+
+;(require 'org-drill)
+
 (defun bisque-background()
   "Switches to bisque background for better vision"
   (interactive) 
@@ -1381,3 +1430,10 @@
   '(font-lock-string-face ((t (:foreground "medium orchid"))))
   )
 )
+
+
+(defun my-add-semantic-to-autocomplete()
+  (add-to-list 'ac-sources 'ac-source-semantic)
+  )
+
+(add-hook 'c-mode-common-hook 'my-add-semantic-to-autocomplete)
