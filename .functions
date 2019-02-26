@@ -48,6 +48,102 @@ function paste_fen {
     pbpaste > ${todir}/${tmp}.fen
 }
 
+function __git_modified_files {
+    expr $(git status --porcelain 2>/dev/null| grep "^M" | wc -l)
+}
+function __git_modified_unadded {
+    expr $(git status --porcelain 2>/dev/null| grep "^ M" | wc -l)
+}
+function __git_uncommited {
+    expr $(git status --porcelain 2>/dev/null| grep "^??" | wc -l)
+}
+
+function __git_prompt_jd {
+
+    local name=$1
+    local GIT_STAGED
+    local GIT_UNSTAGED
+    local GIT_UNTRACKED
+    local GIT_BRANCH
+    local GIT_REMOTE_BRANCH
+    local GIT_NUMBER_AHEAD
+    local GIT_NUMBER_BEHIND
+    local GIT_STASH
+    local tmp
+    
+    if [[ ${name} == "" ]] ; then
+        name=".*"
+    fi
+    entry=$(/bin/grep -P "^${name}:" $HOME/.gitprompts 2>/dev/null)
+    if [[ "$?" == "0" ]] ; then
+        case "$TERM" in
+            "dumb")
+                prompt=""
+                ;;
+            xterm*|rxvt*|eterm*|screen*)
+                prompt=$(echo $entry | perl -pne "s/^${name}://g" )
+                ;;
+        esac
+    else
+        case "$TERM" in
+            "dumb")
+                prompt=""
+                ;;
+            xterm*|rxvt*|eterm*|screen*)
+                prompt=""
+                ;;
+        esac
+    fi
+    eval $(git_stats.rb)
+    #echo "GIT_BRANCH: $GIT_BRANCH"
+    #tmp=$prompt
+    blah="tmp=\"$(echo -ne $prompt)\""
+    #eval $blah
+    echo $prompt
+    #echo $tmp
+}
+
+function __git_variables {
+    local GIT_STAGED
+    local GIT_UNSTAGED
+    local GIT_UNTRACKED
+    local GIT_BRANCH
+    local GIT_REMOTE_BRANCH
+    local GIT_NUMBER_AHEAD
+    local GIT_NUMBER_BEHIND
+    local GIT_STASH
+    eval $(git_stats.rb)
+    #(master🔃↑3↓2|✗2✚3⚑2)
+    printf "$(__ternary '${GIT_NUMBER_AHEAD}' "\xe2\x86\x91${GIT_NUMBER_AHEAD}" ""  )"
+}
+
+function __ternary {
+    if [ "$1" ] ; then
+        echo -ne "$2"
+    else
+        echo -ne "$3"
+    fi
+}
+
+
+function __git_blank_if {
+    if [[ $1 != "" ]];
+    then
+       echo -ne "$1"
+    fi
+}
+
+my_func() {
+    echo 'foo="A"; bar="B"'
+}
+
+function try_it {
+    local foo
+    local bar
+    eval $(my_func)
+    echo $foo $bar
+}
+
 function save_firmware {
     local file=$@
     cp ${file} ${file}.$(sha1sum ${file} | perl -ne 's/^(.{8}).*/$1/;print;')
@@ -607,6 +703,10 @@ function hide_cursor() {
     printf "\033[?25l"
 }
 
+#function emacs {
+#         emacsclient $* >/dev/null 2>&1
+#}
+
 function emacs {
          EMACSRUNNING=$(ps -ef |grep emacs | grep -v -P "(emacsclient|grep)" | wc -l)
          if [[ $EMACSRUNNING == 0 ]] ; then
@@ -616,6 +716,9 @@ function emacs {
          fi       
 }
 
+#function eemacs {
+#         emacsclient --create-frame $* >/dev/null 2>&1
+#}
 
 function diff {
     git diff --no-index $@

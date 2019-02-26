@@ -1,6 +1,10 @@
-default:\[${BOLD}${JORDYBLUE}\]\h \[$RESET\]\W \[$YELLOW$BOLD\]$(__svn_ps1)\[$FRUITSALAD${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
-short:\[${BOLD}${JORDYBLUE}\]\h \[$RESET\]\w \[$YELLOW$BOLD\]$(__svn_ps1)\[$FRUITSALAD${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
-debug:\[${BOLD}${JORDYBLUE}\]\h \[$RESET\]\[${WHITE}${BOLD}\][\[${RESET}${YELLOW}\] \t \[${RESET}${WHITE}${BOLD}\]] \[$RESET\]\w \[$YELLOW$BOLD\]$(__svn_ps1)\[$FRUITSALAD${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
-debug-short:\[${BOLD}${JORDYBLUE}\]\h \[$RESET${WHITE}${BOLD}\][\[${RESET}${YELLOW}\] \t \[${RESET}$WHITE$BOLD\]] \[$RESET\]\W \[$YELLOW$BOLD\]$(__svn_ps1)\[$FRUITSALAD${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
-ddebug:\[${BOLD}${JORDYBLUE}\]\h \[$RESET${WHITE}${BOLD}\][\[${RESET}${YELLOW}\] \D{%Y/%m/%d %H:%M:%S} \[${RESET}$WHITE$BOLD\]] \[$RESET\]\w \[$YELLOW$BOLD\]$(__svn_ps1)\[$FRUITSALAD${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
+default:\[$LAVENDER\]\h \[$RESET\]\W \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
+short:\[$LAVENDER\]\h \[$RESET\]\w \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
+debug:\[$LAVENDER\]\h $RESET${WHITE}${BOLD}[${RESET}${MANDY} \t ${RESET}$WHITE$BOLD] \[$RESET\]\w \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
+debug-short:\[$LAVENDER\]\h $RESET${WHITE}${BOLD}[${RESET}${MANDY} \t ${RESET}$WHITE$BOLD] \[$RESET\]\W \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
+ddebug:\[$LAVENDER\]\h $RESET${WHITE}${BOLD}[${RESET}${MANDY} \D{%Y/%m/%d %H:%M:%S} ${RESET}$WHITE$BOLD] \[$RESET\]\w \[$YELLOW$BOLD\]$(__svn_ps1)\[$LIGHTGREEN${BOLD}\]$(__git_ps1 "(%s)")\[$RESET\]% \[\033]0;\u@\H: \w\007\]
+foo:(master|✖∴ 2✚3)★↶○●
+devel:\[$LAVENDER\]\h \[$RESET\]\W \[$LIGHTGREEN${BOLD}\]$(__ternary "$GIT_BRANCH" "($GIT_BRANCH\[$RESET\] $(if [[ $GIT_NUMBER_AHEAD -gt 0 ]] || [[ $GIT_NUMBER_BEHIND -gt 0 ]] ; then  echo -ne '\[$PALEVIOLETRED\]🔃\[$RESET\]'; echo -ne $(__ternary "${GIT_NUMBER_BEHIND}" "\[$CAROLINABLUE\]↓${GIT_NUMBER_BEHIND}\[$RESET\]" "");echo -ne $(__ternary "${GIT_NUMBER_AHEAD}" "\[$MANDY\]↑${GIT_NUMBER_AHEAD}\[$RESET\]" "" ); else echo -ne "" ; fi)|$(if [[ $GIT_BOTH_MODIFIED -le 0 ]] && [[ $GIT_STAGED -le 0 ]] && [[ $GIT_UNSTAGED -le 0 ]] && [[ $GIT_STASH -le 0 ]] && [[ $GIT_UNTRACKED -le 0 ]]; then echo -ne "\[$LIGHTGREEN${BOLD}\]✔\[$RESET\]" ;else echo -ne $(__ternary "${GIT_BOTH_MODIFIED}" "\[$COOLRED\]✗${GIT_BOTH_MODIFIED}\[$RESET\]" "")$(__ternary "${GIT_STAGED}" "\[$IRISHORANGE\]⚬${GIT_STAGED}\[$RESET\]" "")$(__ternary "${GIT_UNSTAGED}" "\[$CAROLINABLUE\]+${GIT_UNSTAGED}\[$RESET\]" "")$(__ternary "${GIT_STASH}" "\[$YELLOW\]⚑${GIT_STASH}\[$RESET\]" "")$(__ternary "${GIT_UNTRACKED}" "\[$MEDIUMSEAGREEN\]…\[$RESET\]" ""); fi)\[$LIGHTGREEN${BOLD}\]) " "")\[$RESET\]
+bar:\[$LAVENDER\]\h \[$RESET\]\W \[$LIGHTGREEN${BOLD}\]$(__git_prompt_jd default)
+
 
