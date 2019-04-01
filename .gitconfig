@@ -1,8 +1,7 @@
-[credential "https://github.com/accesio"]
-  username=jdamon@accesio.com
+
 [user]
 	name = Jimi Damon
-	email = jdamon@accesio.com
+	email = jdamon@gmail.com
 [color]
 	ui = auto
 
@@ -16,19 +15,18 @@
   old = 197
   new =  29
   commit = 105
-
+  
 [color "status"]
   added = 227 bold
   changed = 42
   untracked = 23
-  branch = 167 bold
+  branch = 202 bold
 
 [color "decorate"]
   head = 227 bold 
   branch  = 155 bold
   remoteBranch = 209 bold
   tag = 227 bold
-
 
 
 
@@ -51,12 +49,12 @@
         br = branch
         co = checkout
         df = diff
-        trash = "!export _tmpdir=$HOME/.Trash/$(date '+git_%Y%m%d%H%M%S') && mkdir -p ${_tmpdir} && git ls-files --others -z | xargs -I{} -0 --verbose bash -c 'mkdir -p "${_tmpdir}/$(dirname ${0})";mv  "$0" "${_tmpdir}/$(dirname $0)"' {} && unset _tmpdir"
+        trash = "!git ls-files --others -z | xargs -0 --verbose -I{} trash {}"
         lg = log -p
         glg = log --graph --oneline --decorate
         week = log --after=\"one week ago\"  --pretty=format=\"The author of %Cred%h%Creset was %Cgreen%an%Creset, %ar%n%s%n\"
         wl = log --after=\"last friday\"  --pretty=format:\"The author of %Cred%h%Creset was %Cgreen%an%Creset, %ar%n%s%n\"
-        llog = log --date=local --pretty=format=oneline
+        llog = log --date=local --pretty=oneline
         plog = log --pretty=format:\"%Cgreen%h%Creset %s\"
         phlog = log --pretty=format:\"%Cgreen%h%Creset %Cred%ar%Creset %s\"
         phulog = log --pretty=format:\"%C(114)%h%Creset %C(bold 110)%ae %C(141)%ar%Creset %s\"
@@ -68,19 +66,21 @@
         dt = difftool
         new-files  = ls-files -o  --exclude-standard
         ls-files-u = ls-files --others --exclude-standard
-        common-ancestor = merge-base 
-        ancestor = merge-base
-        list-tags-remote = ls-remote --tags origin
-        release-name = describe --always --abbrev=1
-        current-branch = rev-parse --abbrev-ref HEAD
-        log-since = "!f() { git log --oneline -n  $(($(git log --oneline $(git common-ancestor $(git current-branch) $1)..HEAD | wc -l)+1)) ;}; f" 
+        common-ancestor = "!git merge-base $(git branch | grep '^*'  | perl -ane 'print $F[1]')"
+        ca = "!f() { git merge-base \"$1\" \"$2\"; } ; f "
+        log-since = "!f() { git phulog -n $(git log --pretty=oneline $(git common-ancestor $1)^..HEAD | wc -l) ; } ; f"
+        bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
+        bclean2 = "!f() { cur=$(git branch | grep '^*'  | perl -ane 'print $F[1]'); git branch --merged ${1-${cur}} | grep -v " ${1-${cur}}$" | xargs -r git branch -d; }; f"
+        sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
+
 
 [credential]
 	helper = cache --timeout=3600
-[filter "indent"]
-[filter "indent"]
+
 [filter "indent"]
 
+[rerere]
+	enabled = true
 [push]
 	default = matching
 
@@ -94,5 +94,11 @@
         status = true
 [format]
 	signoff = true
+
+
 [log]
-	graphColors = 254,123,211,210,2,23,45,216,97,153,181,209,41,195,132,230,55
+        graphColors = 254,123,211,210,2,23,45,216,97,153,181,209,41,195,132,230,55
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
