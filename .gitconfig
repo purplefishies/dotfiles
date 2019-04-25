@@ -12,15 +12,15 @@
 [color "diff"]
   meta = 210
   frag = 45 bold
-  old = 197
-  new =  29
+  old = 197 strike
+  new =  29 italic
   commit = 105
   
 [color "status"]
   added = 227 bold
   changed = 42
   untracked = 23
-  branch = 202 bold
+  branch = 89 italic
 
 [color "decorate"]
   head = 227 bold 
