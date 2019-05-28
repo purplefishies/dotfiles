@@ -30,13 +30,14 @@ function rename_fen {
 }
 
 function fen_name {
-    local file=$@
-    echo $(sha1sum ${file} | perl -ne 's/^(.{8}).*/$1/;print;').fen
+    echo $(sha1sum "$@" | perl -ne 's/^(.{8}).*/$1/;print;').fen
 }
 
 function save_fen { 
-    local file=$@
-    cp -f ${file} $HOME/Projects/CHESS/FenPuzzles/$(fen_name $file)
+    for i in "$@"
+    do
+        cp -f "$i" $FEN_PUZZLES/$(fen_name "$i")
+    done
 }
 
 function paste_fen {
@@ -47,6 +48,14 @@ function paste_fen {
     tmp=$(pbpaste | sha1sum ${file} | perl -ne 's/^(.{8}).*/$1/;print;')
     pbpaste > ${todir}/${tmp}.fen
 }
+
+function save_pgn {
+    for i in "$@"
+    do
+        cp -f "$i" $PGN_GAMES/$(fen_name "$i")
+    done
+}
+
 
 function __git_modified_files {
     expr $(git status --porcelain 2>/dev/null| grep "^M" | wc -l)
@@ -101,6 +110,12 @@ function __git_prompt_jd {
     #eval $blah
     echo $prompt
     #echo $tmp
+}
+
+function __eval_prompt {
+    local b
+    eval "b=$@"
+    echo -ne ${b}
 }
 
 function __git_variables {
@@ -558,6 +573,10 @@ function mydo {
 }
 
 function rm () {
+    trash "$@"
+}
+
+function oldrm () {
     local path
     trashdir=$(readlink -f ~/.Trash/ )
     for path in "$@"; do
@@ -722,4 +741,24 @@ function emacs {
 
 function diff {
     git diff --no-index $@
+}
+
+function load5() {
+    dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null &
+}
+
+function load4() {
+    dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null &
+}
+
+function load3() {
+    dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null &
+}
+
+function load2() {
+    dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null &
+}
+
+function load1() {
+    dd if=/dev/zero of=/dev/null &
 }

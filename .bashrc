@@ -47,6 +47,19 @@ BASH_VRS=`echo $BASH_VERSION | sed 's/^\([0-9]\)\..*/\1/'`
 #
 export DIFF_APP=bcompare
 
+# Chess
+export CHESS_DIR=$HOME/Projects/CHESS
+export FEN_PUZZLES=$HOME/Projects/CHESS/FenPuzzles
+export PGN_GAMES=$HOME/Projects/CHESS/PGNGames
+
+if [[ ! -d $FEN_PUZZLES ]] ; then
+    mkdir -p $FEN_PUZZLES
+fi
+
+if [[ ! -d $PGN_GAMES ]] ; then
+    mkdir -p $PGN_GAMES
+fi
+
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Loading functions...
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -120,7 +133,7 @@ export ANDROID_TOOLS_DIR=$ANDROID_SDK/tools
 
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
-
+export ACK_PAGER="less"
 
 if [[ -f "/etc/bash_completion" ]] ; then
     source "/etc/bash_completion"
@@ -338,7 +351,7 @@ then
     TERM=rxvt-256color
 fi
 
-cprompt default
+cprompt devel
 
 # if [ -f "${HOME}/Dropbox/Projects/SysAdmin/tcl/init/bash" ] ; then
 #    source ${HOME}/Dropbox/Projects/SysAdmin/tcl/init/bash
@@ -421,8 +434,13 @@ PERL_LOCAL_LIB_ROOT="/home/jdamon/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_
 PERL_MB_OPT="--install_base \"/home/jdamon/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/jdamon/perl5"; export PERL_MM_OPT;
 
-if [[ -f $HOME/catkin_ws/devel/setup.bash ]] ;  then
-    source $HOME/catkin_ws/devel/setup.bash
-fi
+#if [[ -f $HOME/catkin_ws/devel/setup.bash ]] ;  then
+#    source $HOME/catkin_ws/devel/setup.bash
+#fi
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:$LD_LIBRARY_PATH
 export PATH=/usr/local/cuda-9.0/bin:$PATH
+
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/jdamon/.sdkman"
+[[ -s "/home/jdamon/.sdkman/bin/sdkman-init.sh" ]] && source "/home/jdamon/.sdkman/bin/sdkman-init.sh"
