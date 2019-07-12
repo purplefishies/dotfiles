@@ -30,13 +30,14 @@ function rename_fen {
 }
 
 function fen_name {
-    echo $(sha1sum "$@" | perl -ne 's/^(.{8}).*/$1/;print;').fen
+    echo $(sha1sum "$@" | perl -ne 's/^(.{8}).*/$1/;print;')
 }
 
 function save_fen { 
     for i in "$@"
     do
-        cp -f "$i" $FEN_PUZZLES/$(fen_name "$i")
+        nname=$(basename $i ".fen")
+        /bin/cp -f "$i" $FEN_PUZZLES/${nname}_$(fen_name "$i").fen
     done
 }
 
@@ -52,7 +53,8 @@ function paste_fen {
 function save_pgn {
     for i in "$@"
     do
-        cp -f "$i" $PGN_GAMES/$(fen_name "$i")
+        nname=$(basename $i ".pgn")
+        /bin/cp -f "$i" $PGN_GAMES/${nname}_$(fen_name "$i").pgn
     done
 }
 
