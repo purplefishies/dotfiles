@@ -36,8 +36,8 @@ function fen_name {
 function save_fen { 
     for i in "$@"
     do
-        nname=$(basename $i ".fen")
-        /bin/cp -f "$i" $FEN_PUZZLES/${nname}_$(fen_name "$i").fen
+        nname=$(basename "$i" .fen)
+        /bin/cp -f "$i" "$FEN_PUZZLES/${nname}_$(fen_name "$i").fen"
     done
 }
 
@@ -53,8 +53,8 @@ function paste_fen {
 function save_pgn {
     for i in "$@"
     do
-        nname=$(basename $i ".pgn")
-        /bin/cp -f "$i" $PGN_GAMES/${nname}_$(fen_name "$i").pgn
+        nname="$(basename "$i" .pgn)"
+        /bin/cp -f "$i" "$PGN_GAMES/${nname}_$(fen_name "$i").pgn"
     done
 }
 
