@@ -70,6 +70,7 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 *AUTHORS 38;5;220;1
 *HISTORY 38;5;220;1
 .log 38;5;190
+.ledger 38;5;50
 # plain-text {{{2
 .txt 38;5;253
 # markup {{{2
@@ -291,6 +292,7 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 .mpeg 38;5;114
 .mpg 38;5;114
 .ogm 38;5;114
+.ovpn 38;5;240
 .rmvb 38;5;114
 .sample 38;5;114
 .wmv 38;5;114
@@ -359,7 +361,7 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 .zip 38;5;40
 # packaged apps {{{2
 .apk 38;5;215
-.deb 38;5;215
+.deb 38;5;41;1
 .jad 38;5;215
 .jar 38;5;215
 .aar 38;5;215
@@ -555,6 +557,7 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 .mount 38;5;45
 .automount 38;5;45
 .target 38;5;45
+.org 38:5;85;1
 .path 38;5;45
 .timer 38;5;45
 .snapshot 38;5;45
