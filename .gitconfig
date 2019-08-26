@@ -1,3 +1,5 @@
+[credential "https://github.com/purplefishies"]
+  username=purplefishies
 
 [user]
 	name = Jimi Damon
@@ -20,7 +22,7 @@
   added = 227 bold
   changed = 42
   untracked = 23
-  branch = 89 italic
+  branch = 125 bold italic
 
 [color "decorate"]
   head = 227 bold 
