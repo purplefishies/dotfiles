@@ -51,7 +51,7 @@
         br = branch
         co = checkout
         df = diff
-        trash = "!git ls-files --others -z | xargs -0 --verbose -I{} trash {}"
+        trash = "!git status --porcelain -z | perl -ne 's/(\\A|\\0)\\?\\?\\s/\\0/g;print;' | perl -pne 's/^\\0//g' | xargs -0 --verbose -I{} trash {}"
         lg = log -p
         glg = log --graph --oneline --decorate
         week = log --after=\"one week ago\"  --pretty=format=\"The author of %Cred%h%Creset was %Cgreen%an%Creset, %ar%n%s%n\"
