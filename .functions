@@ -142,6 +142,67 @@ function __ternary {
     fi
 }
 
+function __git_out_of_sync {
+    if [[ $GIT_NUMBER_AHEAD -gt 0 ]] || [[ $GIT_NUMBER_BEHIND -gt 0 ]] ; then
+        echo -ne "🔃"
+    fi
+}
+
+function __git_number_behind {
+    if [[ "${GIT_NUMBER_BEHIND}" -gt 0 ]] ; then
+        echo -ne "↓${GIT_NUMBER_BEHIND}"
+    fi
+}
+
+function __git_number_ahead {
+    if [[ "${GIT_NUMBER_AHEAD}" -gt 0 ]] ; then
+        echo -ne "↑${GIT_NUMBER_AHEAD}"
+    fi
+}
+
+function __git_out_of_sync_separator {
+    if [[ $GIT_NUMBER_AHEAD -gt 0 ]] || [[ $GIT_NUMBER_BEHIND -gt 0 ]] ; then
+        echo -ne "|"
+    fi
+}
+
+function __git_untracked {
+    if [[ $GIT_UNTRACKED -gt 0 ]] ; then
+        echo -ne "…"
+    fi
+}
+
+
+function __git_check_ok {
+    if [[ $GIT_BRANCH != "" ]] && [[ $GIT_BOTH_MODIFIED -le 0 ]] && [[ $GIT_STAGED -le 0 ]] && [[ $GIT_UNSTAGED -le 0 ]] && [[ $GIT_STASH -le 0 ]] && [[ $GIT_UNTRACKED -le 0 ]]; then
+        echo -ne "✔"
+    fi
+}
+
+function __git_both_modified {
+    if [[ ${GIT_BOTH_MODIFIED} -gt 0 ]] ; then
+        echo -ne "✗${GIT_BOTH_MODIFIED}"
+    fi
+}
+
+function __git_staged {
+    if [[ $GIT_STAGED -gt 0 ]] ; then
+        echo -ne "⚬${GIT_STAGED}"
+    fi
+}
+
+function __git_unstaged {
+    if [[ $GIT_UNSTAGED -gt 0 ]] ;then
+        echo -ne "+${GIT_UNSTAGED}"
+    fi
+}
+
+function __git_stashed {
+    if [[ ${GIT_STASH} -gt 0 ]] ; then
+        echo -ne "⚑${GIT_STASH}"
+    fi
+}
+
 
 function __git_blank_if {
     if [[ $1 != "" ]];

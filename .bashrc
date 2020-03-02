@@ -320,13 +320,13 @@ alias ack='/usr/bin/ack-grep'
 alias aack='/usr/bin/ack-grep --color'
 
 if [ "$DISPLAY" ] ; then
-    export EDITOR="$(which emacs) -nw "
-    export ALTERNATE_EDITOR="emacs"      
-    export VISUAL="$(which emacs) -nw "
+    export EDITOR="$(which emacs) -q -nw "
+    export ALTERNATE_EDITOR="emacs -q "      
+    export VISUAL="$(which emacs) -q -nw "
 else 
     export ALTERNATE_EDITOR=""      
-    export EDITOR="$(which emacs) -nw "
-    export VISUAL="$(which emacs) -nw "
+    export EDITOR="$(which emacs) -q -nw "
+    export VISUAL="$(which emacs) -q  "
 fi
 
 
@@ -351,6 +351,26 @@ then
     TERM=rxvt-256color
 fi
 
+
+function virtualenv_info(){
+    # Get Virtual Env
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        # Strip out the path and just leave the env name
+        venv="${VIRTUAL_ENV##*/}"
+    else
+        # In case you don't have one activated
+        venv=''
+    fi
+    [[ -n "$venv" ]] && echo -ne "(venv:$venv) "
+}
+
+# disable the default virtualenv prompt change
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+VENV="\$(virtualenv_info)";
+# the '...' are for irrelevant info here.
+#export PS1="... ${VENV} ..."
+
+export LONG_PROMPT="${VENV}${LONG_PROMPT}"
 cprompt devel
 
 # if [ -f "${HOME}/Dropbox/Projects/SysAdmin/tcl/init/bash" ] ; then
@@ -421,7 +441,7 @@ alias tmux='TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb) tmux -2'
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+export PATH="/home/jdamon/.cask/bin:$PATH"
 
 
 
@@ -444,3 +464,7 @@ export PATH=/usr/local/cuda-9.0/bin:$PATH
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/jdamon/.sdkman"
 [[ -s "/home/jdamon/.sdkman/bin/sdkman-init.sh" ]] && source "/home/jdamon/.sdkman/bin/sdkman-init.sh"
+
+export EMAIL="jdamon@automodality.com"
+export NAME="Jimi Damon"
+export DEBEMAIL=$EMAIL
