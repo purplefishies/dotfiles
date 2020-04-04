@@ -997,7 +997,6 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 
 #+END_SRC
 
-
 ** Maxima 
 #+BEGIN_SRC emacs-lisp
   (setq imaxima-fnt-size "Huge")
@@ -1020,9 +1019,7 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
     )
 #+END_SRC
 
-
 ** Spice
-
 ** Ruby
 
 I use =chruby= to switch between versions of Ruby. This sets a default version
@@ -1631,6 +1628,13 @@ Hiding leading stars
 
 #+END_SRC
 
+** Org Drill
+#+BEGIN_SRC emacs-lisp
+(eval-after-load "org"
+  '(progn
+    (add-to-list 'load-path "/home/jdamon/.emacs.d/elpa/org-drill")
+    (require 'org-drill)))
+#+END_SRC
 ** Rest of ORG
 
 #+BEGIN_SRC emacs-lisp
