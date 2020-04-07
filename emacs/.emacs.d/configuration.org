@@ -1822,3 +1822,45 @@ Hiding leading stars
 
    ;; (define-key org-journal-mode-map (kbd "C-x C-s") 'org-journal-save-entry-and-exit)
  #+END_SRC
+** Org Download
+#+BEGIN_SRC emacs-lisp
+(require 'org-download)
+
+;; Drag-and-drop to `dired`
+(add-hook 'dired-mode-hook 'org-download-enable)
+#+END_SRC
+** Org quizzing
+#+BEGIN_SRC emacs-lisp
+  (setq org-drill-add-random-noise-to-intervals-p t )
+  (setq org-drill-learn-fraction 0.1)
+#+END_SRC
+** Org Journaling
+
+#+begin_src emacs-lisp
+(use-package org-journal
+ :bind (("C-c t" . journal-file-today)
+        ("C-c y" . journal-file-yesterday))
+ :custom
+ (org-journal-dir "~/Projects/org/journal/")
+ (org-journal-file-format "%Y%m%d")
+ (org-journal-date-format "%e %b %Y (%A)")
+ (org-journal-time-format "")
+ :preface
+
+ (defun get-journal-file-yesterday ()
+   "Gets filename for yesterday's journal entry."
+   (let* ((yesterday (time-subtract (current-time) (days-to-time 1)))
+          (daily-name (format-time-string "%Y%m%d" yesterday)))
+     (expand-file-name (concat org-journal-dir daily-name))))
+
+ (defalias 'journal-file-today 'org-journal-new-entry)
+
+ (defun journal-file-yesterday ()
+   "Creates and load a file based on yesterday's date."
+   (interactive)
+   (find-file (get-journal-file-yesterday))))
+#+end_src
+
+#+RESULTS:
+: journal-file-yesterday
+
