@@ -260,7 +260,7 @@ doesn't require any additional setup. I've bound its most useful command to
 #+BEGIN_SRC emacs-lisp
   (use-package dumb-jump
     :config
-    (define-key evil-normal-state-map (kbd "M-.") 'dumb-jump-go)
+    ;; (define-key evil-normal-state-map (kbd "M-.") 'dumb-jump-go)
     (setq dumb-jump-selector 'ivy))
 #+END_SRC
 
@@ -339,9 +339,9 @@ project root (if I'm not in a "real" project).
     ("C-c v" . 'projectile-ag)
 
     :config
-    (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
-    (evil-define-key 'motion ag-mode-map (kbd "C-p") 'projectile-find-file)
-    (evil-define-key 'motion rspec-mode-map (kbd "C-p") 'projectile-find-file)
+    ;; (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+    ;; (evil-define-key 'motion ag-mode-map (kbd "C-p") 'projectile-find-file)
+    ;; (evil-define-key 'motion rspec-mode-map (kbd "C-p") 'projectile-find-file)
 
     (setq projectile-completion-system 'ivy)
     (setq projectile-switch-project-action 'projectile-dired)
@@ -1056,462 +1056,428 @@ my buffer.
 
 * Extra stuff
 #+BEGIN_SRC emacs-lisp
-	 ;; (add-hook 'emacs-lisp-mode-hook
-	 ;;             (lambda ()
-	 ;;               (push '(">=" . ?≥) prettify-symbols-alist)))
-	 ;; (lambda (x y)
-	 ;;   (if (>= x y)
-	 ;;       (something)
-	 ;;     (something-else)))
-
-	 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-	 ; Useful for copying and pasting in emacs in a terminal
-	 ; Not sure if this will cause a bug or not
-	 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-	 (defun now ()
-	   "Insert string for the current time formatted like '2:34 PM' or 1507121460"
-	   (interactive)                 ; permit invocation in minibuffer
-	   (insert (format-time-string "%D %-I:%M %p"))
-	 )
-
-	 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-	 ; Compilation stuff
-	 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-	 (defun save-all-and-compile ()
-	   (save-some-buffers 1)
-	   (compile compile-command))
-
-	 (setq compilation-ask-about-save nil)
-	 (global-set-key [f5] 'compile)
-
-	 (setq TeX-PDF-from-DVI "Dvips") 
-	 ;; (add-to-list 'load-path "/home/jdamon/.emacs.d/share/emacs/site-lisp")
-	 ;; (add-to-list 'load-path "/usr/share/emacs24/site-lisp/")
-	 ;; (add-to-list 'load-path "/usr/share/emacs24/site-lisp/auto-complete");
-	 ;; (condition-case nil
-	 ;; (require 'auto-complete-config)
-	 ;; (add-to-list 'ac-dictionary-directories "/usr/share/emacs23/site-lisp//ac-dict")
-	 ;; (ac-config-default)
-	 ;; (error nil)
-	 ;; )
-	 ;; (add-to-list 'load-path "/home/jdamon/.emacs.d/neotree" )
-	 ;; (require 'neotree)
-	 ;; (global-set-key [f8] 'neotree-toggle)
-	 ;check system name
-	 (add-to-list 'load-path "/home/jdamon/.emacs.d/lisp")
-	 (add-to-list 'load-path "/home/jdamon/.emacs.d/xcscope")
-	 (add-to-list 'load-path "/usr/share/emacs23/site-lisp/")
-
-	 (condition-case nil
-	   (load "auctex.el" nil t t)
-	   (load "preview-latex.el" nil t t)
-	   (error nil)
-	 )
-
-	 (condition-case nil
-	   (load "ggtags.elc" nil t t )
-	   (add-hook 'c-mode-common-hook
-		     (lambda ()
-		       (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-			 (ggtags-mode 1))))
-	   (error nil)
-	 )
-	 ;; (load "smart-compile.el" nil t t )
-	 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-	 ; Auto compilation
-	 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-	 ;; (load "mode-compile.el" nil t t )
-	 (defun mode-compile-quiet ()
-	   (interactive)
-	   (flet ((read-string (&rest args) ""))
-	     (mode-compile)))
-
-	 ;; Bury the compilation buffer when compilation is finished and successful.
-	 (add-to-list 'compilation-finish-functions
-		      (lambda (buffer msg)
-			(when 
-			  (bury-buffer buffer)
-			  (replace-buffer-in-windows buffer))))
-
-	 ;; C-c C-% will set a buffer local hook to use mode-compile after saving
-	 (global-set-key '[(ctrl c) (ctrl %)]
-			 (lambda () 
-			   (interactive)
-			   (if (member 'mode-compile-quiet after-save-hook)
-			       (progn
-				 (setq after-save-hook 
-				     (remove 'mode-compile-quiet after-save-hook))
-				 (message "No longer compiling after saving."))
-			     (progn
-			       (add-to-list 'after-save-hook 'mode-compile-quiet)
-			       (message "Compiling after saving.")))))
-
-	 ;; Prevent compilation buffer from showing up
-	 ;; (defadvice compile (around compile/save-window-excursion first () activate)
-	 ;;   (save-window-excursion ad-do-it))
-
-	 ;; Bury the compilation buffer when compilation is finished and successful.
-	 (add-to-list 'compilation-finish-functions
-		      (lambda (buffer msg)
-			(when 
-			  (bury-buffer buffer)
-			  (replace-buffer-in-windows buffer))))
-
-	 (setq compilation-scroll-output 'first-error)
-
-	 ;; (require  'xcscope )
-	 (define-key global-map [(control f4)]  'cscope-pop-mark)
-	 (define-key global-map [(control f5)]  'cscope-find-this-text-string)
-	 (define-key global-map [(control f6)]  'cscope-find-this-symbol)
-	 (define-key global-map [(control f7)]  'cscope-find-functions-calling-this-function)
-	 (define-key global-map [(control f8)]  'cscope-find-called-functions)
-	 (define-key global-map [(control f9)]  'cscope-prev-symbol)
-	 (define-key global-map [(control f10)] 'cscope-next-symbol)
-	 ;;; XEmacs backwards compatibility file
-
-
-	 (line-number-mode t)
-	 ;(put 'my-operator 'scheme-indent-function 3)
-	 ; Stuff for setting up key bindings...
-	 ;; (add-to-list 'load-path "~/.emacs.d/")
-
-
-	 (condition-case nil
-	   (require 'auto-complete-config)
-	   (error nil)
-	 )    
-
-	 (defun describe-face-at-point ()
-		       "Return face used at point."
-		       (interactive)
-		       (hyper-describe-face (get-char-property (point) 'face)))
-
-	 (defun jump-down (&optional n )
-	   "Jump downwards by n secions of 8 lines"
-	   (interactive "P")
-	   (let (i count)
-	     (if n
-		 (progn 
-		   (setq count n)
-		 )
-		 (setq count 1)
-	     )
-	     (dotimes ( i count)
-	       (forward-line (* 8 (+ i 1)))
-	     )
-	   )
-	 )
-
-	 (defun jump-up (&optional n )
-	   "Jump upwards by n sections of 8 lines"
-	   (interactive "P")
-	   (let (i count)
-	     (if n
-		 (progn 
-		   (setq count n)
-		 )
-		 (setq count 1)
-	     )
-	     (dotimes ( i count)
-	       (forward-line (* -8 (+ i 1)))
-	     )
-	   )
-	 )
-
-	 (defun charlie-settings( &optional n )
-	   "Setup the charlie settings"
-	   (interactive "P")
-	   (c-set-offset 'statement-block-intro 4)
-	   (c-set-offset 'defun-block-intro 4)
-	 )
-
-
-
-	 (setq-default indent-tabs-mode nil)     ; Turn off default tabs
-	 (setq inhibit-startup-message t)        ; Turn off start up message
-	 (setq inhibit-default-init t)           ; Turn off default init and messages
-	 (setq home-dir (getenv "HOME"))
-	 (defvar PERL_HEADER_LENGTH 76
-	   "Controls the length of headers")
-
-	 ;; (setq load-path (cons (expand-file-name "~/Emacs") load-path))
-	 ;; (setq load-path (cons (expand-file-name "~/.emacs.d") load-path))
-	 ;; (setq load-path (cons "/usr/share/emacs/site-lisp/site-start.d" load-path))
-
-	 (global-set-key [(control button2)] 'x-copy-primary-selection)
-	 (global-set-key [(button4)] 'scroll-down)
-	 (global-set-key [(button5)] 'scroll-up)
-	 (global-set-key "\M-[a" 'jump-up)
-	 (global-set-key "\M-[b" 'jump-down)
-
-	 (global-set-key "\C-b" 'backward-kill-word)
-	 (global-set-key "\C-n" 'kill-word)
-	 (global-set-key "\M-?" 'help-command)
-	 ;; (global-set-key "\C-h" 'delete-backward-char) ; get rid of those annoying character
-	 (global-set-key "\M-\C-s" 'shell)
-	 (global-set-key "\M-\C-l" 'toggle-buffers-in-window)
-	 (global-set-key "\C-xg" 'goto-line)
-	 ;; (global-set-key "\C-h" 'delete-backward-char)
-	 (global-set-key "\C-c\C-c" 'comment-region)
-	 ;(global-set-key [(control left)]  'backward-word-correctly )
-	 ;(global-set-key [(control right)] 'forward-word-correctly )
-	 (global-set-key [(control right)] 'forward-word)
-	 (global-set-key [(control left)]  'backward-word )
-	 ;(global-set-key [(control down)]  'jump-down )
-	 ;(global-set-key [(control up )]   'jump-up )
-
-	 ;(global-set-key "\C-" 'backward-paragraph)
-	 (define-key global-map [(control bracket)] 'backward-paragraph)
-	 (defalias 'scroll-ahead 'scroll-up)
-	 (defalias 'scroll-behind 'scroll-down)
-
-
-
-
-
-
-	 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-	 ; 
-	 ; Defined functions for customization 
-	 ;
-	 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-
-
-
-	 (defun scroll-n-lines-ahead ( &optional n )
-	   "Scroll Ahead N lines( 1 by default )."
-	   (interactive "P")
-	   (scroll-ahead (prefix-numeric-value n)))
-	 (defun scroll-n-lines-behind (&optional n)
-	   "Scroll Behind N lines( 1 by default )."
-	   (interactive "P")
-	   (scroll-behind (prefix-numeric-value n)))
-
-	 ;:*======================
-
-
-
-	 (defun lets-test-it (&optional n )
-	   "Examining the characteristics of parameters"
-	   (interactive)                         ;no args
-	   (princ n)
-	 )
-
-	 (require 'font-lock)
-
-
-	 (defvar null-device "/dev/null")
-	 ;; (set-face-foreground 'font-lock-type-face'            "dodgerblue")
-	 ;;(message "Making pretty Colors")
-	 ;;(message "HELLO THERE")
-	 ;(load-file "/Users/jdamon/Emacs/spice-mode.el")
-	 ;(load-file "/Users/jdamon/Emacs/modes.el")
-	 (setq auto-mode-alist (append (list (cons "\\.scs$" 'spectre-mode)
-					     (cons "\\.inp$" 'spectre-mode))
-				       auto-mode-alist))
-
-
-
-
-
-
-	 ; (add-hook 'LaTeX-mode-hook #'LaTeX-install-toolbar)
-
-	 (setq perl-indent-level 4)
-	 (setq cperl-indent-level 4)
-	 (setq cperl-font-lock t)
-	 (setq cperl-syntaxify-by-font-lock t)
-	 ;(cperl-set-style "BSD")   ; Need to find a way to specify the style with a variable...
-
-
-	 (add-hook 'cperl-hook-mode 'outline-minor-mode)
-
-
-	 (line-number-mode t)
-	 (display-time )
-	 (defun refill-mode (&optional arg)
-	   "Refill Minor Mode"
-	   (interactive "P")
-	   (setq refill-mode
-		 (if (null arg)
-		     (not refill-mode)
-		     (> (prefix-numeric-value arg) 0))
-
-	   )
-	   (make-local-hook 'after-change-functions)
-	   (if refill-mode
-	       (add-hook 'after-change-functions 'refill nil t)
-	       (remove-hook 'after-change-functions 'refill t)
-	   )
-	 )
-
-
-
-
-	 (defun writeroom ()
-	   "Switches to a WriteRoom-like fullscreen style"
-	   (interactive) 
-	   (when (featurep 'aquamacs)
-	     ;; switch to white on black
-	     ;; (color-theme-initialize)
-	     ;; (color-theme-clarity)
-	     ;; (color-theme-scintilla)
-	     ;; switch to Garamond 36pt
-	     (aquamacs-autoface-mode 0)
-	     (set-frame-font "-apple-garamond-medium-r-normal--36-360-72-72-m-360-iso10646-1")
-	     ;; switch to fullscreen mode
-	     (aquamacs-toggle-full-frame)))
-
-
-	 (defun iconify-or-deiconify-frame-fullscreen-even ()
-	    (interactive)
-	    (if (eq (cdr (assq 'visibility (frame-parameters))) t)
-	      (progn
-		(if (frame-parameter nil 'fullscreen) 
-		(aquamacs-toggle-full-frame))     
-	  ;       (switch-to-buffer "*scratch*") 
-		(iconify-frame))
-	      (make-frame-visible))) 
-	  (define-key global-map "\C-z" #'iconify-or-deiconify-frame-fullscreen-even)
-
-
-	 (defun skill-fun-header-helper( name function_name )
-	 "Extra helper function that uses the name and extra to setup headers"
-	     (indent-for-tab-command)
-	     (insert (format "; %s::name=     : %s\n" name function_name ) )
-	     (indent-for-tab-command)
-	     (insert (format "; %s::desc=     :\n" name ))
-	     (indent-for-tab-command)
-	     (insert (format "; %s::args=     :\n" name ))
-	     (setq counter 1)
-	     (indent-for-tab-command)
-	     (insert (format "; %s::returns=  :\n" name ))
-	     (indent-for-tab-command)
-	     (insert (format "; %s::throws=   :\n" name ))
-	     (indent-for-tab-command)
-	     (insert (format "; %s::notes=    :\n" name ))
-	     (indent-for-tab-command)
-	     (insert (format ";              none\n"))
-	     (indent-for-tab-command)
-	     (insert (format "; %s::todo     :\n" name ))
-	     (indent-for-tab-command)
-	     (insert (format ";              none\n"))
-	     (add-skill-top-banner)
-	     (insert "\n")
-	 )
-
-
-	 ;; (add-hook 'c-mode-common-hook 'doxymacs-mode)
-	 ;(add-hook 'c-mode-common-hook 'hl-line-mode)
-	 (add-hook 'c-mode-common-hook 'linum-mode)
-	 (add-hook 'c-mode-common-hook 'outline-minor-mode ) 
-	 (add-hook 'python-mode-hook 'linum-mode)
-
-
-	 ;************************* Custimization of Faces *******************************
-
-
-	 ;; (custom-set-variables
-	 ;;  ;; custom-set-variables was added by Custom.
-	 ;;  ;; If you edit it by hand, you could mess it up, so be careful.
-	 ;;  ;; Your init file should contain only one such instance.
-	 ;;  ;; If there is more than one, they won't work right.
-	 ;;  '(markdown-command "pandoc ")
-	 ;;  '(org-agenda-files nil)
-	 ;;  '(org-modules
-	 ;;    (quote
-	 ;;     (org-bbdb org-bibtex org-ctags org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m org-drill org-learn)))
-	 ;;  '(package-selected-packages
-	 ;;    (quote
-	 ;;     (cedit cdlatex ledger-import flycheck-ledger org-babel-eval-in-repl graphviz-dot-mode dot-mode org-drill-table dash yaml-mode scala-mode polymode passthword org-bullets org neotree markdown-mode json-mode groovy-mode gradle-mode gitignore-mode color-theme-modern cmake-mode chess bind-key auto-complete auctex))))
-	 ;; (load-library "color-theme")
-	 ;
-	 ;(color-theme-select)
-	 ;(color-theme-scintilla)
-	 ;; '(font-lock-comment-face ((t (:foreground "pale green" :slant italic))))
-
-
-
-	 (put 'upcase-region 'disabled nil)
-	 (put 'downcase-region 'disabled nil)
-	 ;(princ edit-tab-stops-map)
-
-	 ;;; This was installed by package-install.el.
-	 ;;; This provides support for the package system and
-	 ;;; interfacing with ELPA, the package archive.
-	 ;;; Move this code earlier if you want to reference
-	 ;;; packages in your .emacs.
-	 ;; (if nil
-	 ;;     (when
-	 ;;         (load
-	 ;;          (expand-file-name "~/.emacs.d/elpa/package.el"))
-	 ;;       (package-initialize))
-	 ;; )
-
-
-	 (defun bisque-background()
-	   "Switches to bisque background for better vision"
-	   (interactive) 
-	   (set-background-color "bisque")
-	   (custom-set-faces
-	   '(hl-line ((t (:background "tan1"))))
-	   '(font-lock-string-face ((t (:foreground "medium orchid"))))
-	   )
-	 )
-
-	 (if (display-graphic-p) 
-	   () 
-	   (load-theme 'wheatgrass)
-	   (xterm-mouse-mode)
-	 )
-
-
-	 (defun my-add-semantic-to-autocomplete()
-	   (add-to-list 'ac-sources 'ac-source-semantic)
-	   )
-
-	 (add-hook 'c-mode-common-hook 'my-add-semantic-to-autocomplete)
-	 (electric-indent-mode -1)
-	 (defun toggle-window-split ()
-	   (interactive)
-	   (if (= (count-windows) 2)
-	       (let* ((this-win-buffer (window-buffer))
-		      (next-win-buffer (window-buffer (next-window)))
-		      (this-win-edges (window-edges (selected-window)))
-		      (next-win-edges (window-edges (next-window)))
-		      (this-win-2nd (not (and (<= (car this-win-edges)
-						  (car next-win-edges))
-					      (<= (cadr this-win-edges)
-						  (cadr next-win-edges)))))
-		      (splitter
-		       (if (= (car this-win-edges)
-			      (car (window-edges (next-window))))
-			   'split-window-horizontally
-			 'split-window-vertically)))
-		 (delete-other-windows)
-		 (let ((first-win (selected-window)))
-		   (funcall splitter)
-		   (if this-win-2nd (other-window 1))
-		   (set-window-buffer (selected-window) this-win-buffer)
-		   (set-window-buffer (next-window) next-win-buffer)
-		   (select-window first-win)
-		   (if this-win-2nd (other-window 1))))))
-
-
-	 ; Set the equation to be larger sized
-	 (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
-	 (setq org-display-inline-images t) 
-	 (setq org-redisplay-inline-images t) 
-	 (setq org-startup-with-inline-images "inlineimages")
-
-
-   ;  (require 'calendar)
-
-
-
-       (setq epa-file-cache-passphrase-for-symmetric-encryption t )
-       (setq org-deadline-warning-days 0)
+  ;; (add-hook 'emacs-lisp-mode-hook
+  ;;             (lambda ()
+  ;;               (push '(">=" . ?≥) prettify-symbols-alist)))
+  ;; (lambda (x y)
+  ;;   (if (>= x y)
+  ;;       (something)
+  ;;     (something-else)))
+
+;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+; Useful for copying and pasting in emacs in a terminal
+; Not sure if this will cause a bug or not
+;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  (defun now ()
+    "Insert string for the current time formatted like '2:34 PM' or 1507121460"
+    (interactive)                 ; permit invocation in minibuffer
+    (insert (format-time-string "%D %-I:%M %p"))
+    )
+
+;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+; Compilation stuff
+;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  (defun save-all-and-compile ()
+    (save-some-buffers 1)
+    (compile compile-command))
+
+  (setq compilation-ask-about-save nil)
+  (global-set-key [f5] 'compile)
+
+  (setq TeX-PDF-from-DVI "Dvips") 
+  ;; (add-to-list 'load-path "/home/jdamon/.emacs.d/share/emacs/site-lisp")
+  ;; (add-to-list 'load-path "/usr/share/emacs24/site-lisp/")
+  ;; (add-to-list 'load-path "/usr/share/emacs24/site-lisp/auto-complete");
+  ;; (condition-case nil
+  ;; (require 'auto-complete-config)
+  ;; (add-to-list 'ac-dictionary-directories "/usr/share/emacs23/site-lisp//ac-dict")
+  ;; (ac-config-default)
+  ;; (error nil)
+  ;; )
+  ;; (add-to-list 'load-path "/home/jdamon/.emacs.d/neotree" )
+  ;; (require 'neotree)
+  ;; (global-set-key [f8] 'neotree-toggle)
+                                          ;check system name
+  (add-to-list 'load-path "/home/jdamon/.emacs.d/lisp")
+  (add-to-list 'load-path "/home/jdamon/.emacs.d/xcscope")
+  (add-to-list 'load-path "/usr/share/emacs23/site-lisp/")
+
+  (condition-case nil
+      (load "auctex.el" nil t t)
+    (load "preview-latex.el" nil t t)
+    (error nil)
+    )
+
+  (condition-case nil
+      (load "ggtags.elc" nil t t )
+    (add-hook 'c-mode-common-hook
+              (lambda ()
+                (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+                  (ggtags-mode 1))))
+    (error nil)
+    )
+  ;; (load "smart-compile.el" nil t t )
+;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+; Auto compilation
+;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  ;; (load "mode-compile.el" nil t t )
+  (defun mode-compile-quiet ()
+    (interactive)
+    (flet ((read-string (&rest args) ""))
+      (mode-compile)))
+
+  ;; Bury the compilation buffer when compilation is finished and successful.
+  (add-to-list 'compilation-finish-functions
+               (lambda (buffer msg)
+                 (when 
+                     (bury-buffer buffer)
+                   (replace-buffer-in-windows buffer))))
+
+  ;; C-c C-% will set a buffer local hook to use mode-compile after saving
+  (global-set-key '[(ctrl c) (ctrl %)]
+                  (lambda () 
+                    (interactive)
+                    (if (member 'mode-compile-quiet after-save-hook)
+                        (progn
+                          (setq after-save-hook 
+                                (remove 'mode-compile-quiet after-save-hook))
+                          (message "No longer compiling after saving."))
+                      (progn
+                        (add-to-list 'after-save-hook 'mode-compile-quiet)
+                        (message "Compiling after saving.")))))
+
+  ;; Prevent compilation buffer from showing up
+  ;; (defadvice compile (around compile/save-window-excursion first () activate)
+  ;;   (save-window-excursion ad-do-it))
+
+  ;; Bury the compilation buffer when compilation is finished and successful.
+  (add-to-list 'compilation-finish-functions
+               (lambda (buffer msg)
+                 (when 
+                     (bury-buffer buffer)
+                   (replace-buffer-in-windows buffer))))
+
+  (setq compilation-scroll-output 'first-error)
+
+  ;; (require  'xcscope )
+  (define-key global-map [(control f4)]  'cscope-pop-mark)
+  (define-key global-map [(control f5)]  'cscope-find-this-text-string)
+  (define-key global-map [(control f6)]  'cscope-find-this-symbol)
+  (define-key global-map [(control f7)]  'cscope-find-functions-calling-this-function)
+  (define-key global-map [(control f8)]  'cscope-find-called-functions)
+  (define-key global-map [(control f9)]  'cscope-prev-symbol)
+  (define-key global-map [(control f10)] 'cscope-next-symbol)
+         ;;; XEmacs backwards compatibility file
+  (line-number-mode t)
+                                          ;(put 'my-operator 'scheme-indent-function 3)
+                                          ; Stuff for setting up key bindings...
+  ;; (add-to-list 'load-path "~/.emacs.d/")
+  (condition-case nil
+      (require 'auto-complete-config)
+    (error nil)
+    )    
+
+  (defun describe-face-at-point ()
+    "Return face used at point."
+    (interactive)
+    (hyper-describe-face (get-char-property (point) 'face)))
+
+  (defun jump-down (&optional n )
+    "Jump downwards by n secions of 8 lines"
+    (interactive "P")
+    (let (i count)
+      (if n
+          (progn 
+            (setq count n)
+            )
+        (setq count 1)
+        )
+      (dotimes ( i count)
+        (forward-line (* 8 (+ i 1)))
+        )
+      )
+    )
+
+  (defun jump-up (&optional n )
+    "Jump upwards by n sections of 8 lines"
+    (interactive "P")
+    (let (i count)
+      (if n
+          (progn 
+            (setq count n)
+            )
+        (setq count 1)
+        )
+      (dotimes ( i count)
+        (forward-line (* -8 (+ i 1)))
+        )
+      )
+    )
+
+  (defun charlie-settings( &optional n )
+    "Setup the charlie settings"
+    (interactive "P")
+    (c-set-offset 'statement-block-intro 4)
+    (c-set-offset 'defun-block-intro 4)
+    )
+
+
+
+  (setq-default indent-tabs-mode nil)     ; Turn off default tabs
+  (setq inhibit-startup-message t)        ; Turn off start up message
+  (setq inhibit-default-init t)           ; Turn off default init and messages
+  (setq home-dir (getenv "HOME"))
+  (defvar PERL_HEADER_LENGTH 76
+    "Controls the length of headers")
+
+  ;; (setq load-path (cons (expand-file-name "~/Emacs") load-path))
+  ;; (setq load-path (cons (expand-file-name "~/.emacs.d") load-path))
+  ;; (setq load-path (cons "/usr/share/emacs/site-lisp/site-start.d" load-path))
+
+  (global-set-key [(control button2)] 'x-copy-primary-selection)
+  (global-set-key [(button4)] 'scroll-down)
+  (global-set-key [(button5)] 'scroll-up)
+  (global-set-key "\M-[a" 'jump-up)
+  (global-set-key "\M-[b" 'jump-down)
+
+  (global-set-key "\C-b" 'backward-kill-word)
+  (global-set-key "\C-n" 'kill-word)
+  (global-set-key "\M-?" 'help-command)
+  ;; (global-set-key "\C-h" 'delete-backward-char) ; get rid of those annoying character
+  (global-set-key "\M-\C-s" 'shell)
+  (global-set-key "\M-\C-l" 'toggle-buffers-in-window)
+  (global-set-key "\C-xg" 'goto-line)
+  ;; (global-set-key "\C-h" 'delete-backward-char)
+  (global-set-key "\C-c\C-c" 'comment-region)
+                                          ;(global-set-key [(control left)]  'backward-word-correctly )
+                                          ;(global-set-key [(control right)] 'forward-word-correctly )
+  (global-set-key [(control right)] 'forward-word)
+  (global-set-key [(control left)]  'backward-word )
+                                          ;(global-set-key [(control down)]  'jump-down )
+                                          ;(global-set-key [(control up )]   'jump-up )
+
+                                          ;(global-set-key "\C-" 'backward-paragraph)
+  (define-key global-map [(control bracket)] 'backward-paragraph)
+  (defalias 'scroll-ahead 'scroll-up)
+  (defalias 'scroll-behind 'scroll-down)
+;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+; 
+; Defined functions for customization 
+;
+;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  (defun scroll-n-lines-ahead ( &optional n )
+    "Scroll Ahead N lines( 1 by default )."
+    (interactive "P")
+    (scroll-ahead (prefix-numeric-value n)))
+  (defun scroll-n-lines-behind (&optional n)
+    "Scroll Behind N lines( 1 by default )."
+    (interactive "P")
+    (scroll-behind (prefix-numeric-value n)))
+  (defun lets-test-it (&optional n )
+    "Examining the characteristics of parameters"
+    (interactive)                         ;no args
+    (princ n)
+    )
+
+  (require 'font-lock)
+  (defvar null-device "/dev/null")
+  (setq auto-mode-alist (append (list (cons "\\.scs$" 'spectre-mode)
+                                      (cons "\\.inp$" 'spectre-mode))
+                                auto-mode-alist))
+
+                                          ; (add-hook 'LaTeX-mode-hook #'LaTeX-install-toolbar)
+  (setq perl-indent-level 4)
+  (setq cperl-indent-level 4)
+  (setq cperl-font-lock t)
+  (setq cperl-syntaxify-by-font-lock t)
+                                          ;(cperl-set-style "BSD")   ; Need to find a way to specify the style with a variable...
+
+  (add-hook 'cperl-hook-mode 'outline-minor-mode)
+
+  (line-number-mode t)
+  (display-time )
+  (defun refill-mode (&optional arg)
+    "Refill Minor Mode"
+    (interactive "P")
+    (setq refill-mode
+          (if (null arg)
+              (not refill-mode)
+            (> (prefix-numeric-value arg) 0))
+
+          )
+    (make-local-hook 'after-change-functions)
+    (if refill-mode
+        (add-hook 'after-change-functions 'refill nil t)
+      (remove-hook 'after-change-functions 'refill t)
+      )
+    )
+
+
+
+
+  (defun writeroom ()
+    "Switches to a WriteRoom-like fullscreen style"
+    (interactive) 
+    (when (featurep 'aquamacs)
+      ;; switch to white on black
+      ;; (color-theme-initialize)
+      ;; (color-theme-clarity)
+      ;; (color-theme-scintilla)
+      ;; switch to Garamond 36pt
+      (aquamacs-autoface-mode 0)
+      (set-frame-font "-apple-garamond-medium-r-normal--36-360-72-72-m-360-iso10646-1")
+      ;; switch to fullscreen mode
+      (aquamacs-toggle-full-frame)))
+
+
+  (defun iconify-or-deiconify-frame-fullscreen-even ()
+    (interactive)
+    (if (eq (cdr (assq 'visibility (frame-parameters))) t)
+        (progn
+          (if (frame-parameter nil 'fullscreen) 
+              (aquamacs-toggle-full-frame))     
+                                          ;       (switch-to-buffer "*scratch*") 
+          (iconify-frame))
+      (make-frame-visible))) 
+  (define-key global-map "\C-z" #'iconify-or-deiconify-frame-fullscreen-even)
+
+
+  (defun skill-fun-header-helper( name function_name )
+    "Extra helper function that uses the name and extra to setup headers"
+    (indent-for-tab-command)
+    (insert (format "; %s::name=     : %s\n" name function_name ) )
+    (indent-for-tab-command)
+    (insert (format "; %s::desc=     :\n" name ))
+    (indent-for-tab-command)
+    (insert (format "; %s::args=     :\n" name ))
+    (setq counter 1)
+    (indent-for-tab-command)
+    (insert (format "; %s::returns=  :\n" name ))
+    (indent-for-tab-command)
+    (insert (format "; %s::throws=   :\n" name ))
+    (indent-for-tab-command)
+    (insert (format "; %s::notes=    :\n" name ))
+    (indent-for-tab-command)
+    (insert (format ";              none\n"))
+    (indent-for-tab-command)
+    (insert (format "; %s::todo     :\n" name ))
+    (indent-for-tab-command)
+    (insert (format ";              none\n"))
+    (add-skill-top-banner)
+    (insert "\n")
+    )
+
+
+  ;; (add-hook 'c-mode-common-hook 'doxymacs-mode)
+                                          ;(add-hook 'c-mode-common-hook 'hl-line-mode)
+  (add-hook 'c-mode-common-hook 'linum-mode)
+  (add-hook 'c-mode-common-hook 'outline-minor-mode ) 
+  (add-hook 'python-mode-hook 'linum-mode)
+
+
+                                          ;************************* Custimization of Faces *******************************
+
+
+  ;; (custom-set-variables
+  ;;  ;; custom-set-variables was added by Custom.
+  ;;  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;;  ;; Your init file should contain only one such instance.
+  ;;  ;; If there is more than one, they won't work right.
+  ;;  '(markdown-command "pandoc ")
+  ;;  '(org-agenda-files nil)
+  ;;  '(org-modules
+  ;;    (quote
+  ;;     (org-bbdb org-bibtex org-ctags org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m org-drill org-learn)))
+  ;;  '(package-selected-packages
+  ;;    (quote
+  ;;     (cedit cdlatex ledger-import flycheck-ledger org-babel-eval-in-repl graphviz-dot-mode dot-mode org-drill-table dash yaml-mode scala-mode polymode passthword org-bullets org neotree markdown-mode json-mode groovy-mode gradle-mode gitignore-mode color-theme-modern cmake-mode chess bind-key auto-complete auctex))))
+  ;; (load-library "color-theme")
+                                          ;
+                                          ;(color-theme-select)
+                                          ;(color-theme-scintilla)
+  ;; '(font-lock-comment-face ((t (:foreground "pale green" :slant italic))))
+
+
+
+  (put 'upcase-region 'disabled nil)
+  (put 'downcase-region 'disabled nil)
+                                          ;(princ edit-tab-stops-map)
+
+         ;;; This was installed by package-install.el.
+         ;;; This provides support for the package system and
+         ;;; interfacing with ELPA, the package archive.
+         ;;; Move this code earlier if you want to reference
+         ;;; packages in your .emacs.
+  ;; (if nil
+  ;;     (when
+  ;;         (load
+  ;;          (expand-file-name "~/.emacs.d/elpa/package.el"))
+  ;;       (package-initialize))
+  ;; )
+
+
+  (defun bisque-background()
+    "Switches to bisque background for better vision"
+    (interactive) 
+    (set-background-color "bisque")
+    (custom-set-faces
+     '(hl-line ((t (:background "tan1"))))
+     '(font-lock-string-face ((t (:foreground "medium orchid"))))
+     )
+    )
+
+  (if (display-graphic-p) 
+      () 
+    (load-theme 'wheatgrass)
+    (xterm-mouse-mode)
+    )
+
+
+  (defun my-add-semantic-to-autocomplete()
+    (add-to-list 'ac-sources 'ac-source-semantic)
+    )
+
+  (add-hook 'c-mode-common-hook 'my-add-semantic-to-autocomplete)
+  (electric-indent-mode -1)
+  (defun toggle-window-split ()
+    (interactive)
+    (if (= (count-windows) 2)
+        (let* ((this-win-buffer (window-buffer))
+               (next-win-buffer (window-buffer (next-window)))
+               (this-win-edges (window-edges (selected-window)))
+               (next-win-edges (window-edges (next-window)))
+               (this-win-2nd (not (and (<= (car this-win-edges)
+                                           (car next-win-edges))
+                                       (<= (cadr this-win-edges)
+                                           (cadr next-win-edges)))))
+               (splitter
+                (if (= (car this-win-edges)
+                       (car (window-edges (next-window))))
+                    'split-window-horizontally
+                  'split-window-vertically)))
+          (delete-other-windows)
+          (let ((first-win (selected-window)))
+            (funcall splitter)
+            (if this-win-2nd (other-window 1))
+            (set-window-buffer (selected-window) this-win-buffer)
+            (set-window-buffer (next-window) next-win-buffer)
+            (select-window first-win)
+            (if this-win-2nd (other-window 1))))))
+
+
+                                          ; Set the equation to be larger sized
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+  (setq org-display-inline-images t) 
+  (setq org-redisplay-inline-images t) 
+  (setq org-startup-with-inline-images "inlineimages")
+
+
+                                          ;  (require 'calendar)
+
+
+
+  (setq epa-file-cache-passphrase-for-symmetric-encryption t )
+  (setq org-deadline-warning-days 0)
   (use-package flycheck-ledger :after ledger-mode )
 
   (setq org-return-follows-link t )
@@ -1837,30 +1803,57 @@ Hiding leading stars
 ** Org Journaling
 
 #+begin_src emacs-lisp
-(use-package org-journal
- :bind (("C-c t" . journal-file-today)
-        ("C-c y" . journal-file-yesterday))
- :custom
- (org-journal-dir "~/Projects/org/journal/")
- (org-journal-file-format "%Y%m%d")
- (org-journal-date-format "%e %b %Y (%A)")
- (org-journal-time-format "")
- :preface
+  (use-package org-journal
+   :bind (("C-c t" . journal-file-today)
+          ("C-c y" . journal-file-yesterday))
+   :custom
+   (org-journal-dir "~/Projects/org/journal/")
+   (org-journal-file-format "%Y%m%d")
+   (org-journal-date-format "%e %b %Y (%A)")
+   (org-journal-time-format "")
+   :preface
 
- (defun get-journal-file-yesterday ()
-   "Gets filename for yesterday's journal entry."
-   (let* ((yesterday (time-subtract (current-time) (days-to-time 1)))
-          (daily-name (format-time-string "%Y%m%d" yesterday)))
-     (expand-file-name (concat org-journal-dir daily-name))))
+   (defun get-journal-file-yesterday ()
+     "Gets filename for yesterday's journal entry."
+     (let* ((yesterday (time-subtract (current-time) (days-to-time 1)))
+            (daily-name (format-time-string "%Y%m%d" yesterday)))
+       (expand-file-name (concat org-journal-dir daily-name))))
 
- (defalias 'journal-file-today 'org-journal-new-entry)
+   (defalias 'journal-file-today 'org-journal-new-entry)
 
- (defun journal-file-yesterday ()
-   "Creates and load a file based on yesterday's date."
-   (interactive)
-   (find-file (get-journal-file-yesterday))))
+   (defun journal-file-yesterday ()
+     "Creates and load a file based on yesterday's date."
+     (interactive)
+     (find-file (get-journal-file-yesterday))))
 #+end_src
 
 #+RESULTS:
 : journal-file-yesterday
+** Org Roam
+#+begin_src emacs-lisp
+  (use-package org-roam
+        :hook 
+        (after-init . org-roam-mode)
+        :custom
+        (org-roam-directory "~/Projects/org/")
+        :bind (:map org-roam-mode-map
+                (("C-c n l" . org-roam)
+                 ("C-c n f" . org-roam-find-file)
+                 ("C-c n b" . org-roam-switch-to-buffer)
+                 ("C-c n g" . org-roam-graph-show))
+                :map org-mode-map
+                (("C-c n i" . org-roam-insert))))
+#+end_src
+** Deft
+
+#+begin_src emacs-lisp
+  (use-package deft
+    :bind ("<f8>" . deft)
+    :commands (deft)
+    :config (setq deft-directory "~/Projects/org"
+                  deft-extensions '("md" "org" "txt")))
+  ;; (setq deft-extensions '("txt" "tex" "org"))
+  ;; (setq deft-directory "~/Projects/org")
+  ;; (setq deft-recursive t)
+#+end_src 
 
