@@ -190,7 +190,7 @@ Always compile packages, and use the newest version available.
    (message (concat "Saved and ran clang-format on " buffer-file-name))
    (revert-buffer t t t)
 ))
-(global-set-key [f8] 'run-ros-clang-format)
+(global-set-key [f7] 'run-ros-clang-format)
 #+END_SRC
 ** Enable compilations with color
 
@@ -1534,6 +1534,21 @@ Hiding leading stars
   (setq org-hide-leading-stars t)
 #+END_SRC
 
+** Org images
+
+
+   Allows us to scale the image sizes
+#+begin_src emacs-lisp
+(setq org-image-actual-width nil)
+#+end_src
+
+** Displaying LateX and other graphics inline
+
+   A hold over
+#+begin_src emacs-lisp
+  ;(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+#+end_src
+
 ** Extra Org stuff
 ** Org Inbox, Index and Archive location 
  #+BEGIN_SRC emacs-lisp
@@ -1790,10 +1805,12 @@ Hiding leading stars
  #+END_SRC
 ** Org Download
 #+BEGIN_SRC emacs-lisp
-(require 'org-download)
+  (require 'org-download)
 
-;; Drag-and-drop to `dired`
-(add-hook 'dired-mode-hook 'org-download-enable)
+  ;; Drag-and-drop to `dired`
+  (add-hook 'dired-mode-hook 'org-download-enable)
+  (add-hook 'org-mode 'org-download-enable)
+  (setq-default org-download-image-dir "~/Projects/org/Pictures/")
 #+END_SRC
 ** Org quizzing
 #+BEGIN_SRC emacs-lisp
@@ -1851,9 +1868,12 @@ Hiding leading stars
     :bind ("<f8>" . deft)
     :commands (deft)
     :config (setq deft-directory "~/Projects/org"
-                  deft-extensions '("md" "org" "txt")))
-  ;; (setq deft-extensions '("txt" "tex" "org"))
-  ;; (setq deft-directory "~/Projects/org")
-  ;; (setq deft-recursive t)
+                  deft-extensions '("md" "org")))
+  (global-set-key (kbd "C-c d") 'deft)
+  (setq deft-extensions '("org"))
+  (setq deft-text-mode 'org-mode) 
+  (setq deft-use-filename-as-title t )
+  (setq deft-recursive t)
 #+end_src 
+
 
