@@ -56,6 +56,124 @@ Always compile packages, and use the newest version available.
 
 #+END_SRC
 
+* UI preferences
+** Tweak window chrome
+
+No scroll bar , Tool bar or Menu bar, with a simple function to restore it
+
+#+BEGIN_SRC emacs-lisp
+  (tool-bar-mode 0)
+  (menu-bar-mode 0)
+  (scroll-bar-mode -1)
+  (defun jmd/show-menu ()
+    "Enables the menu"
+    (interactive)
+    (menu-bar-mode 1))
+#+END_SRC
+
+There's a tiny scroll bar that appears in the minibuffer window. This disables
+that:
+
+#+BEGIN_SRC emacs-lisp
+  (set-window-scroll-bars (minibuffer-window) nil nil)
+#+END_SRC
+
+The default frame title isn't useful. This binds it to the name of the current
+project:
+
+#+BEGIN_SRC emacs-lisp
+  (setq frame-title-format '((:eval (projectile-project-name))))
+#+END_SRC
+
+** Use fancy lambdas
+
+Why not?
+
+#+BEGIN_SRC emacs-lisp
+  (global-prettify-symbols-mode t)
+#+END_SRC
+
+** Load up a theme
+
+I'm currently using the "sanityinc-tomorrow-bright" theme. I like a barely transparent 
+window on top of a cool european city backdrop. I like the Sanityinc tomorrow theme, but 
+I'm still not sure why this can't be loaded through use-package
+
+#+BEGIN_SRC emacs-lisp
+  (require 'color-theme-sanityinc-tomorrow)
+
+  (defun transparency (value)
+    "Sets the transparency of the frame window. 0=transparent/100=opaque."
+    (interactive "nTransparency Value 0 - 100 opaque:")
+    (set-frame-parameter (selected-frame) 'alpha value))
+
+  (defun jmd/apply-theme ()
+    "Apply the `solarized-light' theme and make frames just slightly transparent."
+    (interactive)
+    (color-theme-sanityinc-tomorrow-bright)
+    ;; (load-theme 'solarized-light t)
+    (transparency 96))
+#+END_SRC
+
+If this code is being evaluated by =emacs --daemon=, ensure that each subsequent
+frame is themed appropriately.
+
+#+BEGIN_SRC emacs-lisp
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions
+                (lambda (frame)
+                  (with-selected-frame frame (jmd/apply-theme))))
+    (jmd/apply-theme))
+#+END_SRC
+
+** Use =moody= for a beautiful modeline
+
+This gives me a truly lovely ribbon-based modeline.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package moody
+    :config
+    (setq x-underline-at-descent-line t)
+    (moody-replace-mode-line-buffer-identification)
+    (moody-replace-vc-mode))
+#+END_SRC
+
+** Use =minions= to hide all minor modes
+
+I never want to see a minor mode, and manually adding =:diminish= to every
+use-package declaration is a hassle. This uses =minions= to hide all the minor
+modes in the modeline. Nice!
+
+By default there's a =;-)= after the major mode; that's an adorable default, but
+I'd rather skip it.
+
+#+BEGIN_SRC emacs-lisp
+   (use-package minions
+     :config
+     (setq minions-mode-line-lighter ""
+           minions-mode-line-delimiters '("" . ""))
+     (minions-mode 1))
+#+END_SRC
+
+** Disable visual bell
+
+=sensible-defaults= replaces the audible bell with a visual one, but I really
+don't even want that (and my Emacs/Mac pair renders it poorly). This disables
+the bell altogether.
+
+#+BEGIN_SRC emacs-lisp
+  (setq ring-bell-function 'ignore)
+#+END_SRC
+
+** Scroll conservatively
+
+When point goes outside the window, Emacs usually recenters the buffer point.
+I'm not crazy about that. This changes scrolling behavior to only scroll as far
+as point goes.
+
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-conservatively 100)
+#+END_SRC
 * General Appearance / Startup
 ** Font Type
 
@@ -64,18 +182,6 @@ Always compile packages, and use the newest version available.
 #+END_SRC
 
 ** Display / Color
-
-   Use inverted face
-#+BEGIN_SRC emacs-lisp
-      (if t 
-         (if (display-graphic-p)
-             (progn 
-               (invert-face 'default)
-               )
-         )
-      )
-#+END_SRC
-
 ** Starting the Emacs Server
 #+BEGIN_SRC emacs-lisp
 (defvar server-socket-dir
@@ -192,6 +298,32 @@ Always compile packages, and use the newest version available.
 ))
 (global-set-key [f7] 'run-ros-clang-format)
 #+END_SRC
+** ROS Compilation
+#+begin_src emacs-lisp
+  ;; Based on https://www.seas.upenn.edu/~chaoliu/2018/03/12/ros-programming-in-emacs/#org8817889
+  (require 'ansi-color)
+  (defun endless/colorize-compilation ()
+    "Colorize from `compilation-filter-start' to `point'."
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region
+       compilation-filter-start (point))))
+
+  (add-hook 'compilation-filter-hook
+            #'endless/colorize-compilation)
+
+
+  (defun ros-catkin-make (dir)
+    "Run catkin_make command in DIR."
+    (interactive (list (file-name-directory (buffer-file-name))))
+    (let* ((default-directory dir)
+           (compilation-buffer-name-function (lambda (major-mode-name) "*catkin_make*")))
+      (compile "catkin bt --no-status"))
+    ;; (switch-to-buffer (get-buffer "*catkin_make*"))
+    (switch-to-buffer-other-window (get-buffer-create "*catkin_make*"))
+    )
+  (global-set-key [f5] 'ros-catkin-make)
+#+end_src
+
 ** Enable compilations with color
 
 #+BEGIN_SRC emacs-lisp
@@ -1605,7 +1737,7 @@ Hiding leading stars
                      (org-todo 'todo)))))))))
 
 
-   (define-key org-mode-map (kbd "C-c C-x C-s") 'hrs/mark-done-and-archive)
+   (define-key org-mode-map (kbd "C-c C-x C-s") 'jmd/mark-done-and-archive)
 
 #+END_SRC
 
