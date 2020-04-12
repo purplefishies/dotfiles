@@ -1635,6 +1635,14 @@ my buffer.
   (set-default 'preview-scale-function 1.9 )
 #+END_SRC
 
+*** Don't indent by 2, instead use native indentation
+#+begin_src emacs-lisp
+(setq org-src-tab-acts-natively t )
+(setq org-src-fontify-natively t )
+(setq org-src-preserve-indentation t)
+(setq org-src-strip-leading-and-trailing-blank-lines t)
+#+end_src
+
 ** Display preferences
 
 I like to see an outline of pretty bullets instead of a list of asterisks.
@@ -1994,7 +2002,7 @@ Hiding leading stars
                 (("C-c n i" . org-roam-insert))))
 #+end_src
 ** Deft
-
+   
 #+begin_src emacs-lisp
   (use-package deft
     :bind ("<f8>" . deft)
