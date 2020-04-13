@@ -43,6 +43,8 @@ Always compile packages, and use the newest version available.
 
 * Utility Functions
 
+  Functions that came from Harry Schwartz's configuration.org , I just renamed them to jmd ( my
+  name ) so that they're easier to remember.
 #+BEGIN_SRC emacs-lisp
   (defun jmd/kill-current-buffer ()
     "Kill the current buffer without prompting."
@@ -54,6 +56,10 @@ Always compile packages, and use the newest version available.
     (setenv "PATH" (concat (getenv "PATH") ":" path))
     (add-to-list 'exec-path path))
 
+  (defun jmd/add-auto-mode (mode &rest patterns)
+    "Add entries to `auto-mode-alist' to use `MODE' for all given file `PATTERNS'."
+    (dolist (pattern patterns)
+      (add-to-list 'auto-mode-alist (cons pattern mode))))
 #+END_SRC
 
 * UI preferences
@@ -548,7 +554,7 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
     )
 #+END_SRC
 
-** Perl 
+** Perl
 
    Adds Perl headers
 #+BEGIN_SRC emacs-lisp
@@ -682,10 +688,10 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
     )
 #+END_SRC 
 
-** Skill 
+** Skill
    Formatting functions for Scheme / Skill
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun skill-suffix-lookup (n)
     "Looks up the tail of a perl script and determines what the header name should be"
                                           ;  (interactive "P")
@@ -842,7 +848,6 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
       )
     )
 
-
   (defun add-perl-mod-sub-header( &optional n )
     "Adds a complex header title for the Perl subroutine"
     (interactive "P")
@@ -997,32 +1002,32 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
       (add-perl-top-banner)
       )
     )
-                                          ;------------------------------------------------------------------------------
-                                          ;
-                                          ; fn::name= add-c-mod-function-header
-                                          ; fn::desc= adds a C function header
-                                          ; fn::args= 1: optional, that describes number of characers
-                                          ; fn::desc= 1. Goal is to extract from a given line, the args passed to the
-                                          ;              function, and the arguments that are returned back to the
-                                          ;              user itself.
-                                          ; 
-                                          ; fn::todos= 1. Paste the elements from the start of the line until the
-                                          ;               end of the line into a buffer.............................DONE!
-                                          ;            2. Save the current point, and then insert the text above
-                                          ;               it........................................................DONE!
-                                          ;            3. Eventually allow functions to span multiple lines until it
-                                          ;               reaches the '{' character.................................
-                                          ;            4. Correctly parse Pointers to functions.....................
-                                          ;
-                                          ;            5. Allow correct matching for a term such as follows:
-                                          ;               const void *key... would be const void *..................DONE!
-                                          ;            6. Allow pointer to pointer declarations.....................DONE!
-                                          ;
-                                          ;            7. Add fix to allow for  function declarations that return
-                                          ;               pointers, like :  static int *function()..................DONE!
-                                          ;            8. Add fix for base case, such as void Do_something(void)
-                                          ;               and just pick up void.....................................
-                                          ;------------------------------------------------------------------------------
+;------------------------------------------------------------------------------
+;
+; fn::name= add-c-mod-function-header
+; fn::desc= adds a C function header
+; fn::args= 1: optional, that describes number of characers
+; fn::desc= 1. Goal is to extract from a given line, the args passed to the
+;              function, and the arguments that are returned back to the
+;              user itself.
+; 
+; fn::todos= 1. Paste the elements from the start of the line until the
+;               end of the line into a buffer.............................DONE!
+;            2. Save the current point, and then insert the text above
+;               it........................................................DONE!
+;            3. Eventually allow functions to span multiple lines until it
+;               reaches the '{' character.................................
+;            4. Correctly parse Pointers to functions.....................
+;
+;            5. Allow correct matching for a term such as follows:
+;               const void *key... would be const void *..................DONE!
+;            6. Allow pointer to pointer declarations.....................DONE!
+;
+;            7. Add fix to allow for  function declarations that return
+;               pointers, like :  static int *function()..................DONE!
+;            8. Add fix for base case, such as void Do_something(void)
+;               and just pick up void.....................................
+;------------------------------------------------------------------------------
   (defun add-c-mod-function-header( &optional n)
     "Add a default header to a subroutine"
     (interactive "P")
@@ -1071,12 +1076,18 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
       )
     )
 
-#+END_SRC
-
+#+end_src
 ** ROS Launch file support 
-#+BEGIN_SRC emacs-lisp
-   (add-to-list 'auto-mode-alist '("\\.launch\\'" . xml-mode))
-#+END_SRC
+
+   These support launch files and test files (the same XML ) that must exist under the 
+   test/* directory
+#+begin_src emacs-lisp
+  (jmd/add-auto-mode
+   'xml-mode
+   "test\\/.*\\.test$"
+   "\\.launch$"
+   )
+#+end_src
 
 ** Other languages
 #+BEGIN_SRC emacs-lisp
@@ -1163,6 +1174,16 @@ to use within Emacs (for things like =xmp= or =rspec=).
   (use-package chruby
     :config
     (chruby jmd/ruby-version))
+
+  (jmd/add-auto-mode
+   'ruby-mode
+   "\\Gemfile$"
+   "\\.rake$"
+   "\\.gemspec$"
+   "\\Guardfile$"
+   "\\Rakefile$"
+   "\\Vagrantfile$"
+   "\\Vagrantfile.local$")
 #+END_SRC
 
 Ruby executables are installed in =~/.gem/ruby/<version>/bin=. This ensures that
