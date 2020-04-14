@@ -293,12 +293,12 @@ as point goes.
   "Runs clang-format on cpp,h files in catkin_ws/ and reverts buffer."
   (interactive)
   (and
-   (princ "HERE")
+   ;(princ "HERE")
    (string-match "/catkin_ouster/.*\\.\\(h\\|cpp\\)$" buffer-file-name)
-   (princ "THERE")
+   ;(princ "THERE")
    (save-some-buffers 'no-confirm)
    (shell-command (concat "clang-format-3.8 -i -style=file " buffer-file-name))
-   (princ "OTHER")
+   ;(princ "OTHER")
    (message (concat "Saved and ran clang-format on " buffer-file-name))
    (revert-buffer t t t)
 ))
@@ -314,9 +314,7 @@ as point goes.
       (ansi-color-apply-on-region
        compilation-filter-start (point))))
 
-  (add-hook 'compilation-filter-hook
-            #'endless/colorize-compilation)
-
+  (add-hook 'compilation-filter-hook #'endless/colorize-compilation)
 
   (defun ros-catkin-make (dir)
     "Run catkin_make command in DIR."
@@ -327,6 +325,7 @@ as point goes.
     ;; (switch-to-buffer (get-buffer "*catkin_make*"))
     (switch-to-buffer-other-window (get-buffer-create "*catkin_make*"))
     )
+
   (global-set-key [f5] 'ros-catkin-make)
 #+end_src
 
@@ -1077,6 +1076,17 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
     )
 
 #+end_src
+** Maxima
+#+begin_src emacs-lisp
+ (add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima/")
+ (autoload 'maxima-mode "maxima" "Maxima mode" t)
+ (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
+ (autoload 'maxima "maxima" "Maxima interaction" t)
+ (autoload 'imath-mode "imath" "Imath mode for math formula input" t)
+ (setq imaxima-use-maxima-mode-flag t)
+ (add-to-list 'auto-mode-alist '("\\.ma[cx]" . maxima-mode))
+#+end_src
+
 ** ROS Launch file support 
 
    These support launch files and test files (the same XML ) that must exist under the 
@@ -1383,33 +1393,20 @@ my buffer.
   (defvar PERL_HEADER_LENGTH 76
     "Controls the length of headers")
 
-  ;; (setq load-path (cons (expand-file-name "~/Emacs") load-path))
-  ;; (setq load-path (cons (expand-file-name "~/.emacs.d") load-path))
-  ;; (setq load-path (cons "/usr/share/emacs/site-lisp/site-start.d" load-path))
-
   (global-set-key [(control button2)] 'x-copy-primary-selection)
   (global-set-key [(button4)] 'scroll-down)
   (global-set-key [(button5)] 'scroll-up)
   (global-set-key "\M-[a" 'jump-up)
   (global-set-key "\M-[b" 'jump-down)
-
   (global-set-key "\C-b" 'backward-kill-word)
   (global-set-key "\C-n" 'kill-word)
   (global-set-key "\M-?" 'help-command)
-  ;; (global-set-key "\C-h" 'delete-backward-char) ; get rid of those annoying character
   (global-set-key "\M-\C-s" 'shell)
   (global-set-key "\M-\C-l" 'toggle-buffers-in-window)
   (global-set-key "\C-xg" 'goto-line)
-  ;; (global-set-key "\C-h" 'delete-backward-char)
   (global-set-key "\C-c\C-c" 'comment-region)
-                                          ;(global-set-key [(control left)]  'backward-word-correctly )
-                                          ;(global-set-key [(control right)] 'forward-word-correctly )
   (global-set-key [(control right)] 'forward-word)
   (global-set-key [(control left)]  'backward-word )
-                                          ;(global-set-key [(control down)]  'jump-down )
-                                          ;(global-set-key [(control up )]   'jump-up )
-
-                                          ;(global-set-key "\C-" 'backward-paragraph)
   (define-key global-map [(control bracket)] 'backward-paragraph)
   (defalias 'scroll-ahead 'scroll-up)
   (defalias 'scroll-behind 'scroll-down)
@@ -1438,12 +1435,11 @@ my buffer.
                                       (cons "\\.inp$" 'spectre-mode))
                                 auto-mode-alist))
 
-                                          ; (add-hook 'LaTeX-mode-hook #'LaTeX-install-toolbar)
   (setq perl-indent-level 4)
   (setq cperl-indent-level 4)
   (setq cperl-font-lock t)
   (setq cperl-syntaxify-by-font-lock t)
-                                          ;(cperl-set-style "BSD")   ; Need to find a way to specify the style with a variable...
+  ;(cperl-set-style "BSD")   ; Need to find a way to specify the style with a variable...
 
   (add-hook 'cperl-hook-mode 'outline-minor-mode)
 
@@ -1465,9 +1461,6 @@ my buffer.
       )
     )
 
-
-
-
   (defun writeroom ()
     "Switches to a WriteRoom-like fullscreen style"
     (interactive) 
@@ -1482,7 +1475,6 @@ my buffer.
       ;; switch to fullscreen mode
       (aquamacs-toggle-full-frame)))
 
-
   (defun iconify-or-deiconify-frame-fullscreen-even ()
     (interactive)
     (if (eq (cdr (assq 'visibility (frame-parameters))) t)
@@ -1493,7 +1485,6 @@ my buffer.
           (iconify-frame))
       (make-frame-visible))) 
   (define-key global-map "\C-z" #'iconify-or-deiconify-frame-fullscreen-even)
-
 
   (defun skill-fun-header-helper( name function_name )
     "Extra helper function that uses the name and extra to setup headers"
@@ -1520,55 +1511,13 @@ my buffer.
     (insert "\n")
     )
 
-
-  ;; (add-hook 'c-mode-common-hook 'doxymacs-mode)
-                                          ;(add-hook 'c-mode-common-hook 'hl-line-mode)
   (add-hook 'c-mode-common-hook 'linum-mode)
   (add-hook 'c-mode-common-hook 'outline-minor-mode ) 
   (add-hook 'python-mode-hook 'linum-mode)
 
-
-                                          ;************************* Custimization of Faces *******************************
-
-
-  ;; (custom-set-variables
-  ;;  ;; custom-set-variables was added by Custom.
-  ;;  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;;  ;; Your init file should contain only one such instance.
-  ;;  ;; If there is more than one, they won't work right.
-  ;;  '(markdown-command "pandoc ")
-  ;;  '(org-agenda-files nil)
-  ;;  '(org-modules
-  ;;    (quote
-  ;;     (org-bbdb org-bibtex org-ctags org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m org-drill org-learn)))
-  ;;  '(package-selected-packages
-  ;;    (quote
-  ;;     (cedit cdlatex ledger-import flycheck-ledger org-babel-eval-in-repl graphviz-dot-mode dot-mode org-drill-table dash yaml-mode scala-mode polymode passthword org-bullets org neotree markdown-mode json-mode groovy-mode gradle-mode gitignore-mode color-theme-modern cmake-mode chess bind-key auto-complete auctex))))
-  ;; (load-library "color-theme")
-                                          ;
-                                          ;(color-theme-select)
-                                          ;(color-theme-scintilla)
-  ;; '(font-lock-comment-face ((t (:foreground "pale green" :slant italic))))
-
-
-
   (put 'upcase-region 'disabled nil)
   (put 'downcase-region 'disabled nil)
                                           ;(princ edit-tab-stops-map)
-
-         ;;; This was installed by package-install.el.
-         ;;; This provides support for the package system and
-         ;;; interfacing with ELPA, the package archive.
-         ;;; Move this code earlier if you want to reference
-         ;;; packages in your .emacs.
-  ;; (if nil
-  ;;     (when
-  ;;         (load
-  ;;          (expand-file-name "~/.emacs.d/elpa/package.el"))
-  ;;       (package-initialize))
-  ;; )
-
-
   (defun bisque-background()
     "Switches to bisque background for better vision"
     (interactive) 
@@ -1640,11 +1589,12 @@ my buffer.
 #+END_SRC 
 
 * Publishing and task management with Org-mode
-#+BEGIN_SRC emacs-lisp
-  (use-package org)
-#+END_SRC
-
 ** Org Setup
+*** Loading Org
+#+begin_src emacs-lisp
+  (use-package org)
+#+end_src
+
 *** Org Directory Setup
 #+BEGIN_SRC emacs-lisp
   (setq org-directory "~/Projects/org")
@@ -1827,14 +1777,9 @@ Hiding leading stars
       (ruby . t)
       (scala . t)
       (kotlin . t)
+      (maxima . t )
       ))
    ;;
-                                           ;(setq org-journal-dir "/home/jdamon/Projects/org/journal")
-                                           ;         (customize-set-variable 'org-journal-dir "~/Projects/org/journal/")
-                                           ;         (customize-set-variable 'org-journal-date-format "%A, %d %B %Y")
-                                           ;         (customize-set-variable 'org-journal-file-type 'monthly)
-                                           ;         (require 'org-journal)
-                                           ;
 
    (defun org-journal-save-entry-and-exit()
      "Simple convenience function.
@@ -2037,4 +1982,11 @@ Hiding leading stars
   (setq deft-recursive t)
 #+end_src 
 
+* Email 
+** Outgoing Email server 
+   Send mail using postfix
+#+begin_src emacs-lisp
+(setq send-mail-function 'sendmail-send-it)
+(setq message-send-mail-function 'message-send-mail-with-sendmail)
+#+end_src
 
