@@ -105,3 +105,8 @@ $endif
 
 
 set bell-style none 
+
+
+$if Gdb
+"\C-x\C-x": "tui_mode_toggle\n"
+$endif

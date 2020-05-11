@@ -294,7 +294,7 @@ as point goes.
   (interactive)
   (and
    ;(princ "HERE")
-   (string-match "/catkin_ouster/.*\\.\\(h\\|cpp\\)$" buffer-file-name)
+   (string-match "/\\(catkin_ws\\|catkin_.*\\)/.*\\.\\(h\\|cpp\\)$" buffer-file-name)
    ;(princ "THERE")
    (save-some-buffers 'no-confirm)
    (shell-command (concat "clang-format-3.8 -i -style=file " buffer-file-name))
@@ -302,9 +302,12 @@ as point goes.
    (message (concat "Saved and ran clang-format on " buffer-file-name))
    (revert-buffer t t t)
 ))
+
 (global-set-key [f7] 'run-ros-clang-format)
 #+END_SRC
 ** ROS Compilation
+
+   A cool compilation tool to run catkin builds inside 
 #+begin_src emacs-lisp
   ;; Based on https://www.seas.upenn.edu/~chaoliu/2018/03/12/ros-programming-in-emacs/#org8817889
   (require 'ansi-color)
@@ -322,6 +325,16 @@ as point goes.
     (let* ((default-directory dir)
            (compilation-buffer-name-function (lambda (major-mode-name) "*catkin_make*")))
       (compile "catkin bt --no-status"))
+    ;; (switch-to-buffer (get-buffer "*catkin_make*"))
+    (switch-to-buffer-other-window (get-buffer-create "*catkin_make*"))
+    )
+
+  (defun ros-catkin-make-tests (dir)
+    "Run catkin_make command in DIR."
+    (interactive (list (file-name-directory (buffer-file-name))))
+    (let* ((default-directory dir)
+           (compilation-buffer-name-function (lambda (major-mode-name) "*catkin_make*")))
+      (compile "catkin run_tests --this --no-status"))
     ;; (switch-to-buffer (get-buffer "*catkin_make*"))
     (switch-to-buffer-other-window (get-buffer-create "*catkin_make*"))
     )
@@ -358,6 +371,28 @@ Do this after `q` in Debugger buffer."
                   (delete-other-windows))) ;; fix the remaining two windows issue
           (message "Killed %i buffer(s)." count))))
 #+END_SRC
+** Ibuffer 
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (require 'ibuf-ext)
+  (add-to-list 'ibuffer-never-show-predicates "^\\*")  
+#+end_src
+** Screenshots
+#+begin_src emacs-lisp
+(defun my-org-screenshot ()
+  "Take a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
+  (interactive)
+  (setq filename
+        (concat
+         (make-temp-name
+          (concat (buffer-file-name)
+                  "_"
+                  (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+  (call-process "import" nil nil nil filename)
+  (insert (concat "[[" filename "]]"))
+  (org-display-inline-images))
+#+end_src
 
 * Project management
 
@@ -427,7 +462,7 @@ I use =magit= to handle version control. It's lovely, but I tweak a few things:
 #+BEGIN_SRC emacs-lisp
   ;; (use-package magit
   ;;   :bind
-  ;;   ("C-x g" . magit-status)
+  ;;   ("C-x C-x g" . magit-status)
 
   ;;   :config
   ;;   (use-package evil-magit)
@@ -497,7 +532,15 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 
 ** C / C++
 
-   Adds custom C/C++ headers
+*** C Hooks 
+#+begin_src emacs-lisp
+  (defun my-c-mode-hook ()
+    (hs-minor-mode))
+  (add-hook 'c++-mode-hook 'my-c-mode-hook)
+
+#+end_src
+
+*** Adds custom C/C++ headers 
 #+BEGIN_SRC emacs-lisp
   (defun add-c-function-header( &optional n)
     "Add a default header to a subroutine"
@@ -1216,17 +1259,61 @@ the results in "magic" (=# =>=) comments.
 I disable warnings when running code through =xmp= because I disagree with a few
 of them (complaining about private =attr_reader=, especially) and they gunk up
 my buffer.
+** Yasnippets
+
+#+begin_src emacs-lisp
+(use-package yasnippet
+  :ensure t 
+  :config 
+  (use-package yasnippet-snippets
+    :ensure t)
+  (yas-reload-all))
+#+end_src
+
+  Adding a custom snippet for Doxygen
+
+#+begin_src emacs-lisp
+(use-package semantic )
+;; # -*- mode: snippet -*-
+;; # name: dox
+;; # key: dox
+;; # type: command
+;; # --
+;; (let ((tag (senator-next-tag)))
+;;   (while (or (null tag)
+;;              (not (semantic-tag-of-class-p tag 'function)))
+;;     (setq tag (senator-next-tag)))
+;;   (let* ((name (semantic-tag-name tag))
+;;          (attrs (semantic-tag-attributes tag))
+;;          (args (plist-get attrs :arguments))
+;;          (return-name (plist-get attrs :type))
+;;          (idx 1))
+;;     (if (listp return-name)
+;;       (setq return-name (car return-name)))
+;;     (yas/expand-snippet
+;;      (format
+;;       "/**\n* @brief ${1:%s}\n*%s%s*/"
+;;       name
+;;       (mapconcat
+;;        (lambda (x)
+;;          (format "* @param %s ${%d:Description of %s}"
+;;                  (car x) (incf idx) (car x)))
+;;        args
+;;        "\n")
+;;       (if (and return-name (not (string-equal "void" return-name)))
+;;           (format " * @return ${%d:%s}\n" (incf idx) return-name)
+;;         "")))))
+#+end_src
 
 * Extra stuff
 #+BEGIN_SRC emacs-lisp
-  ;; (add-hook 'emacs-lisp-mode-hook
-  ;;             (lambda ()
-  ;;               (push '(">=" . ?≥) prettify-symbols-alist)))
-  ;; (lambda (x y)
-  ;;   (if (>= x y)
-  ;;       (something)
-  ;;     (something-else)))
-
+  (add-hook 'emacs-lisp-mode-hook
+              (lambda ()
+                (push '(">=" . ?≥) prettify-symbols-alist)))
+  (lambda (x y)
+    (if (>= x y)
+        (something)
+      (something-else)))
 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ; Useful for copying and pasting in emacs in a terminal
 ; Not sure if this will cause a bug or not
@@ -1405,6 +1492,12 @@ my buffer.
   (global-set-key "\M-\C-l" 'toggle-buffers-in-window)
   (global-set-key "\C-xg" 'goto-line)
   (global-set-key "\C-c\C-c" 'comment-region)
+  ;; (global-set-key (kbd "C-x C-b") 'ibuffer)
+  ;; (require 'ibuf-ext)
+  ;; (add-to-list 'ibuffer-never-show-predicates "^\\*")
+  ;; (add-to-list 'ibuffer-never-show-regexps "^\\*")
+
+
   (global-set-key [(control right)] 'forward-word)
   (global-set-key [(control left)]  'backward-word )
   (define-key global-map [(control bracket)] 'backward-paragraph)
@@ -1541,33 +1634,60 @@ my buffer.
 
   (add-hook 'c-mode-common-hook 'my-add-semantic-to-autocomplete)
   (electric-indent-mode -1)
-  (defun toggle-window-split ()
-    (interactive)
-    (if (= (count-windows) 2)
-        (let* ((this-win-buffer (window-buffer))
-               (next-win-buffer (window-buffer (next-window)))
-               (this-win-edges (window-edges (selected-window)))
-               (next-win-edges (window-edges (next-window)))
-               (this-win-2nd (not (and (<= (car this-win-edges)
-                                           (car next-win-edges))
-                                       (<= (cadr this-win-edges)
-                                           (cadr next-win-edges)))))
-               (splitter
-                (if (= (car this-win-edges)
-                       (car (window-edges (next-window))))
-                    'split-window-horizontally
-                  'split-window-vertically)))
-          (delete-other-windows)
-          (let ((first-win (selected-window)))
-            (funcall splitter)
-            (if this-win-2nd (other-window 1))
-            (set-window-buffer (selected-window) this-win-buffer)
-            (set-window-buffer (next-window) next-win-buffer)
-            (select-window first-win)
-            (if this-win-2nd (other-window 1))))))
 
 
-                                          ; Set the equation to be larger sized
+(defun window-toggle-split-direction ()
+  "Switch window split from horizontally to vertically, or vice versa.
+
+i.e. change right window to bottom, or change bottom window to right."
+  (interactive)
+  (require 'windmove)
+  (let ((done))
+    (dolist (dirs '((right . down) (down . right)))
+      (unless done
+        (let* ((win (selected-window))
+               (nextdir (car dirs))
+               (neighbour-dir (cdr dirs))
+               (next-win (windmove-find-other-window nextdir win))
+               (neighbour1 (windmove-find-other-window neighbour-dir win))
+               (neighbour2 (if next-win (with-selected-window next-win
+                                          (windmove-find-other-window neighbour-dir next-win)))))
+          ;;(message "win: %s\nnext-win: %s\nneighbour1: %s\nneighbour2:%s" win next-win neighbour1 neighbour2)
+          (setq done (and (eq neighbour1 neighbour2)
+                          (not (eq (minibuffer-window) next-win))))
+          (if done
+              (let* ((other-buf (window-buffer next-win)))
+                (delete-window next-win)
+                (if (eq nextdir 'right)
+                    (split-window-vertically)
+                  (split-window-horizontally))
+                (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
+
+  ;; (defun toggle-window-split ()
+  ;;   (interactive)
+  ;;   (if (= (count-windows) 2)
+  ;;       (let* ((this-win-buffer (window-buffer))
+  ;;              (next-win-buffer (window-buffer (next-window)))
+  ;;              (this-win-edges (window-edges (selected-window)))
+  ;;              (next-win-edges (window-edges (next-window)))
+  ;;              (this-win-2nd (not (and (<= (car this-win-edges)
+  ;;                                          (car next-win-edges))
+  ;;                                      (<= (cadr this-win-edges)
+  ;;                                          (cadr next-win-edges)))))
+  ;;              (splitter
+  ;;               (if (= (car this-win-edges)
+  ;;                      (car (window-edges (next-window))))
+  ;;                   'split-window-horizontally
+  ;;                 'split-window-vertically)))
+  ;;         (delete-other-windows)
+  ;;         (let ((first-win (selected-window)))
+  ;;           (funcall splitter)
+  ;;           (if this-win-2nd (other-window 1))
+  ;;           (set-window-buffer (selected-window) this-win-buffer)
+  ;;           (set-window-buffer (next-window) next-win-buffer)
+  ;;           (select-window first-win)
+  ;;           (if this-win-2nd (other-window 1))))))))
+
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
   (setq org-display-inline-images t) 
   (setq org-redisplay-inline-images t) 
@@ -1585,6 +1705,13 @@ my buffer.
   (setq org-return-follows-link t )
   (require 'org-jira)
   (setq jiralib-url "https://automodality.atlassian.net")
+
+  (defconst org-jira-progress-issue-flow
+  '(("To Do" . "In Progress")
+    ("In Progress" . "Ready to Test")
+    ("Ready To Test" . "Done")
+    ("Done" . "In Progress")))
+
 
 #+END_SRC 
 
@@ -1619,13 +1746,20 @@ my buffer.
 I like to see an outline of pretty bullets instead of a list of asterisks.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-    :init
-    (add-hook 'org-mode-hook 'org-bullets-mode))
-  ;; (add-hook 'org-mode-hook
-  ;;           (lambda ()
-  ;;             (org-bullets-mode t )))
+(use-package org-bullets
+  :init
+  (add-hook 'org-mode-hook 'org-bullets-mode))
+(setq org-bullets-bullet-list '("◉" "○" "✸"  "☯" "✿" "✜" "☯" "◆" "☯" "▶" ))
+
 #+END_SRC
+
+** Enforce TODO dependendices
+#+begin_src emacs-lisp
+(setq org-enforce-todo-dependencies t)
+#+end_src
+
+** Nice looking Bullet symbols
+
 
 I borrowed this from Harry Schwartz as I too "like seeing a little
 downward-pointing arrow instead of the usual ellipsis (=...=) that org
@@ -1644,6 +1778,8 @@ Hiding leading stars
 #+BEGIN_SRC emacs-lisp
   (setq org-hide-leading-stars t)
 #+END_SRC
+
+
 
 ** Org images
 
@@ -1675,50 +1811,58 @@ Hiding leading stars
 
 ** Archiving Org mode entries
 #+BEGIN_SRC emacs-lisp
-   (defun jmd/personal-mark-done-and-archive ()
-     "Mark the state of an org-mode item as DONE and archive it."
-     (interactive)
-     (org-todo 'done)
-     (org-archive-subtree)
-     (setq foo (org-get-tags-string)))
+(defun jmd/personal-mark-done-and-archive ()
+  "Mark the state of an org-mode item as DONE and archive it."
+  (interactive)
+  (org-todo 'done)
+  (org-archive-subtree)
+  (setq foo (org-get-tags-string)))
 
-   (defun jmd/mark-work-done-and-archive ()
-     "Mark the state of an org-mode item as DONE and archive it."
-     (interactive)
-     (org-todo 'done)
-     (org-toggle-tag "work" )
-     (org-archive-subtree)
-     (setq foo (org-get-tags-string)))
+(defun jmd/mark-work-done-and-archive ()
+  "Mark the state of an org-mode item as DONE and archive it."
+  (interactive)
+  (org-todo 'done)
+  (org-toggle-tag "work" )
+  (org-archive-subtree)
+  ;; (setq foo (org-get-tags-string))
+  )
 
-   (defun my/org-checkbox-todo ()
-     "Switch header TODO state to DONE when all checkboxes are ticked, to TODO otherwise"
-     (let ((todo-state (org-get-todo-state)) beg end)
-       (unless (not todo-state)
-         (save-excursion
-           (org-back-to-heading t)
-           (setq beg (point))
-           (end-of-line)
-           (setq end (point))
-           (goto-char beg)
-           (if (re-search-forward "\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]"
-                                  end t)
-               (if (match-end 1)
-                   (if (equal (match-string 1) "100%")
-                       (unless (string-equal todo-state "DONE")
-                         (org-todo 'done))
-                     (unless (string-equal todo-state "TODO")
-                       (org-todo 'todo)))
-                 (if (and (> (match-end 2) (match-beginning 2))
-                          (equal (match-string 2) (match-string 3)))
-                     (unless (string-equal todo-state "DONE")
-                       (org-todo 'done))
-                   (unless (string-equal todo-state "TODO")
-                     (org-todo 'todo)))))))))
+(defun my/org-checkbox-todo ()
+  "Switch header TODO state to DONE when all checkboxes are ticked, to TODO otherwise"
+  (let ((todo-state (org-get-todo-state)) beg end)
+    (unless (not todo-state)
+      (save-excursion
+        (org-back-to-heading t)
+        (setq beg (point))
+        (end-of-line)
+        (setq end (point))
+        (goto-char beg)
+        (if (re-search-forward "\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]"
+                               end t)
+            (if (match-end 1)
+                (if (equal (match-string 1) "100%")
+                    (unless (string-equal todo-state "DONE")
+                      (org-todo 'done))
+                  (unless (string-equal todo-state "TODO")
+                    (org-todo 'todo)))
+              (if (and (> (match-end 2) (match-beginning 2))
+                       (equal (match-string 2) (match-string 3)))
+                  (unless (string-equal todo-state "DONE")
+                    (org-todo 'done))
+                (unless (string-equal todo-state "TODO")
+                  (org-todo 'todo)))))))))
 
-
-   (define-key org-mode-map (kbd "C-c C-x C-s") 'jmd/mark-done-and-archive)
+(add-hook 'org-checkbox-statistics-hook 'my/org-checkbox-todo)
+(define-key org-mode-map (kbd "C-c C-x C-s") 'jmd/mark-done-and-archive)
 
 #+END_SRC
+
+** Enforce 
+
+** Exporting code
+#+begin_src emacs-lisp
+(setq org-confirm-babel-evaluate nil)
+#+end_src
 
 ** Org Drill
 #+BEGIN_SRC emacs-lisp
@@ -1918,6 +2062,10 @@ Hiding leading stars
   (add-hook 'org-mode 'org-download-enable)
   (setq-default org-download-image-dir "~/Projects/org/Pictures/")
 #+END_SRC
+** Org Exporting 
+#+begin_src emacs-lisp
+(setq org-export-coding-system 'utf-8)
+#+end_src
 ** Org quizzing
 #+BEGIN_SRC emacs-lisp
   (setq org-drill-add-random-noise-to-intervals-p t )
@@ -1989,4 +2137,45 @@ Hiding leading stars
 (setq send-mail-function 'sendmail-send-it)
 (setq message-send-mail-function 'message-send-mail-with-sendmail)
 #+end_src
+** Mu4E 
+#+BEGIN_SRC emacs-lisp
+  (setq mu4e-maildir (expand-file-name "~/Maildir"))
+  (setq mu4e-get-mail-command "true")
+  (setq mu4e-change-filenames-when-moving t)
+  (setq smtpmail-queue-mail nil  ;; start in normal mode
+        smtpmail-queue-dir   "~/Maildir/queue/cur")
+  ;; (use-package evil-mu4e)
+  ;; (require 'evil-mu4e)
+#+END_SRC
+** Mu4E Alerts
+
+#+begin_src emacs-lisp
+(use-package mu4e-alert
+  :ensure t
+  :after mu4e
+  :init
+  ;; (setq mu4e-alert-interesting-mail-query
+  ;;   (concat
+  ;;    "flag:unread maildir:/Exchange/INBOX "
+  ;;    "OR "
+  ;;    "flag:unread maildir:/Gmail/INBOX"
+  ;;    ))
+  (mu4e-alert-enable-mode-line-display)
+  (defun jmd-refresh-mu4e-alert-mode-line ()
+    (interactive)
+    (mu4e~proc-kill)
+    (mu4e-alert-enable-mode-line-display)
+    )
+  (run-with-timer 0 60 'jmd-refresh-mu4e-alert-mode-line)
+  )
+
+
+
+#+end_src
+** Allow MU4E to save links to emails
+
+#+begin_src emacs-lisp
+(require 'org-mu4e)
+#+end_src
+
 
