@@ -74,7 +74,7 @@
         bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
         bclean2 = "!f() { cur=$(git branch | grep '^*'  | perl -ane 'print $F[1]'); git branch --merged ${1-${cur}} | grep -v " ${1-${cur}}$" | xargs -r git branch -d; }; f"
         sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
-
+        bsort = "!git for-each-ref --sort='-committerdate' --format='%(refname)%09%(committerdate)' refs/heads | sed -e 's-refs/heads/--'"
 
 [credential]
 	helper = cache --timeout=3600
