@@ -1,12 +1,12 @@
 (setq inhibit-splash-screen t)
 ;; Configure package.el to include MELPA.
 
-(require 'package)
 (when (>= emacs-major-version 24)
-  (package-initialize)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (require 'package)
+  ;; (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
   )
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
 (package-initialize)
 
 ;; Ensure that use-package is installed.
