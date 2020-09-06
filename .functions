@@ -839,3 +839,13 @@ function load1() {
 function uri() {
     ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]))' "$@"
 }
+
+function rmhist() {
+    start=$1
+    end=$2
+    count=$(( end - start ))
+    while [ $count -ge 0 ] ; do
+        history -d $start
+        ((count--))
+    done
+}
