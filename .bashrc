@@ -465,14 +465,14 @@ export PATH=/usr/local/cuda-9.0/bin:$PATH
 export SDKMAN_DIR="/home/jdamon/.sdkman"
 [[ -s "/home/jdamon/.sdkman/bin/sdkman-init.sh" ]] && source "/home/jdamon/.sdkman/bin/sdkman-init.sh"
 
-export EMAIL="jdamon@automodality.com"
+export EMAIL="jdamon@gmail.com"
 export NAME="Jimi Damon"
 export DEBEMAIL=$EMAIL
 export TOOLSDIR=$HOME/Tools
 export MODULEPATH=$HOME/Modules
 
 source /usr/share/lmod/lmod/init/bash
-source /opt/ros/melodic/setup.bash
-alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_ws/src -w /home/developer/catkin_ws/ -u developer -it ^Ccker.cloudsmith.io/automodality/dev/amros-melodic:latest"
-export PATH="$HOME/.jlenv/bin:$PATH"
-eval "$(jlenv init -)"
+
+#alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_ws/src -w /home/developer/catkin_ws/ -u developer -it ^Ccker.cloudsmith.io/automodality/dev/amros-melodic:latest"
+#export PATH="$HOME/.jlenv/bin:$PATH"
+#eval "$(jlenv init -)"
