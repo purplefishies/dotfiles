@@ -192,10 +192,6 @@ if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
     source $HOME/.bash_stuff/cdargs/cdargs-bash.sh
 fi
 
-if [[ -f "/usr/share/doc/cdargs/examples/cdargs-bash.sh" ]] ; then
-    source "/usr/share/doc/cdargs/examples/cdargs-bash.sh"
-fi
-
 if [[ -f "/etc/bash_completion" ]] ; then
     source /etc/bash_completion
 else
@@ -450,6 +446,7 @@ export PATH="/home/jdamon/.cask/bin:$PATH"
 
 
 # source /opt/ros/kinetic/setup.bash
+export AM_PLATFORM=AM_TX2
 
 PATH="/home/jdamon/perl5/bin${PATH:+:${PATH}}"; export PATH;
 PERL5LIB="/home/jdamon/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
@@ -474,7 +471,8 @@ export DEBEMAIL=$EMAIL
 export TOOLSDIR=$HOME/Tools
 export MODULEPATH=$HOME/Modules
 
-source /usr/share/lmod/5.8/init/bash
+source /usr/share/lmod/lmod/init/bash
+source /opt/ros/melodic/setup.bash
 alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_ws/src -w /home/developer/catkin_ws/ -u developer -it ^Ccker.cloudsmith.io/automodality/dev/amros-melodic:latest"
 export PATH="$HOME/.jlenv/bin:$PATH"
-#eval "$(jlenv init -)"
+eval "$(jlenv init -)"
