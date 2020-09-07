@@ -440,13 +440,8 @@ alias tmux='TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb) tmux -2'
 
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-
 export PATH="/home/jdamon/.cask/bin:$PATH"
 
-
-
-# source /opt/ros/kinetic/setup.bash
-export AM_PLATFORM=AM_TX2
 
 PATH="/home/jdamon/perl5/bin${PATH:+:${PATH}}"; export PATH;
 PERL5LIB="/home/jdamon/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
