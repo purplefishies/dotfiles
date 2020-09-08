@@ -16,6 +16,7 @@
 
 
 
+
 if [ -t 0 ] ; then
     stty stop ''
     stty start ''
@@ -192,6 +193,10 @@ if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
     source $HOME/.bash_stuff/cdargs/cdargs-bash.sh
 fi
 
+if [[ -f "/usr/share/doc/cdargs/examples/cdargs-bash.sh" ]] ; then
+    source "/usr/share/doc/cdargs/examples/cdargs-bash.sh"
+fi
+
 if [[ -f "/etc/bash_completion" ]] ; then
     source /etc/bash_completion
 else
@@ -268,9 +273,7 @@ if [ -f "/tools/mxlcad/gnutools/etc/bash_completion" ] ; then
   . /tools/mxlcad/gnutools/etc/bash_completion
 fi
 
-export MANPATH=/opt/local/man:$MANPATH:/opt/n1ge6/man:/usr/man
-export MANPATH=$MANPATH:/Library/Frameworks/R.framework/Versions/2.12/Resources
-export MANPATH="${HOME}/Downloads/llvm/docs/CommandGuide/man/man1:${HOME}/Downloads/root/man/man1:${HOME}/perl5/man/man1:/opt/novell/groupwise/client/java/man/man1:/opt/novell/man/man1:/usr/Modules/3.2.9/share/man/man1:/usr/local/share/man:/usr/share/man"
+export MANPATH=/usr/share/man:/usr/man:/usr/local/share/man
 
 #
 # Pager configuration
@@ -401,9 +404,6 @@ else
 
 fi
 
-
-
-
 function cleantex {
     for i in *.tex
     do
@@ -438,36 +438,32 @@ fi
 
 alias tmux='TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb) tmux -2'
 
-
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export PATH="/home/jdamon/.cask/bin:$PATH"
-
-
-PATH="/home/jdamon/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="/home/jdamon/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="/home/jdamon/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"/home/jdamon/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/home/jdamon/perl5"; export PERL_MM_OPT;
-
+# source /opt/ros/kinetic/setup.bash
+# PATH="/home/jdamon/perl5/bin${PATH:+:${PATH}}"; export PATH;
+# PERL5LIB="/home/jdamon/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+# PERL_LOCAL_LIB_ROOT="/home/jdamon/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+# PERL_MB_OPT="--install_base \"/home/jdamon/perl5\""; export PERL_MB_OPT;
+# PERL_MM_OPT="INSTALL_BASE=/home/jdamon/perl5"; export PERL_MM_OPT;
 #if [[ -f $HOME/catkin_ws/devel/setup.bash ]] ;  then
 #    source $HOME/catkin_ws/devel/setup.bash
 #fi
-export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:$LD_LIBRARY_PATH
-export PATH=/usr/local/cuda-9.0/bin:$PATH
+# export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:$LD_LIBRARY_PATH
+# export PATH=/usr/local/cuda-9.0/bin:$PATH
 
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/jdamon/.sdkman"
 [[ -s "/home/jdamon/.sdkman/bin/sdkman-init.sh" ]] && source "/home/jdamon/.sdkman/bin/sdkman-init.sh"
 
-export EMAIL="jdamon@gmail.com"
+export EMAIL="jdamon@automodality.com"
 export NAME="Jimi Damon"
 export DEBEMAIL=$EMAIL
 export TOOLSDIR=$HOME/Tools
 export MODULEPATH=$HOME/Modules
 
 source /usr/share/lmod/lmod/init/bash
+alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_ws/src -w /home/developer/catkin_ws/ -u developer -it ^Ccker.cloudsmith.io/automodality/dev/amros-melodic:latest"
+export PATH="${PATH}:$HOME/.jlenv/bin"
 
-#alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_ws/src -w /home/developer/catkin_ws/ -u developer -it ^Ccker.cloudsmith.io/automodality/dev/amros-melodic:latest"
-#export PATH="$HOME/.jlenv/bin:$PATH"
-#eval "$(jlenv init -)"
+
+fortune.rb $(/bin/ls -d ${HOME}/Quotes.txt ${HOME}/Quotes.txt /usr/share/games/fortunes | sort -R | head -1) | fold  -w 50 -s  | cowsay -f tux -n | lolcat -t -p 2
