@@ -837,7 +837,7 @@ function load1() {
 }
 
 function uri() {
-    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]))' "$@"
+    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:\s@&=+,]/)' "$@"
 }
 
 function rmhist() {
