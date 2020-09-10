@@ -624,7 +624,7 @@ function open {
 	cygstart "$@"	
   else 
       file="$(ruby -ruri -e 'puts URI.decode(ARGV[0]).gsub(/^\S+?:\/\//,"")' "$@")"
-      echo "File: $file"
+      #echo "File: $file"
       gio open "$file"
   fi
 }	 
