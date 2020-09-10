@@ -623,7 +623,9 @@ function open {
   if [[ $(uname -o) == "Cygwin" ]] ; then
 	cygstart "$@"	
   else 
-	gio open "$@"
+      file="$(ruby -ruri -e 'puts URI.decode(ARGV[0]).gsub(/^\S+?:\/\//,"")' "$@")"
+      echo "File: $file"
+      gio open "$file"
   fi
 }	 
 
@@ -837,7 +839,7 @@ function load1() {
 }
 
 function uri() {
-    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:\s@&=+,]/)' "$@"
+    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:$\s@&=+,]/)' "$@"
 }
 
 function rmhist() {
