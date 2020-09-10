@@ -11,8 +11,6 @@ alias ipy='ipython'
 alias grake="rake -I$HOME/.rake "
 alias rake="rake -I$HOME/.rake "
 alias d="diary.pl"
-alias open='gvfs-open'
-alias xemacs='emacs'
 alias pbcopy='xclip -i -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 alias grep='grep --color=auto -d skip'
