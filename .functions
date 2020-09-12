@@ -43,6 +43,16 @@ function save_fen {
     done
 }
 
+function save_fen { 
+    for i in "$@"
+    do
+        nname=$(basename "$i" .fen)
+        /bin/cp -f "$i" "$FEN_PUZZLES/${nname}_$(fen_name "$i").fen"
+    done
+}
+
+
+
 function paste_fen {
     local todir=$@
     if [ "${todir}" == "" ] ; then
@@ -615,9 +625,7 @@ function open {
   if [[ $(uname -o) == "Cygwin" ]] ; then
 	cygstart "$@"	
   else 
-      file="$(ruby -ruri -e 'puts URI.decode(ARGV[0]).gsub(/^\S+?:\/\//,"")' "$@")"
-      #echo "File: $file"
-      gio open "$file"
+	gio open "$@"
   fi
 }	 
 
@@ -831,15 +839,5 @@ function load1() {
 }
 
 function uri() {
-    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:$\s@&=+,]/)' "$@"
-}
-
-function rmhist() {
-    start=$1
-    end=$2
-    count=$(( end - start ))
-    while [ $count -ge 0 ] ; do
-        history -d $start
-        ((count--))
-    done
+    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]))' "$@"
 }
