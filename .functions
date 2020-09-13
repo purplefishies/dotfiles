@@ -1,5 +1,4 @@
-# coding: utf-8
-#-*- shell-script -*-
+# -*-shell-script-*-
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Function Definitions
 # 1. I decided to put my functions into a file .functions just to keep them
@@ -625,7 +624,9 @@ function open {
   if [[ $(uname -o) == "Cygwin" ]] ; then
 	cygstart "$@"	
   else 
-	gio open "$@"
+      file="$(ruby -ruri -e 'puts URI.decode(ARGV[0]).gsub(/^\S+?:\/\//,"")' "$@")"
+      #echo "File: $file"
+      gio open "$file"
   fi
 }	 
 
@@ -839,5 +840,20 @@ function load1() {
 }
 
 function uri() {
-    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]))' "$@"
+    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:$\s@&=+,]/)' "$@"
+}
+
+function uri2file() {
+    ruby -ruri -e 'puts File.expand_path(URI.unescape(ARGV[0]).gsub(/^\S+?:\/\//,""))' "$@"'
+}
+
+
+function rmhist() {
+    start=$1
+    end=$2
+    count=$(( end - start ))
+    while [ $count -ge 0 ] ; do
+        history -d $start
+        ((count--))
+    done
 }
