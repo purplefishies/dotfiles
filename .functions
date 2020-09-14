@@ -1,4 +1,6 @@
-# -*-shell-script-*-
+# coding: utf-8
+#-*- shell-script -*-
+
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Function Definitions
 # 1. I decided to put my functions into a file .functions just to keep them
@@ -41,16 +43,6 @@ function save_fen {
         /bin/cp -f "$i" "$FEN_PUZZLES/${nname}_$(fen_name "$i").fen"
     done
 }
-
-function save_fen { 
-    for i in "$@"
-    do
-        nname=$(basename "$i" .fen)
-        /bin/cp -f "$i" "$FEN_PUZZLES/${nname}_$(fen_name "$i").fen"
-    done
-}
-
-
 
 function paste_fen {
     local todir=$@
