@@ -836,7 +836,7 @@ function uri() {
 }
 
 function uri2file() {
-    ruby -ruri -e 'puts File.expand_path(URI.unescape(ARGV[0]).gsub(/^\S+?:\/\//,""))' "$@"'
+    ruby -ruri -e 'puts File.expand_path(URI.unescape(ARGV[0]).gsub(/^\S+?:\/\//,""))' "$@"
 }
 
 
