@@ -832,11 +832,11 @@ function load1() {
 }
 
 function uri() {
-    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:$\s@&=+,]/)' "$@"
+    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:$\s@&=+,]/)' "$@" 2>/dev/null
 }
 
 function uri2file() {
-    ruby -ruri -e 'puts File.expand_path(URI.unescape(ARGV[0]).gsub(/^\S+?:\/\//,""))' "$@"
+    ruby -ruri -e 'puts File.expand_path(URI.unescape(ARGV[0]).gsub(/^\S+?:\/\//,""))' "$@" 2>/dev/null
 }
 
 
