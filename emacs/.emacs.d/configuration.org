@@ -1779,7 +1779,10 @@ Hiding leading stars
   (setq org-hide-leading-stars t)
 #+END_SRC
 
-
+** CDLaTeX mode
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+#+end_src
 
 ** Org images
 
@@ -1908,6 +1911,7 @@ Hiding leading stars
             "%^{Feed URL} \"~%^{Feed name}\"")
            ))
 
+   (setq org-journal-file-format "%Y%m%d.org")
    (setq org-hide-emphasis-markers t )
 
    (org-babel-do-load-languages
