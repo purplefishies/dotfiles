@@ -244,6 +244,7 @@ function clear_last_history() {
     history -d $(history | tail -1 | perl -pne 's/^\s*(\d+)\b.*$/$1/;')
 }
 
+export DEFAULT_TIMEOUT=2
 function rollover_history() { 
     history -a
     if [[ $(history | /usr/bin/wc -l | /usr/bin/awk '{print $1}') -gt $HIST_ROLLOVER_SIZE ]] ; 
@@ -254,7 +255,7 @@ function rollover_history() {
         history -c >/dev/null
         history -r >/dev/null
     fi
-    eval $(git_stats.rb)
+    eval $(timeout3 -d 0 -t ${DEFAULT_TIMEOUT} git_stats.rb)
 }
 export PROMPT_COMMAND="rollover_history"
 
@@ -466,4 +467,4 @@ alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_w
 export PATH="${PATH}:$HOME/.jlenv/bin"
 
 
-fortune.rb $(/bin/ls -d ${HOME}/Quotes.txt ${HOME}/Quotes.txt /usr/share/games/fortunes | sort -R | head -1) | fold  -w 50 -s  | cowsay -f tux -n | lolcat -t -p 2
+fortune.rb $(/bin/ls -d ${HOME}/Quotes.txt ${HOME}/Quotes.txt  ${HOME}/Quotes.txt ${HOME}/Quotes.txt /usr/share/games/fortunes | sort -R | head -1) | fold  -w 50 -s  | cowsay -f tux -n | lolcat -t -p 2
