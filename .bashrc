@@ -255,7 +255,7 @@ function rollover_history() {
         history -c >/dev/null
         history -r >/dev/null
     fi
-    eval $(timeout3 -d 0 -t ${DEFAULT_TIMEOUT} git_stats.rb)
+    eval $(timeout3 -d 0 -i 0.1 -t ${DEFAULT_TIMEOUT} git_stats.rb)
 }
 export PROMPT_COMMAND="rollover_history"
 
