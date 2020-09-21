@@ -558,6 +558,7 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 .automount 38;5;45
 .target 38;5;45
 .org 38;5;161
+.bb 38;5;38
 .path 38;5;45
 .timer 38;5;45
 .snapshot 38;5;45
