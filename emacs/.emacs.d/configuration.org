@@ -107,7 +107,7 @@ I'm still not sure why this can't be loaded through use-package
 
 #+BEGIN_SRC emacs-lisp
   (require 'color-theme-sanityinc-tomorrow)
-
+  
   (defun transparency (value)
     "Sets the transparency of the frame window. 0=transparent/100=opaque."
     (interactive "nTransparency Value 0 - 100 opaque:")
@@ -178,8 +178,15 @@ I'm not crazy about that. This changes scrolling behavior to only scroll as far
 as point goes.
 
 #+BEGIN_SRC emacs-lisp
-  (setq scroll-conservatively 100)
+;  (setq scroll-conservatively 100)
+   ;; scroll one line at a time (less "jumpy" than defaults)
+    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+    ;(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+    (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+    ;(setq scroll-step 1) ;; keyboard scroll one line at a time
 #+END_SRC
+
+
 * General Appearance / Startup
 ** Font Type
 
@@ -297,7 +304,7 @@ as point goes.
    (string-match "/\\(catkin_ws\\|catkin_.*\\)/.*\\.\\(h\\|cpp\\)$" buffer-file-name)
    ;(princ "THERE")
    (save-some-buffers 'no-confirm)
-   (shell-command (concat "clang-format-3.8 -i -style=file " buffer-file-name))
+   (shell-command (concat "clang-format -i -style=file " buffer-file-name))
    ;(princ "OTHER")
    (message (concat "Saved and ran clang-format on " buffer-file-name))
    (revert-buffer t t t)
@@ -305,6 +312,24 @@ as point goes.
 
 (global-set-key [f7] 'run-ros-clang-format)
 #+END_SRC
+** Work formatting
+
+#+begin_src emacs-lisp
+
+(load "/usr/share/emacs/site-lisp/clang-format-8/clang-format.el" )
+(global-set-key [f7] 'clang-format-region)
+
+(defun run-clang-format ()
+  "Runs clang-format on cpp,h files in catkin_ws/ and reverts buffer."
+  (interactive)
+  (and
+   (save-some-buffers 'no-confirm)
+   (shell-command (concat "clang-format -i -style=file " buffer-file-name))
+   (message (concat "Saved and ran clang-format on " buffer-file-name))
+   (revert-buffer t t t)
+))
+
+#+end_src
 ** ROS Compilation
 
    A cool compilation tool to run catkin builds inside 
@@ -1142,6 +1167,15 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
    )
 #+end_src
 
+** I associate =shell-script-mode= wth by dot files 
+  (jmd/add-auto-mode
+   'shell-script-mode
+   "\.functions$"
+   "\.bashrc$"
+   "\.bash_alias$"
+   "\.profile"
+   )
+
 ** Other languages
 #+BEGIN_SRC emacs-lisp
   (autoload 'vht-mode         "verilog"      "Vht programming mode" t)
@@ -1192,6 +1226,60 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
                   (c-set-style "linux-tabs-only")))))
 
 #+END_SRC
+
+** Custom C Styles
+*** Work
+#+begin_src emacs-lisp
+;; Create my personal style.
+(defconst my-c-style
+  '((c-tab-always-indent        . t)
+    (c-comment-only-line-offset . 4)
+    (fill-column  . 109 )
+    (c-basic-offset . 4)
+    (c-set-offset 'case-label 0)
+    (c-hanging-braces-alist     . ((substatement-open after)
+                                   (brace-list-open)))
+    (c-hanging-colons-alist     . ((member-init-intro before)
+                                   (inher-intro)
+                                   (case-label after)
+                                   (label after)
+                                   (access-label after)))
+    (c-cleanup-list             . (scope-operator
+                                   empty-defun-braces
+                                   defun-close-semi))
+    (c-offsets-alist            . ((arglist-close . c-lineup-arglist)
+                                   (substatement-open . 0)
+                                   (case-label        . 4)
+                                   (block-open        . 0)
+                                   (knr-argdecl-intro . -)))
+    (c-echo-syntactic-information-p . t)))
+;; ((c-mode . ((fill-column . 109)
+;;             (c-basic-offset . 8)
+;;             (eval . (c-set-offset 'substatement-open 0))
+;;             (eval . (c-set-offset 'statement-case-open 0))
+;;             (eval . (c-set-offset 'case-label 0))
+;;             (eval . (c-set-offset 'arglist-intro '++))
+;;             (eval . (c-set-offset 'arglist-close 0))
+;;             (eval . (c-set-offset 'arglist-cont-nonempty '(c-lineup-gcc-asm-reg c-lineup-arglist)))))
+
+;; "My C Programming Style")
+(c-add-style "PERSONAL" my-c-style)
+#+end_src
+*** Local variables
+
+    Use a file called .dir-locals.el. An example is as follows
+
+#+begin_src emacs-lisp
+((nil . ((indent-tabs-mode . t)
+         (fill-column . 80)
+         (mode . auto-fill)))
+ (c-mode . ((c-file-style . "BSD")
+            (subdirs . nil)))
+ ("src/imported"
+  . ((nil . ((change-log-default-name
+              . "ChangeLog.local"))))))
+#+end_src
+
 
 ** Maxima 
 #+BEGIN_SRC emacs-lisp
@@ -1421,7 +1509,7 @@ my buffer.
   (line-number-mode t)
                                           ;(put 'my-operator 'scheme-indent-function 3)
                                           ; Stuff for setting up key bindings...
-  ;; (add-to-list 'load-path "~/.emacs.d/")
+
   (condition-case nil
       (require 'auto-complete-config)
     (error nil)
@@ -1869,10 +1957,10 @@ Hiding leading stars
 
 ** Org Drill
 #+BEGIN_SRC emacs-lisp
-(eval-after-load "org"
-  '(progn
-    (add-to-list 'load-path "/home/jdamon/.emacs.d/elpa/org-drill")
-    (require 'org-drill)))
+; (eval-after-load "org"
+;   '(progn
+;     (add-to-list 'load-path "/home/jdamon/.emacs.d/elpa/org-drill")
+;     (require 'org-drill)))
 #+END_SRC
 ** Rest of ORG
 
@@ -1893,15 +1981,24 @@ Hiding leading stars
    (setq org-log-done t)
    (setq org-log-into-drawer t)
    (setq org-tags-column 80)
+
+   ;; ("j" "Journal" entry (function org-journal-find-location)
+   ;;  "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?")
+   ;; ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org"
+   ;;                                         "* %?\nEntered on %U\n"))
+   ;                                                   ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
+   ;                                                   "* %?\nEnterered on %U\n   %i\n   %a")
+   ; @todo FIX this journal to use the org-journal
+   ;       but that requires fixing the function org-journal-find-location which is annoying 
+   ;       because it pops up two editor windows, one from the function itself and another
+   ;       from the org-capture.
    (setq org-capture-templates
          '(("t" "Todo" entry (file+headline "~/Projects/org/todo.org" "Tasks")
             "* TODO %?\n%i\n   %a")
-           ("j" "Journal" entry (function org-journal-find-location)
-            "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?")
-                                           ;                 ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
-                                           ;                  "* %?\nEnterered on %U\n   %i\n   %a")
+           ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
+                                                  "* %? %^G\nEntered on %U\n")
            ("W" "Work Journal" entry (file+olp+datetree "~/Projects/org/workjournal.org")
-            "* %?\nEnterered on %U\n   %i\n   %a")
+            "* %?\n   %i\n   %a\nEnterered on %U\n")
            ("f" "Finished book"
             table-line (file "~/Documents/notes/books-read.org")
             "| %^{Title} | %^{Author} | %u |")
@@ -2072,8 +2169,8 @@ Hiding leading stars
 #+end_src
 ** Org quizzing
 #+BEGIN_SRC emacs-lisp
-  (setq org-drill-add-random-noise-to-intervals-p t )
-  (setq org-drill-learn-fraction 0.1)
+;  (setq org-drill-add-random-noise-to-intervals-p t )
+;  (setq org-drill-learn-fraction 0.1)
 #+END_SRC
 ** Org Journaling
 
