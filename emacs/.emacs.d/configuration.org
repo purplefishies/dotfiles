@@ -1841,6 +1841,10 @@ I like to see an outline of pretty bullets instead of a list of asterisks.
 
 #+END_SRC
 
+** I like using the windsize package
+#+begin_src emacs-lisp
+(use-package windresize)
+#+end_src
 ** Enforce TODO dependendices
 #+begin_src emacs-lisp
 (setq org-enforce-todo-dependencies t)
