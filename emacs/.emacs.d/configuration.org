@@ -107,7 +107,7 @@ I'm still not sure why this can't be loaded through use-package
 
 #+BEGIN_SRC emacs-lisp
   (require 'color-theme-sanityinc-tomorrow)
-  
+
   (defun transparency (value)
     "Sets the transparency of the frame window. 0=transparent/100=opaque."
     (interactive "nTransparency Value 0 - 100 opaque:")
@@ -313,12 +313,9 @@ as point goes.
 (global-set-key [f7] 'run-ros-clang-format)
 #+END_SRC
 ** Work formatting
-
 #+begin_src emacs-lisp
-
-(load "/usr/share/emacs/site-lisp/clang-format-8/clang-format.el" )
+(load "/usr/share/emacs/site-lisp/clang-format/clang-format.el" )
 (global-set-key [f7] 'clang-format-region)
-
 (defun run-clang-format ()
   "Runs clang-format on cpp,h files in catkin_ws/ and reverts buffer."
   (interactive)
@@ -328,8 +325,7 @@ as point goes.
    (message (concat "Saved and ran clang-format on " buffer-file-name))
    (revert-buffer t t t)
 ))
-
-#+end_src
+#+END_SRC
 ** ROS Compilation
 
    A cool compilation tool to run catkin builds inside 
@@ -1175,7 +1171,6 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
    "\.bash_alias$"
    "\.profile"
    )
-
 ** Other languages
 #+BEGIN_SRC emacs-lisp
   (autoload 'vht-mode         "verilog"      "Vht programming mode" t)
@@ -1226,7 +1221,6 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
                   (c-set-style "linux-tabs-only")))))
 
 #+END_SRC
-
 ** Custom C Styles
 *** Work
 #+begin_src emacs-lisp
@@ -1261,25 +1255,21 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 ;;             (eval . (c-set-offset 'arglist-intro '++))
 ;;             (eval . (c-set-offset 'arglist-close 0))
 ;;             (eval . (c-set-offset 'arglist-cont-nonempty '(c-lineup-gcc-asm-reg c-lineup-arglist)))))
-
 ;; "My C Programming Style")
 (c-add-style "PERSONAL" my-c-style)
 #+end_src
 *** Local variables
-
     Use a file called .dir-locals.el. An example is as follows
-
 #+begin_src emacs-lisp
-((nil . ((indent-tabs-mode . t)
-         (fill-column . 80)
-         (mode . auto-fill)))
- (c-mode . ((c-file-style . "BSD")
-            (subdirs . nil)))
- ("src/imported"
-  . ((nil . ((change-log-default-name
-              . "ChangeLog.local"))))))
+  ;; ((nil . ((indent-tabs-mode . t)
+  ;;          (fill-column . 80)
+  ;;          (mode . auto-fill)))
+  ;;  (c-mode . ((c-file-style . "BSD")
+  ;;             (subdirs . nil)))
+  ;;  ("src/imported"
+  ;;   . ((nil . ((change-log-default-name
+  ;;               . "ChangeLog.local"))))))
 #+end_src
-
 
 ** Maxima 
 #+BEGIN_SRC emacs-lisp
@@ -1845,6 +1835,8 @@ I like to see an outline of pretty bullets instead of a list of asterisks.
 #+begin_src emacs-lisp
 (use-package windresize)
 #+end_src
+
+
 ** Enforce TODO dependendices
 #+begin_src emacs-lisp
 (setq org-enforce-todo-dependencies t)
