@@ -75,6 +75,8 @@
         bclean2 = "!f() { cur=$(git branch | grep '^*'  | perl -ane 'print $F[1]'); git branch --merged ${1-${cur}} | grep -v " ${1-${cur}}$" | xargs -r git branch -d; }; f"
         sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
         bsort = "!git for-each-ref --sort='-committerdate' --format='%(refname)%09%(committerdate)' refs/heads | sed -e 's-refs/heads/--'"
+        rtags = ls-remote --tags
+
 
 [credential]
 	helper = cache --timeout=3600
@@ -104,3 +106,5 @@
 	required = true
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
+[pull]
+	rebase = false
