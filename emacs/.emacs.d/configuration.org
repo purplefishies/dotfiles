@@ -191,7 +191,7 @@ as point goes.
 ** Font Type
 
 #+BEGIN_SRC emacs-lisp
-(set-default-font "Monaco-12")
+(set-frame-font "Monaco-12")
 #+END_SRC
 
 ** Display / Color
@@ -1713,7 +1713,6 @@ my buffer.
   (add-hook 'c-mode-common-hook 'my-add-semantic-to-autocomplete)
   (electric-indent-mode -1)
 
-
 (defun window-toggle-split-direction ()
   "Switch window split from horizontally to vertically, or vice versa.
 
@@ -1741,31 +1740,7 @@ i.e. change right window to bottom, or change bottom window to right."
                   (split-window-horizontally))
                 (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
 
-  ;; (defun toggle-window-split ()
-  ;;   (interactive)
-  ;;   (if (= (count-windows) 2)
-  ;;       (let* ((this-win-buffer (window-buffer))
-  ;;              (next-win-buffer (window-buffer (next-window)))
-  ;;              (this-win-edges (window-edges (selected-window)))
-  ;;              (next-win-edges (window-edges (next-window)))
-  ;;              (this-win-2nd (not (and (<= (car this-win-edges)
-  ;;                                          (car next-win-edges))
-  ;;                                      (<= (cadr this-win-edges)
-  ;;                                          (cadr next-win-edges)))))
-  ;;              (splitter
-  ;;               (if (= (car this-win-edges)
-  ;;                      (car (window-edges (next-window))))
-  ;;                   'split-window-horizontally
-  ;;                 'split-window-vertically)))
-  ;;         (delete-other-windows)
-  ;;         (let ((first-win (selected-window)))
-  ;;           (funcall splitter)
-  ;;           (if this-win-2nd (other-window 1))
-  ;;           (set-window-buffer (selected-window) this-win-buffer)
-  ;;           (set-window-buffer (next-window) next-win-buffer)
-  ;;           (select-window first-win)
-  ;;           (if this-win-2nd (other-window 1))))))))
-
+   (defalias 'rotate-window 'window-toggle-split-direction )
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
   (setq org-display-inline-images t) 
   (setq org-redisplay-inline-images t) 
@@ -1830,6 +1805,15 @@ I like to see an outline of pretty bullets instead of a list of asterisks.
 (setq org-bullets-bullet-list '("◉" "○" "✸"  "☯" "✿" "✜" "☯" "◆" "☯" "▶" ))
 
 #+END_SRC
+
+** Changing colors of Org 
+#+begin_src emacs-lisp
+;; (defun jmd/org-mode-hook ()
+;;   "My `org-mode' hook"
+;;   (set-face-attribute org-level-1 nil :foreground "light goldenrod"))
+;; (add-hook 'org-mode-hook 'jmd/org-mode-hook)
+#+end_src
+  Projects/org/contour.svg
 
 ** I like using the windsize package
 #+begin_src emacs-lisp
@@ -1992,9 +1976,9 @@ Hiding leading stars
          '(("t" "Todo" entry (file+headline "~/Projects/org/todo.org" "Tasks")
             "* TODO %?\n%i\n   %a")
            ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
-                                                  "* %? %^G\nEntered on %U\n")
-           ("W" "Work Journal" entry (file+olp+datetree "~/Projects/org/workjournal.org")
-            "* %?\n   %i\n   %a\nEnterered on %U\n")
+                                                  "* %? %^G\n  %T\n")
+           ("W" "Work Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
+            "* %?\t\t:work:\n   %T\n\n")
            ("f" "Finished book"
             table-line (file "~/Documents/notes/books-read.org")
             "| %^{Title} | %^{Author} | %u |")
@@ -2085,6 +2069,24 @@ Hiding leading stars
               subtree-end))))
    (setq org-agenda-start-with-log-mode '(closed clock state))
    (setq org-agenda-log-mode-items '(closed clock state))
+
+   (defun my-org-agenda-skip-all-siblings-but-first ()
+     "Skip all but the first non-done entry."
+     (let (should-skip-entry)
+       (unless (org-current-is-todo)
+         (setq should-skip-entry nil))
+       (save-excursion
+         (while (and (not should-skip-entry) (org-goto-sibling t))
+           (when (org-current-is-todo)
+             (setq should-skip-entry t))))
+       (when should-skip-entry
+         (or (outline-next-heading)
+             (goto-char (point-max))))))
+
+   (defun org-current-is-todo ()
+      (string= "TODO" (org-get-todo-state)))
+
+
    (setq org-agenda-custom-commands
          '(("c" "Simple agenda view"
             ((agenda "")
@@ -2095,6 +2097,9 @@ Hiding leading stars
                           (quote ((agenda time-up priority-down tag-up))))
                          (org-deadline-warning-days 0)))
              ))
+           ("w" "Work tasks" tags-todo "work"
+            ((org-agenda-overriding-header "Office")
+             (org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
            ("W" "Weely review"
             ((agenda ""
                      ((org-agenda-span 'week)
@@ -2104,6 +2109,10 @@ Hiding leading stars
                       ;;  '(org-agenda-skip-entry-if 'nottodo 'done))
                       )))
             )
+           ("1" "Q1" tags-todo "+important+urgent")
+           ("2" "Q2" tags-todo "+important-urgent")
+           ("3" "Q3" tags-todo "-important+urgent")
+           ("4" "Q4" tags-todo "-important-urgent")
            ))
 
    (defun jmd-org-tasks-closed-in-month (&optional month year match-string)
@@ -2203,7 +2212,7 @@ Hiding leading stars
         :hook 
         (after-init . org-roam-mode)
         :custom
-        (org-roam-directory "~/Projects/org/")
+        (org-roam-directory "~/Projects/org/Roam")
         :bind (:map org-roam-mode-map
                 (("C-c n l" . org-roam)
                  ("C-c n f" . org-roam-find-file)
@@ -2226,7 +2235,67 @@ Hiding leading stars
   (setq deft-use-filename-as-title t )
   (setq deft-recursive t)
 #+end_src 
+** Org sorting
+#+begin_src emacs-lisp
+(setq org-agenda-todo-ignore-scheduled t)
+(setq org-agenda-todo-ignore-deadlines t)
+(setq org-default-priority ?D)
+#+end_src
+** Org limiting Agenda views
 
+#+begin_src emacs-lisp
+(setq org-agenda-todo-ignore-scheduled 'future)
+(setq org-agenda-todo-ignore-deadlines 'future)
+(setq org-agenda-tags-todo-honor-ignore-options t)
+#+end_src
+
+** Org / Emacs shortcuts and mneumonics
+
+
+
+*** Insert time stamps that can be see by Org Agenda
+    C-u C-u C-c .
+    
+*** Hidden timestamps
+    
+    C-u C-c !
+
+*** Changing the state (when you can't use fast keys)
+
+    C-C C-t
+
+*** Changing the sort orders
+    customize-variable org-tags-match-list-sublevels
+
+    Set the value to list them with dots
+
+*** Custom Queries
+    
+    Select effort less than 1 hour and PRIORITY <=B 
+
+    Effort<1+PRIORITY<="B"-archive+chores
+
+
+
+*** Changing effort
+
+    C-c C-x e (org-set-effort)
+
+    C-c C-x C-e (org-clock-modify-effort-estimate)
+
+*** Show subtrees
+
+    customize-variable
+    org-agenda-todo-list-sublevels
+    org-tags-match-list-sublevels
+    
+    Then re-run your query
+
+*** Create a new frame
+    (make-frame-command)
+
+*** Track changes in the code
+     (global-auto-revert-mode t) in your .emacs.
 * Email 
 ** Outgoing Email server 
    Send mail using postfix
