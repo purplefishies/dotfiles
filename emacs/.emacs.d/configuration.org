@@ -1820,7 +1820,6 @@ I like to see an outline of pretty bullets instead of a list of asterisks.
 (use-package windresize)
 #+end_src
 
-
 ** Enforce TODO dependendices
 #+begin_src emacs-lisp
 (setq org-enforce-todo-dependencies t)
@@ -2249,7 +2248,7 @@ Hiding leading stars
 (setq org-agenda-tags-todo-honor-ignore-options t)
 #+end_src
 
-** Org / Emacs shortcuts and mneumonics
+** Common Emacs Commands/Stuff and mneumonics
 
 
 
@@ -2294,8 +2293,27 @@ Hiding leading stars
 *** Create a new frame
     (make-frame-command)
 
-*** Track changes in the code
-     (global-auto-revert-mode t) in your .emacs.
+*** Track changes in the code (change buffer when the files changes underneath)
+     (setq global-auto-revert-mode t )
+     (setq auto-revert-use-notify nil)
+
+     in your .emacs.
+     
+     Other option is to customize global-auto-revert-mode and toggle it to on
+
+*** How to insert Latex blocks inside of org mode
+    
+    [[https://orgmode.org/manual/CDLaTeX-mode.html][Mode is CDLatex mode]]
+    
+    C-c { 
+**** Preview a fragment
+     
+     C-c C-x C-l 
+**** Insert citation using RefTex
+
+     C-c C-x [
+
+    
 * Email 
 ** Outgoing Email server 
    Send mail using postfix
