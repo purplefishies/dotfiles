@@ -2249,9 +2249,6 @@ Hiding leading stars
 #+end_src
 
 ** Common Emacs Commands/Stuff and mneumonics
-
-
-
 *** Insert time stamps that can be see by Org Agenda
     C-u C-u C-c .
     
@@ -2273,7 +2270,6 @@ Hiding leading stars
     Select effort less than 1 hour and PRIORITY <=B 
 
     Effort<1+PRIORITY<="B"-archive+chores
-
 
 
 *** Changing effort
