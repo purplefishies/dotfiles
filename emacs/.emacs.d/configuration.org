@@ -1897,6 +1897,14 @@ Hiding leading stars
   ;; (setq foo (org-get-tags-string))
   )
 
+; Save the file
+; 
+(add-hook 'org-agenda-mode-hook
+          (lambda ()
+            (add-hook 'auto-save-hook 'org-save-all-org-buffers nil t)
+            (auto-save-mode)))
+
+
 (defun my/org-checkbox-todo ()
   "Switch header TODO state to DONE when all checkboxes are ticked, to TODO otherwise"
   (let ((todo-state (org-get-todo-state)) beg end)
@@ -1926,6 +1934,9 @@ Hiding leading stars
 (define-key org-mode-map (kbd "C-c C-x C-s") 'jmd/mark-done-and-archive)
 
 #+END_SRC
+
+#+RESULTS:
+: jmd/mark-done-and-archive
 
 ** Enforce 
 
@@ -2308,6 +2319,18 @@ Hiding leading stars
 **** Insert citation using RefTex
 
      C-c C-x [
+*** How to View ansi colors in Emacs
+
+    #+begin_src emacs-lisp
+    (require 'ansi-color)
+    (defun display-ansi-colors ()
+      (interactive)
+      (ansi-color-apply-on-region (point-min) (point-max)))
+    #+end_src
+
+    display-ansi-colors
+**** Ref    
+     - https://stackoverflow.com/questions/23378271/how-do-i-display-ansi-color-codes-in-emacs-for-any-mode
 
     
 * Email 
