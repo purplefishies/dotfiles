@@ -2172,11 +2172,16 @@ Hiding leading stars
 ** Org Download
 #+BEGIN_SRC emacs-lisp
   (require 'org-download)
-
   ;; Drag-and-drop to `dired`
   (add-hook 'dired-mode-hook 'org-download-enable)
   (add-hook 'org-mode 'org-download-enable)
   (setq-default org-download-image-dir "~/Projects/org/Pictures/")
+  ;; (use-package org-download
+  ;;   :ensure t
+  ;;   :config
+  ;;   ;; add support to dired
+  ;;   (add-hook 'dired-mode-hook 'org-download-enable))
+
 #+END_SRC
 ** Org Exporting 
 #+begin_src emacs-lisp
@@ -2308,7 +2313,7 @@ Hiding leading stars
      
      Other option is to customize global-auto-revert-mode and toggle it to on
 
-*** How to insert Latex blocks inside of org mode
+*** How to insert Latex blocks inside of org mode                               :latex:insert:environment:
     
     [[https://orgmode.org/manual/CDLaTeX-mode.html][Mode is CDLatex mode]]
     
@@ -2319,8 +2324,7 @@ Hiding leading stars
 **** Insert citation using RefTex
 
      C-c C-x [
-*** How to View ansi colors in Emacs
-
+*** How to View ansi colors in Emacs                                            :view:ansi:color:
     #+begin_src emacs-lisp
     (require 'ansi-color)
     (defun display-ansi-colors ()
@@ -2332,7 +2336,28 @@ Hiding leading stars
 **** Ref    
      - https://stackoverflow.com/questions/23378271/how-do-i-display-ansi-color-codes-in-emacs-for-any-mode
 
-    
+*** Toggling Viewing images                                                     :view:images:
+    C-c C-x C-v
+*** Viewing Latex math                                                          :view:latex:math:
+    C-c C-x C-l
+
+*** Adding Images to org
+**** From Clipboard
+     org-download-clipboard
+
+**** From a WebSite without download
+     
+     - Right click -> Copy image address
+     - org-download-image
+     - paste your link
+
+**** Drag and Drop
+
+     - Works only from firefox and ONLY on specific pages
+     - Maybe disable javascript
+     - Drag into org document
+
+
 * Email 
 ** Outgoing Email server 
    Send mail using postfix
