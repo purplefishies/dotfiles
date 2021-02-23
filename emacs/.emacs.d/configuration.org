@@ -2119,10 +2119,10 @@ Hiding leading stars
                       ;;  '(org-agenda-skip-entry-if 'nottodo 'done))
                       )))
             )
-           ("1" "Q1" tags-todo "+important+urgent")
-           ("2" "Q2" tags-todo "+important-urgent")
-           ("3" "Q3" tags-todo "-important+urgent")
-           ("4" "Q4" tags-todo "-important-urgent")
+           ;; ("1" "Q1" tags-todo "+important+urgent") ; Not needed right now 
+           ;; ("2" "Q2" tags-todo "+important-urgent") ; revisit someday
+           ;; ("3" "Q3" tags-todo "-important+urgent")
+           ;; ("4" "Q4" tags-todo "-important-urgent")
            ))
 
    (defun jmd-org-tasks-closed-in-month (&optional month year match-string)
@@ -2287,14 +2287,13 @@ Hiding leading stars
 
     Effort<1+PRIORITY<="B"-archive+chores
 
-
 *** Changing effort
 
     C-c C-x e (org-set-effort)
 
     C-c C-x C-e (org-clock-modify-effort-estimate)
 
-*** Show subtrees
+*** Show subtrees ( or only children )
 
     customize-variable
     org-agenda-todo-list-sublevels
@@ -2306,7 +2305,7 @@ Hiding leading stars
     (make-frame-command)
 
 *** Track changes in the code (change buffer when the files changes underneath)
-     (setq global-auto-revert-mode t )
+     (global-auto-revert-mode t )
      (setq auto-revert-use-notify nil)
 
      in your .emacs.
@@ -2340,6 +2339,8 @@ Hiding leading stars
     C-c C-x C-v
 *** Viewing Latex math                                                          :view:latex:math:
     C-c C-x C-l
+*** Showing tasks in a buffer
+    C-c / t   : will list sparse tree of outstanding todo items
 
 *** Adding Images to org
 **** From Clipboard
@@ -2357,6 +2358,14 @@ Hiding leading stars
      - Maybe disable javascript
      - Drag into org document
 
+*** Ignoring comments
+    Really cool feature where you can hide whole sections of comments
+
+    - https://www.emacswiki.org/emacs/HideOrIgnoreComments
+
+    - Select region and then hit M-x hide/show-comments or hide/show-comments-toggle
+
+    
 
 * Email 
 ** Outgoing Email server 
