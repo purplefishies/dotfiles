@@ -163,14 +163,21 @@ if [[ -f "${HOME}/.colors" ]] ; then
     fi
 fi
 
-
-
+TITLEBAR="\[\033]0;\u@\H: \w\007\]"
+LONG_PROMPT=$TITLEBAR
+MYGREEN=$(printf "\033[38;5;42m\n")
+if [[ -f /.dockerenv ]] || grep -Eq '(lxc|docker)' /proc/1/cgroup; 
+then 
+    LONG_PROMPT=${LONG_PROMPT}'\[$MYGREEN\](docker-\h)\[$RESET\] \W '
+else
+    LONG_PROMPT="${LONG_PROMPT}\h \W"
+fi
 
 if [[ "$(type -t __svn_ps1 )" == "function" ]] ; then
     LONG_PROMPT=${LONG_PROMPT}${SVN_COLOR}'$(__svn_ps1)'
     SHORT_PROMPT=${SHORT_PROMPT}${SVN_COLOR}'$(__svn_ps1)'
 else
-    echo "Can't find definition for __svn_ps1"
+    echo "Can't find definition for __svn_ps1" >> $HOME/bash_errors.log
     function __svn_ps1() {
         ""
     }
@@ -181,7 +188,7 @@ if [[ "$(type -t __git_ps1 )" == "function" ]] ; then
     STEALTH_PROMPT=${STEALTH_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
     tty -s && export PS1=$LONG_PROMPT
 else
-    echo "Can't find definition for __git_ps1...ignoring"    
+    echo "Can't find definition for __git_ps1...ignoring" >> $HOME/bash_errors.log
     LONG_PROMPT=${LONG_PROMPT}'\[$RESET\]% '
     SHORT_PROMPT=${SHORT_PROMPT}'\[$RESET\]% '
     STEALTH_PROMPT=${STEALTH_PROMPT}'\[$RESET\]% '
@@ -207,7 +214,7 @@ fi
 if [[ -f "/etc/bash_completion" ]] ; then
     source /etc/bash_completion
 else
-    echo "Can't find file /etc/bash_completion to source...please install"
+    echo "Can't find file /etc/bash_completion to source...please install" >> $HOME/bash_errors.log
 fi
 
 
@@ -262,7 +269,11 @@ function rollover_history() {
         history -c >/dev/null
         history -r >/dev/null
     fi
-    eval $(timeout3 -d 0 -i 0.1 -t ${DEFAULT_TIMEOUT} git_stats.rb)
+
+    if [[ -f $(which timeout3) ]]
+    then
+       eval $(timeout3 -d 0 -i 0.1 -t ${DEFAULT_TIMEOUT} git_stats.rb)
+    fi
 }
 export PROMPT_COMMAND="rollover_history"
 
@@ -302,9 +313,7 @@ fi
 
 export COMP_WORDBREAKS=${COMP_WORDBREAKS/\:/}
 
-export SDK_ROOT=/Developer/SDKs/android-sdk-mac_86
 export PATH=$PATH:$SDK_ROOT/tools/
-export PATH=$PATH:/opt/local/lib/mysql5/bin
 
 # 
 # Android
@@ -382,11 +391,12 @@ VENV="\$(virtualenv_info)";
 #export PS1="... ${VENV} ..."
 
 export LONG_PROMPT="${VENV}${LONG_PROMPT}"
-cprompt devel
+export PS1=${LONG_PROMPT}
 
-# if [ -f "${HOME}/Dropbox/Projects/SysAdmin/tcl/init/bash" ] ; then
-#    source ${HOME}/Dropbox/Projects/SysAdmin/tcl/init/bash
-# fi
+if [ -n "$(type -t cprompt 2>/dev/null)" ] && [ "$(type -t cprompt 2>/dev/null)" = function ]
+then 
+    cprompt devel
+fi
 
 if [ -n "$TMUX" ]; then
     function refresh {
@@ -433,8 +443,8 @@ function getkey {
     fi
 }
 
-export LANG="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
+#export LANG="en_US.UTF-8"
+#export LC_ALL="en_US.UTF-8"
 
 if [ -f ${HOME}/dotfiles/android_bc ] ; then
     source ${HOME}/dotfiles/android_bc
@@ -469,9 +479,15 @@ export DEBEMAIL=$EMAIL
 export TOOLSDIR=$HOME/Tools
 export MODULEPATH=$HOME/Modules
 
-source /usr/share/lmod/lmod/init/bash
+if [[ -f /usr/share/lmod/lmod/init/bash ]]
+then
+    source /usr/share/lmod/lmod/init/bash
+fi
+
 alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_ws/src -w /home/developer/catkin_ws/ -u developer -it ^Ccker.cloudsmith.io/automodality/dev/amros-melodic:latest"
 export PATH="${PATH}:$HOME/.jlenv/bin"
 
-
-fortune.rb $(/bin/ls -d ${HOME}/Quotes.txt ${HOME}/Quotes.txt  ${HOME}/Quotes.txt ${HOME}/Quotes.txt /usr/share/games/fortunes | sort -R | head -1) | fold  -w 50 -s  | cowsay -f tux -n | lolcat -t -p 2
+if [[ -f $HOME/Scripts/fortune.rb ]] 
+then
+   fortune.rb $(/bin/ls -d ${HOME}/Quotes.txt ${HOME}/Quotes.txt  ${HOME}/Quotes.txt ${HOME}/Quotes.txt /usr/share/games/fortunes | sort -R | head -1) | fold  -w 50 -s  | cowsay -f tux -n | lolcat -t -p 2
+fi
