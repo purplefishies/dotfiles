@@ -5,6 +5,9 @@
 
 
 * Configure =use-package=
+  :PROPERTIES:
+  :ID:       759893c6-4288-4189-9f35-38da6a58d734
+  :END:
 
 I use =use-package= to install and configure my packages. My =init.el= includes
 the initial setup for =package.el= and ensures that =use-package= is installed,
@@ -32,6 +35,9 @@ Always compile packages, and use the newest version available.
 
 * Personal information
 ** Who am I? Where am I?
+   :PROPERTIES:
+   :ID:       72e1b13b-6988-426a-9c48-2d860f8807b3
+   :END:
 
 #+BEGIN_SRC emacs-lisp
   (setq user-full-name "Jimi Damon"
@@ -42,6 +48,9 @@ Always compile packages, and use the newest version available.
 #+END_SRC
 
 * Utility Functions
+  :PROPERTIES:
+  :ID:       1b684389-edd3-4e74-bb79-538b30881323
+  :END:
 
   Functions that came from Harry Schwartz's configuration.org , I just renamed them to jmd ( my
   name ) so that they're easier to remember.
@@ -64,6 +73,9 @@ Always compile packages, and use the newest version available.
 
 * UI preferences
 ** Tweak window chrome
+   :PROPERTIES:
+   :ID:       b3bffee2-7b14-43b6-8eea-c68e52ca1d4e
+   :END:
 
 No scroll bar , Tool bar or Menu bar, with a simple function to restore it
 
@@ -92,6 +104,9 @@ project:
 #+END_SRC
 
 ** Use fancy lambdas
+   :PROPERTIES:
+   :ID:       d921e871-32c3-49a2-9625-a866e9eb3eca
+   :END:
 
 Why not?
 
@@ -100,6 +115,9 @@ Why not?
 #+END_SRC
 
 ** Load up a theme
+   :PROPERTIES:
+   :ID:       d98d2074-979f-47f4-96c0-225ae914e39e
+   :END:
 
 I'm currently using the "sanityinc-tomorrow-bright" theme. I like a barely transparent 
 window on top of a cool european city backdrop. I like the Sanityinc tomorrow theme, but 
@@ -133,6 +151,9 @@ frame is themed appropriately.
 #+END_SRC
 
 ** Use =moody= for a beautiful modeline
+   :PROPERTIES:
+   :ID:       b26af65b-131c-490e-a618-6056bcfa0301
+   :END:
 
 This gives me a truly lovely ribbon-based modeline.
 
@@ -145,6 +166,9 @@ This gives me a truly lovely ribbon-based modeline.
 #+END_SRC
 
 ** Use =minions= to hide all minor modes
+   :PROPERTIES:
+   :ID:       6820cb0d-db18-49a4-be39-835754345073
+   :END:
 
 I never want to see a minor mode, and manually adding =:diminish= to every
 use-package declaration is a hassle. This uses =minions= to hide all the minor
@@ -162,6 +186,9 @@ I'd rather skip it.
 #+END_SRC
 
 ** Disable visual bell
+   :PROPERTIES:
+   :ID:       e6022e60-2b62-4fd8-a991-1f95a507254a
+   :END:
 
 =sensible-defaults= replaces the audible bell with a visual one, but I really
 don't even want that (and my Emacs/Mac pair renders it poorly). This disables
@@ -172,6 +199,9 @@ the bell altogether.
 #+END_SRC
 
 ** Scroll conservatively
+   :PROPERTIES:
+   :ID:       ccb2a869-abe6-4ce1-a488-997f9331bc08
+   :END:
 
 When point goes outside the window, Emacs usually recenters the buffer point.
 I'm not crazy about that. This changes scrolling behavior to only scroll as far
@@ -189,6 +219,9 @@ as point goes.
 
 * General Appearance / Startup
 ** Font Type
+   :PROPERTIES:
+   :ID:       0f5220a6-6c6e-4cd4-b7d6-8fd4458eeda9
+   :END:
 
 #+BEGIN_SRC emacs-lisp
 (set-frame-font "Monaco-12")
@@ -196,6 +229,9 @@ as point goes.
 
 ** Display / Color
 ** Starting the Emacs Server
+   :PROPERTIES:
+   :ID:       0699fe67-413f-4db8-adbe-855fb3e91fb4
+   :END:
 #+BEGIN_SRC emacs-lisp
 (defvar server-socket-dir
   (let ((uid (user-uid)))
@@ -208,6 +244,9 @@ as point goes.
 
 #+END_SRC 
 ** X11 and Headless
+   :PROPERTIES:
+   :ID:       aab602a9-1b42-40f7-8ec6-a797af2bb7c8
+   :END:
 #+BEGIN_SRC emacs-lisp
   (unless window-system
     (when (getenv "DISPLAY")
@@ -239,6 +278,9 @@ as point goes.
 #+END_SRC
 
 ** Clipboard
+   :PROPERTIES:
+   :ID:       df387849-dd5c-475a-81f4-9333ba0199aa
+   :END:
 #+BEGIN_SRC emacs-lisp
   (setq x-select-enable-primary t)
   (setq x-select-enable-clipboard t)
@@ -246,6 +288,9 @@ as point goes.
 #+END_SRC
 
 ** Key Bindings
+   :PROPERTIES:
+   :ID:       045685ba-7c48-4440-8f27-6b3b8b6cea2b
+   :END:
 
 #+BEGIN_SRC emacs-lisp
 
@@ -281,6 +326,9 @@ as point goes.
   (global-set-key [(control right)] 'forward-word-correctly)
 #+END_SRC
 ** ANSI colors
+   :PROPERTIES:
+   :ID:       7d3097aa-992e-4873-b88f-c8fc1251c8ad
+   :END:
 #+BEGIN_SRC emacs-lisp
   (defun display-ansi-colors ()
     (interactive)
@@ -288,11 +336,17 @@ as point goes.
       (ansi-color-apply-on-region (point-min) (point-max))))
 #+END_SRC
 ** Disabling electric parentheses
+   :PROPERTIES:
+   :ID:       821f99ac-c10b-4a8f-96d0-1fa3e3f42f04
+   :END:
 #+BEGIN_SRC emacs-lisp
   (electric-indent-mode -1)
   (add-hook 'after-change-major-mode-hook (lambda() (electric-indent-mode -1)))
 #+END_SRC
 ** ROS Formatting
+   :PROPERTIES:
+   :ID:       db9c9229-77f6-4e8a-8986-abbc751c7237
+   :END:
 
    Setting the formatting and give a bind key
 #+BEGIN_SRC emacs-lisp
@@ -313,6 +367,9 @@ as point goes.
 (global-set-key [f7] 'run-ros-clang-format)
 #+END_SRC
 ** Work formatting
+   :PROPERTIES:
+   :ID:       d9a29cfd-2707-46c1-be8c-7e094d29727a
+   :END:
 #+begin_src emacs-lisp
 (load "/usr/share/emacs/site-lisp/clang-format/clang-format.el" )
 (global-set-key [f7] 'clang-format-region)
@@ -327,6 +384,9 @@ as point goes.
 ))
 #+END_SRC
 ** ROS Compilation
+   :PROPERTIES:
+   :ID:       d94f90b5-57ee-49b0-abcd-ef46d6c74172
+   :END:
 
    A cool compilation tool to run catkin builds inside 
 #+begin_src emacs-lisp
@@ -364,6 +424,9 @@ as point goes.
 #+end_src
 
 ** Enable compilations with color
+   :PROPERTIES:
+   :ID:       2f63ab28-a315-443d-beb5-2bab4f46fed9
+   :END:
 
 #+BEGIN_SRC emacs-lisp
 (require 'ansi-color)
@@ -374,6 +437,9 @@ as point goes.
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 #+END_SRC
 ** GDB exit upon receiving Quit
+   :PROPERTIES:
+   :ID:       b8effbe3-f89b-422d-8d43-6ad33d8efb12
+   :END:
 #+BEGIN_SRC emacs-lisp
 (defvar all-gud-modes
   '(gud-mode comint-mode gdb-locals-mode gdb-frames-mode  gdb-breakpoints-mode)
@@ -393,12 +459,18 @@ Do this after `q` in Debugger buffer."
           (message "Killed %i buffer(s)." count))))
 #+END_SRC
 ** Ibuffer 
+   :PROPERTIES:
+   :ID:       f908b2a5-f672-496c-bd13-52e0770a9c26
+   :END:
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-x C-b") 'ibuffer)
   (require 'ibuf-ext)
   (add-to-list 'ibuffer-never-show-predicates "^\\*")  
 #+end_src
 ** Screenshots
+   :PROPERTIES:
+   :ID:       08473751-5d5a-4c06-9ee4-6ba0a9d9fe05
+   :END:
 #+begin_src emacs-lisp
 (defun my-org-screenshot ()
   "Take a screenshot into a time stamped unique-named file in the
@@ -422,6 +494,9 @@ manage the project, handle auto-completion, search for terms, and deal with
 version control. That's all in here.
 
 ** =ag=
+   :PROPERTIES:
+   :ID:       73c097c1-be36-471e-a6b7-199fbb266e89
+   :END:
 
 Set up =ag= for displaying search results.
 
@@ -430,6 +505,9 @@ Set up =ag= for displaying search results.
 #+END_SRC
 
 ** =company=
+   :PROPERTIES:
+   :ID:       cc25cfc9-9f1d-4243-b424-e19f80e2b33a
+   :END:
 
 Use =company-mode= everywhere.
 
@@ -445,6 +523,9 @@ Use =M-/= for completion.
 #+END_SRC
 
 ** =dumb-jump=
+   :PROPERTIES:
+   :ID:       fa62dee8-2153-43a7-acf0-2ca6d8aaaf3f
+   :END:
 
 The =dumb-jump= package works well enough in a [[https://github.com/jacktasia/dumb-jump#supported-languages][ton of environments]], and it
 doesn't require any additional setup. I've bound its most useful command to
@@ -458,12 +539,18 @@ doesn't require any additional setup. I've bound its most useful command to
 #+END_SRC
 
 ** =flycheck=
+   :PROPERTIES:
+   :ID:       aab1fb3d-a834-4ee4-b3a7-5e36bb92e4f0
+   :END:
 
  #+BEGIN_SRC emacs-lisp
    (use-package flycheck)
  #+END_SRC
 
 ** =magit=
+   :PROPERTIES:
+   :ID:       1552bb6b-9bd0-457b-8f57-afd4746984bf
+   :END:
 
 I use =magit= to handle version control. It's lovely, but I tweak a few things:
 
@@ -508,6 +595,9 @@ and issues. Seems slick so far.
 #+END_SRC
 
 ** =projectile=
+   :PROPERTIES:
+   :ID:       3aa1638f-e141-4c4b-9b53-0027a8d7bdc8
+   :END:
 
 Projectile's default binding of =projectile-ag= to =C-c p s s= is clunky enough
 that I rarely use it (and forget it when I need it). This binds it to the
@@ -542,6 +632,9 @@ project root (if I'm not in a "real" project).
 #+END_SRC
 
 ** =undo-tree=
+   :PROPERTIES:
+   :ID:       ec238dcf-37dd-42d8-9379-53cf863cd2fb
+   :END:
 
 I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 
@@ -554,6 +647,9 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 ** C / C++
 
 *** C Hooks 
+    :PROPERTIES:
+    :ID:       3c59d358-96a7-4aca-866d-5f3ab6f7a78f
+    :END:
 #+begin_src emacs-lisp
   (defun my-c-mode-hook ()
     (hs-minor-mode))
@@ -562,6 +658,9 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 #+end_src
 
 *** Adds custom C/C++ headers 
+    :PROPERTIES:
+    :ID:       32b232e7-cbba-4fca-a9cf-e978eb6c7ed7
+    :END:
 #+BEGIN_SRC emacs-lisp
   (defun add-c-function-header( &optional n)
     "Add a default header to a subroutine"
@@ -618,6 +717,9 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 #+END_SRC
 
 ** Perl
+   :PROPERTIES:
+   :ID:       f1173357-484c-40a3-b3a4-eb35c8c1b19e
+   :END:
 
    Adds Perl headers
 #+BEGIN_SRC emacs-lisp
@@ -752,6 +854,9 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 #+END_SRC 
 
 ** Skill
+   :PROPERTIES:
+   :ID:       323e1b41-a708-4cb5-9f43-a535a6ebd86e
+   :END:
    Formatting functions for Scheme / Skill
 
 #+begin_src emacs-lisp
@@ -1141,6 +1246,9 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 
 #+end_src
 ** Maxima
+   :PROPERTIES:
+   :ID:       4ada1d84-08e8-4251-a45a-f2dcd65e00e3
+   :END:
 #+begin_src emacs-lisp
  (add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima/")
  (autoload 'maxima-mode "maxima" "Maxima mode" t)
@@ -1152,6 +1260,9 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 #+end_src
 
 ** ROS Launch file support 
+   :PROPERTIES:
+   :ID:       674752e9-4879-443b-8637-1860b478b1b9
+   :END:
 
    These support launch files and test files (the same XML ) that must exist under the 
    test/* directory
@@ -1172,6 +1283,9 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
    "\.profile"
    )
 ** Other languages
+   :PROPERTIES:
+   :ID:       e049b095-7923-4981-be17-efac8fea6984
+   :END:
 #+BEGIN_SRC emacs-lisp
   (autoload 'vht-mode         "verilog"      "Vht programming mode" t)
   (autoload 'c++-mode         "cc-mode"      "C++ programming mode" t)
@@ -1190,6 +1304,9 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 #+END_SRC
 
 ** Linux Kernel Development
+   :PROPERTIES:
+   :ID:       1b87566a-3b7a-4189-967f-971a54aaa95f
+   :END:
 #+BEGIN_SRC emacs-lisp
   (defun c-lineup-arglist-tabs-only (ignored)
     "Line up argument lists by tabs, not spaces"
@@ -1223,6 +1340,9 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 #+END_SRC
 ** Custom C Styles
 *** Work
+    :PROPERTIES:
+    :ID:       4165d104-7bfc-4a43-bd5c-826f89c1ef7b
+    :END:
 #+begin_src emacs-lisp
 ;; Create my personal style.
 (defconst my-c-style
@@ -1259,6 +1379,9 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 (c-add-style "PERSONAL" my-c-style)
 #+end_src
 *** Local variables
+    :PROPERTIES:
+    :ID:       21094873-c7aa-4461-8406-345db0887697
+    :END:
     Use a file called .dir-locals.el. An example is as follows
 #+begin_src emacs-lisp
   ;; ((nil . ((indent-tabs-mode . t)
@@ -1272,17 +1395,26 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 #+end_src
 
 ** Maxima 
+   :PROPERTIES:
+   :ID:       84e5ceb8-d86c-4f5d-b142-60c214ccce9d
+   :END:
 #+BEGIN_SRC emacs-lisp
   (setq imaxima-fnt-size "Huge")
 #+END_SRC
 
 ** Tramp setup
+   :PROPERTIES:
+   :ID:       ee7816fe-07cd-489d-96bb-d737364cac3f
+   :END:
 #+BEGIN_SRC emacs-lisp
 ;   (require 'tramp)
 ;   (setq tramp-default-method "ssh")
 #+END_SRC
 
 ** Doxymacs
+   :PROPERTIES:
+   :ID:       a39d0707-47f0-42ca-93f9-1b5b04031406
+   :END:
 #+BEGIN_SRC emacs-lisp
   (condition-case nil
       (require 'doxymacs)
@@ -1295,6 +1427,9 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
 
 ** Spice
 ** Ruby
+   :PROPERTIES:
+   :ID:       e3c4f1c9-8caf-49f1-a4de-f065a3ed92fe
+   :END:
 
 I use =chruby= to switch between versions of Ruby. This sets a default version
 to use within Emacs (for things like =xmp= or =rspec=).
@@ -1338,6 +1473,9 @@ I disable warnings when running code through =xmp= because I disagree with a few
 of them (complaining about private =attr_reader=, especially) and they gunk up
 my buffer.
 ** Yasnippets
+   :PROPERTIES:
+   :ID:       e4a12ef6-2a8a-4860-b7b0-6ef20324bad8
+   :END:
 
 #+begin_src emacs-lisp
 (use-package yasnippet
@@ -1384,6 +1522,9 @@ my buffer.
 #+end_src
 
 * Extra stuff
+  :PROPERTIES:
+  :ID:       e9ab343c-4e8e-4f1e-b294-9d38a5360c01
+  :END:
 #+BEGIN_SRC emacs-lisp
   (add-hook 'emacs-lisp-mode-hook
               (lambda ()
@@ -1771,22 +1912,34 @@ i.e. change right window to bottom, or change bottom window to right."
 * Publishing and task management with Org-mode
 ** Org Setup
 *** Loading Org
+    :PROPERTIES:
+    :ID:       95c0226c-cd84-42c2-89cf-c0d3d8190ffc
+    :END:
 #+begin_src emacs-lisp
   (use-package org)
 #+end_src
 
 *** Org Directory Setup
+    :PROPERTIES:
+    :ID:       d507ec22-cf8d-4edd-b1a3-adae9fdf1c31
+    :END:
 #+BEGIN_SRC emacs-lisp
   (setq org-directory "~/Projects/org")
   (add-hook 'org-mode-hook 'outline-minor-mode)
 #+END_SRC
 
 *** Scaling Preview Latex 
+    :PROPERTIES:
+    :ID:       d4d83f36-a933-44cd-b0cb-6c45c8532a2a
+    :END:
 #+BEGIN_SRC emacs-lisp
   (set-default 'preview-scale-function 1.9 )
 #+END_SRC
 
 *** Don't indent by 2, instead use native indentation
+    :PROPERTIES:
+    :ID:       f3579ab0-15d6-4b9b-bdf0-8eb2a4f73604
+    :END:
 #+begin_src emacs-lisp
 (setq org-src-tab-acts-natively t )
 (setq org-src-fontify-natively t )
@@ -1795,6 +1948,9 @@ i.e. change right window to bottom, or change bottom window to right."
 #+end_src
 
 ** Display preferences
+   :PROPERTIES:
+   :ID:       6e03889e-ef24-4bd6-b2d3-a46a58a8f55b
+   :END:
 
 I like to see an outline of pretty bullets instead of a list of asterisks.
 
@@ -1807,6 +1963,9 @@ I like to see an outline of pretty bullets instead of a list of asterisks.
 #+END_SRC
 
 ** Changing colors of Org 
+   :PROPERTIES:
+   :ID:       713afc43-5977-4b3f-8e95-16d5142204ff
+   :END:
 #+begin_src emacs-lisp
 ;; (defun jmd/org-mode-hook ()
 ;;   "My `org-mode' hook"
@@ -1816,16 +1975,25 @@ I like to see an outline of pretty bullets instead of a list of asterisks.
   Projects/org/contour.svg
 
 ** I like using the windsize package
+   :PROPERTIES:
+   :ID:       ce82be38-790b-441c-82a8-2b8eb08301c8
+   :END:
 #+begin_src emacs-lisp
 (use-package windresize)
 #+end_src
 
 ** Enforce TODO dependendices
+   :PROPERTIES:
+   :ID:       14d03d8d-2c54-4149-a16b-01cc16b23330
+   :END:
 #+begin_src emacs-lisp
 (setq org-enforce-todo-dependencies t)
 #+end_src
 
 ** Nice looking Bullet symbols
+   :PROPERTIES:
+   :ID:       f7ed5509-680d-42c4-8269-2d8a6b87b8c2
+   :END:
 
 
 I borrowed this from Harry Schwartz as I too "like seeing a little
@@ -1847,11 +2015,17 @@ Hiding leading stars
 #+END_SRC
 
 ** CDLaTeX mode
+   :PROPERTIES:
+   :ID:       6fd53e38-0adf-4036-988b-4abe2968d8ee
+   :END:
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 #+end_src
 
 ** Org images
+   :PROPERTIES:
+   :ID:       c26906e1-9d24-4f62-86f2-343d2fc3b0a9
+   :END:
 
 
    Allows us to scale the image sizes
@@ -1860,6 +2034,9 @@ Hiding leading stars
 #+end_src
 
 ** Displaying LateX and other graphics inline
+   :PROPERTIES:
+   :ID:       4ab218f7-7eb4-4c36-a210-6a9f91d5f118
+   :END:
 
    A hold over
 #+begin_src emacs-lisp
@@ -1868,6 +2045,9 @@ Hiding leading stars
 
 ** Extra Org stuff
 ** Org Inbox, Index and Archive location 
+   :PROPERTIES:
+   :ID:       229d2938-5bec-44b6-8a80-cf44300b3b6a
+   :END:
  #+BEGIN_SRC emacs-lisp
    (defun org-file-path (filename)
      "Return the absolute address of an org file, given its relative name."
@@ -1880,6 +2060,9 @@ Hiding leading stars
 #+END_SRC
 
 ** Archiving Org mode entries
+   :PROPERTIES:
+   :ID:       dbe95d01-c571-4fe2-ac05-7f836a11457b
+   :END:
 #+BEGIN_SRC emacs-lisp
 (defun jmd/personal-mark-done-and-archive ()
   "Mark the state of an org-mode item as DONE and archive it."
@@ -1941,11 +2124,17 @@ Hiding leading stars
 ** Enforce 
 
 ** Exporting code
+   :PROPERTIES:
+   :ID:       67909117-604a-43b0-8d66-24096a099920
+   :END:
 #+begin_src emacs-lisp
 (setq org-confirm-babel-evaluate nil)
 #+end_src
 
 ** Org Drill
+   :PROPERTIES:
+   :ID:       f6ba9994-c4e7-4936-b96b-609e0c22e38f
+   :END:
 #+BEGIN_SRC emacs-lisp
 ; (eval-after-load "org"
 ;   '(progn
@@ -1953,6 +2142,9 @@ Hiding leading stars
 ;     (require 'org-drill)))
 #+END_SRC
 ** Rest of ORG
+   :PROPERTIES:
+   :ID:       27a854f7-3c03-4311-a534-d353d5359606
+   :END:
 
 #+BEGIN_SRC emacs-lisp
 
@@ -1992,6 +2184,9 @@ Hiding leading stars
            ("f" "Finished book"
             table-line (file "~/Documents/notes/books-read.org")
             "| %^{Title} | %^{Author} | %u |")
+           ("c" "Cookbook" entry (file "~/Projects/org/cookbook.org" )
+              "%(org-chef-get-recipe-from-url)"
+               :empty-lines 1)
            ("s" "Subscribe to an RSS feed"
             plain
             (file "~/Documents/rss/urls")
@@ -2004,6 +2199,7 @@ Hiding leading stars
    (org-babel-do-load-languages
     'org-babel-load-languages
     '((python . t)
+      (ipython . t)
       (ledger . t)
       (latex . t)
       (ditaa . t)
@@ -2170,6 +2366,9 @@ Hiding leading stars
    ;; (define-key org-journal-mode-map (kbd "C-x C-s") 'org-journal-save-entry-and-exit)
  #+END_SRC
 ** Org Download
+   :PROPERTIES:
+   :ID:       9568b3af-6ec8-4642-86e7-47720f17796d
+   :END:
 #+BEGIN_SRC emacs-lisp
   (require 'org-download)
   ;; Drag-and-drop to `dired`
@@ -2184,15 +2383,24 @@ Hiding leading stars
 
 #+END_SRC
 ** Org Exporting 
+   :PROPERTIES:
+   :ID:       9faf29ae-c5a1-49cb-bfdf-056d38d6e423
+   :END:
 #+begin_src emacs-lisp
 (setq org-export-coding-system 'utf-8)
 #+end_src
 ** Org quizzing
+   :PROPERTIES:
+   :ID:       6d116f43-d8f2-4bfa-bf13-9774432b295e
+   :END:
 #+BEGIN_SRC emacs-lisp
 ;  (setq org-drill-add-random-noise-to-intervals-p t )
 ;  (setq org-drill-learn-fraction 0.1)
 #+END_SRC
 ** Org Journaling
+   :PROPERTIES:
+   :ID:       0267f313-bf28-4f9d-af19-9fa6784513a9
+   :END:
 
 #+begin_src emacs-lisp
   (use-package org-journal
@@ -2222,6 +2430,9 @@ Hiding leading stars
 #+RESULTS:
 : journal-file-yesterday
 ** Org Roam
+   :PROPERTIES:
+   :ID:       88f88606-be20-4201-b4ca-7d7bda997dd5
+   :END:
 #+begin_src emacs-lisp
   (use-package org-roam
         :hook 
@@ -2236,7 +2447,24 @@ Hiding leading stars
                 :map org-mode-map
                 (("C-c n i" . org-roam-insert))))
 #+end_src
+** Org Chef
+
+*** Loading things
+    :PROPERTIES:
+    :ID:       502db2b1-26a0-4de6-b44a-397321233e83
+    :END:
+    #+begin_src emacs-lisp
+    (use-package org-chef
+      :ensure t 
+    )
+    #+end_src
+*** 
+
+
 ** Deft
+   :PROPERTIES:
+   :ID:       7f20e36b-a779-4791-b964-76623fbd086b
+   :END:
    
 #+begin_src emacs-lisp
   (use-package deft
@@ -2251,12 +2479,18 @@ Hiding leading stars
   (setq deft-recursive t)
 #+end_src 
 ** Org sorting
+   :PROPERTIES:
+   :ID:       fc34dd6f-372c-4c01-9e55-7c85254e9493
+   :END:
 #+begin_src emacs-lisp
 (setq org-agenda-todo-ignore-scheduled t)
 (setq org-agenda-todo-ignore-deadlines t)
 (setq org-default-priority ?D)
 #+end_src
 ** Org limiting Agenda views
+   :PROPERTIES:
+   :ID:       aeba792b-02be-45c4-97e1-fce803fca70b
+   :END:
 
 #+begin_src emacs-lisp
 (setq org-agenda-todo-ignore-scheduled 'future)
@@ -2324,6 +2558,9 @@ Hiding leading stars
 
      C-c C-x [
 *** How to View ansi colors in Emacs                                            :view:ansi:color:
+    :PROPERTIES:
+    :ID:       dfb174cb-c975-4bbe-b401-c46112a13fe9
+    :END:
     #+begin_src emacs-lisp
     (require 'ansi-color)
     (defun display-ansi-colors ()
@@ -2365,16 +2602,38 @@ Hiding leading stars
 
     - Select region and then hit M-x hide/show-comments or hide/show-comments-toggle
 
+*** Org links
+
+    - Click to follow link
+    - C-c & to go back
+    - 
+    
+*** Internal links in org mode
+
+    M-x customize-variable org-id-link-to-org-use-id
+
+    set to "Create ID to link"
+
+*** Making the background be a default color
+    customize org-format-latex-options  
+
+    Set Foreground "Black" and Background "White"
     
 
 * Email 
 ** Outgoing Email server 
+   :PROPERTIES:
+   :ID:       008c9a0f-b7e1-48d5-86a3-8cbb43a28100
+   :END:
    Send mail using postfix
 #+begin_src emacs-lisp
 (setq send-mail-function 'sendmail-send-it)
 (setq message-send-mail-function 'message-send-mail-with-sendmail)
 #+end_src
 ** Mu4E 
+   :PROPERTIES:
+   :ID:       7a47cc0b-9e58-4dba-9461-452e6d005a4a
+   :END:
 #+BEGIN_SRC emacs-lisp
   (setq mu4e-maildir (expand-file-name "~/Maildir"))
   (setq mu4e-get-mail-command "true")
@@ -2385,6 +2644,9 @@ Hiding leading stars
   ;; (require 'evil-mu4e)
 #+END_SRC
 ** Mu4E Alerts
+   :PROPERTIES:
+   :ID:       196aa623-926b-44d7-8d60-be391d6b86eb
+   :END:
 
 #+begin_src emacs-lisp
 (use-package mu4e-alert
@@ -2410,6 +2672,9 @@ Hiding leading stars
 
 #+end_src
 ** Allow MU4E to save links to emails
+   :PROPERTIES:
+   :ID:       fde00a45-2586-4fb5-a6a8-9f7df932ca39
+   :END:
 
 #+begin_src emacs-lisp
 (require 'org-mu4e)
