@@ -2181,6 +2181,8 @@ Hiding leading stars
                                                   "* %? %^G\n  %T\n")
            ("W" "Work Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
             "* %?\t\t:work:\n   %T\n\n")
+           ;; ("Q" "Questions" entry (file+olp+datetree "~/Projects/org/questions.org")
+           ;;  "* %?\t\t:questions:\n   :PROPERTIES:\n    :CREATED:%T\n    :END:\n\n")
            ("f" "Finished book"
             table-line (file "~/Documents/notes/books-read.org")
             "| %^{Title} | %^{Author} | %u |")
@@ -2191,7 +2193,7 @@ Hiding leading stars
             plain
             (file "~/Documents/rss/urls")
             "%^{Feed URL} \"~%^{Feed name}\"")
-           ))
+           )) 
 
    (setq org-journal-file-format "%Y%m%d.org")
    (setq org-hide-emphasis-markers t )
@@ -2457,7 +2459,6 @@ Hiding leading stars
       :ensure t 
     )
     #+end_src
-*** 
 
 ** Org Modifying and Created tags
    :PROPERTIES:
@@ -2513,6 +2514,15 @@ Hiding leading stars
   #+end_src
 
 
+** Adding CREATED to new captures
+   #+begin_src emacs-lisp
+   (defun add-property-with-date-captured ()
+     "Add DATE_CAPTURED property to the current item."
+     (interactive)
+     (org-set-property "CAPTURED" (format-time-string "<%Y-%m-%d %H:%M>")))
+   
+   (add-hook 'org-capture-before-finalize-hook 'add-property-with-date-captured)
+   #+end_src
 
 ** Deft
    :PROPERTIES:
