@@ -2524,6 +2524,13 @@ Hiding leading stars
      (org-set-property "CAPTURED" (format-time-string "<%Y-%m-%d %H:%M>")))
    
    (add-hook 'org-capture-before-finalize-hook 'add-property-with-date-captured)
+
+   (defun update-capture () 
+     (interactive)
+     (org-set-property "CAPTURED" (format-time-string "<%Y-%m-%d %H:%M>")))
+  
+
+
    #+end_src
 
 ** Deft
@@ -2690,6 +2697,15 @@ Hiding leading stars
 
     This is useful for setting up the "CREATED" tag where you can track  
     your ideas.
+
+    #+begin_src emacs-lisp
+    (defun org-capture-at-point ()
+      "Insert an org capture template at point."
+      (interactive)
+      (org-capture 0))
+    
+    ;(global-set-key (kbd "C-c C-c") #'org-capture-at-point)
+    #+end_src
 
 * Email
 ** Outgoing Email server 
