@@ -216,7 +216,6 @@ as point goes.
     ;(setq scroll-step 1) ;; keyboard scroll one line at a time
 #+END_SRC
 
-
 * General Appearance / Startup
 ** Font Type
    :PROPERTIES:
@@ -2178,9 +2177,9 @@ Hiding leading stars
          '(("t" "Todo" entry (file+headline "~/Projects/org/todo.org" "Tasks")
             "* TODO %?\n%i\n   %a")
            ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
-                                                  "* %? %^G\n  %T\n")
+                                                  "* %? %^G\n")
            ("W" "Work Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
-            "* %?\t\t:work:\n   %T\n\n")
+            "* %?\t\t:work:\n")
            ;; ("Q" "Questions" entry (file+olp+datetree "~/Projects/org/questions.org")
            ;;  "* %?\t\t:questions:\n   :PROPERTIES:\n    :CREATED:%T\n    :END:\n\n")
            ("f" "Finished book"
@@ -2469,7 +2468,7 @@ Hiding leading stars
    property's modified tag and hash
 
   #+begin_src emacs-lisp
-   (defun yant/getentryhash ()
+   (defun jmd/getentryhash ()
      "Get the hash sum of the text in current entry, except :HASH: and :MODIFIED: property texts."
      (save-excursion
        (let* ((beg (progn (org-back-to-heading) (point)))
@@ -2495,26 +2494,29 @@ Hiding leading stars
          (secure-hash 'md5 str-nohash-nomod-nopropbeg-end)
          )))
    
-   (defun yant/update-modification-time ()
+   (defun jmd/update-modification-time ()
      "Set the :MODIFIED: property of the current entry to NOW and update :HASH: property."
       (interactive)
-     (org-set-property "HASH" (format "%s" (yant/getentryhash)))    
+     (org-set-property "HASH" (format "%s" (jmd/getentryhash)))    
      (org-set-property "MODIFIED" (format-time-string "[%Y-%m-%d %H:%M]")))
-   (defun yant/skip-nonmodified ()
+   (defun jmd/skip-nonmodified ()
      "Skip org entries, which were not modified according to the :HASH: property"
      (interactive)
      (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-       (if (string= (org-entry-get (point) "HASH" nil) (format "%s" (yant/getentryhash)))
+       (if (string= (org-entry-get (point) "HASH" nil) (format "%s" (jmd/getentryhash)))
        next-headline
          nil)))
    
    ;;   (add-hook 'before-save-hook (lambda ()
    ;;                  (when (eq major-mode 'org-mode)
-   ;;                (org-map-entries #'yant/update-modification-time nil 'file #'yant/skip-nonmodified))))  
+   ;;                (org-map-entries #'jmd/update-modification-time nil 'file #'jmd/skip-nonmodified))))  
   #+end_src
 
 
 ** Adding CREATED to new captures
+   :PROPERTIES:
+   :ID:       3c7067eb-4002-4333-bf78-8792e2ac6f70
+   :END:
    #+begin_src emacs-lisp
    (defun add-property-with-date-captured ()
      "Add DATE_CAPTURED property to the current item."
@@ -2682,8 +2684,14 @@ Hiding leading stars
 
     Set Foreground "Black" and Background "White"
     
+*** Org capturing to the current place in the file
+    
+    C-0 C-c c 
 
-* Email 
+    This is useful for setting up the "CREATED" tag where you can track  
+    your ideas.
+
+* Email
 ** Outgoing Email server 
    :PROPERTIES:
    :ID:       008c9a0f-b7e1-48d5-86a3-8cbb43a28100
