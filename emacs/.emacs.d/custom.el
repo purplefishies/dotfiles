@@ -41,6 +41,8 @@
  '(hl-paren-colors '("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900"))
  '(lsp-ui-doc-border "#586e75")
  '(markdown-command "pandoc ")
+ '(mu4e-get-mail-command "mbsync jdamon-gmail")
+ '(mu4e-refile-folder "/jdamon-gmail/archive")
  '(nrepl-message-colors
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
  '(ob-ipython-command "ipython")
@@ -57,18 +59,20 @@
                  ("begin" "$1" "$" "$$" "\\(" "\\[")))
  '(org-id-link-to-org-use-id t)
  '(org-journal-date-format "%e %b %Y (%A)")
- '(org-journal-dir "~/Projects/org/journal/")
- '(org-journal-file-format "%Y%m%d")
+ '(org-journal-dir "~/Projects/org/Roam/daily" nil nil "Customized with use-package org-journal")
+ '(org-journal-file-format "%Y-%m-%d.org" nil nil "Customized with use-package org-journal")
  '(org-journal-time-format "")
  '(org-lowest-priority 68)
  '(org-modules
    '(org-habit org-bbdb org-bibtex org-ctags org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m org-learn))
+ '(org-priority-lowest 68)
  '(org-priority-start-cycle-with-default t)
+ '(org-roam-completion-everywhere t)
  '(org-roam-completion-system 'ivy)
  '(org-roam-directory "~/Projects/org/Roam")
  '(org-tags-match-list-sublevels nil)
  '(package-selected-packages
-   '(org-chef ox-hugo ob-ess-julia ob-ipython clipboard-collector org-download org-gcal biblio-core org-roam-bibtex bitbake windresize org-caldav ox-gfm mu4e-alert ess ob-go ob-coffeescript yasnippet-snippets yasnippet highlight-doxygen all-the-icons flycheck-kotlin ledger-mode command-log-mode color-theme-sanityinc-tomorrow sanityinc-tomorrow-night solarized-theme deft ivy helm-org-rifle org-roam anki-editor spice-mode projectile evil-magit forge dumb-jump ag rspec-mode chruby moody org-plus-contrib gnu-elpa-keyring-update org-journal kotlin-mode ensime cedit cdlatex ledger-import flycheck-ledger org-babel-eval-in-repl graphviz-dot-mode dot-mode org-drill-table dash yaml-mode scala-mode polymode passthword org-bullets org neotree markdown-mode json-mode groovy-mode gradle-mode gitignore-mode color-theme-modern cmake-mode chess bind-key auto-complete auctex))
+   '(helm-bibtexkey biblio org-roam org-ref perspective doom-modeline diminish helm-bibtex magit org-anki notmuch org-chef ox-hugo ob-ess-julia ob-ipython clipboard-collector org-download org-gcal org-roam-bibtex bitbake windresize org-caldav ox-gfm mu4e-alert ess ob-go ob-coffeescript yasnippet-snippets yasnippet highlight-doxygen all-the-icons flycheck-kotlin ledger-mode command-log-mode color-theme-sanityinc-tomorrow sanityinc-tomorrow-night solarized-theme deft ivy helm-org-rifle anki-editor spice-mode projectile forge dumb-jump ag rspec-mode chruby moody org-plus-contrib gnu-elpa-keyring-update org-journal kotlin-mode ensime cedit cdlatex ledger-import flycheck-ledger org-babel-eval-in-repl graphviz-dot-mode dot-mode org-drill-table dash yaml-mode scala-mode polymode passthword org-bullets org neotree markdown-mode json-mode groovy-mode gradle-mode gitignore-mode color-theme-modern cmake-mode chess bind-key auto-complete auctex))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(send-mail-function 'smtpmail-send-it)
@@ -110,6 +114,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(mode-line ((t (:height 0.85))))
+ '(mode-line-inactive ((t (:height 0.85))))
  '(org-agenda-current-time ((t (:foreground "chartreuse"))))
  '(org-agenda-done ((t (:foreground "sea green"))))
  '(org-done ((t (:foreground "sea green" :weight bold))))
