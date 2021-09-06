@@ -71,6 +71,30 @@ Always compile packages, and use the newest version available.
       (add-to-list 'auto-mode-alist (cons pattern mode))))
 #+END_SRC
 
+* Completions
+** Helm
+:PROPERTIES:
+:ID:       64ad626c-0362-4c48-80a9-b0a7b30c584c
+:END:
+#+begin_src emacs-lisp
+  ;; helm completion system
+  (use-package helm
+    :config
+    (require 'helm-config)   
+    :init
+    (helm-mode 1)
+    :bind
+    (("M-x"     . helm-M-x)
+     ("C-x C-f" . helm-find-files)
+     ("C-x b"   . helm-mini)
+     ("C-x C-r" . helm-recentf)
+     ("C-c i"   . helm-imenu)
+     ("M-y"     . helm-show-kill-ring)
+     :map helm-map
+     ("C-z" . helm-select-action)
+     ("<tab>" . helm-execute-persistent-action)))
+#+end_src
+
 * UI preferences
 ** Tweak window chrome
    :PROPERTIES:
@@ -1520,6 +1544,8 @@ my buffer.
 ;;         "")))))
 #+end_src
 
+
+
 * Extra stuff
   :PROPERTIES:
   :ID:       e9ab343c-4e8e-4f1e-b294-9d38a5360c01
@@ -2144,17 +2170,7 @@ Hiding leading stars
    :PROPERTIES:
    :ID:       27a854f7-3c03-4311-a534-d353d5359606
    :END:
-
 #+BEGIN_SRC emacs-lisp
-
-   (defun org-journal-find-location ()
-     ;; Open today's journal, but specify a non-nil prefix argument in order to
-     ;; inhibit inserting the heading; org-capture will insert the heading.
-     (org-journal-new-entry t)
-     ;; Position point on the journal's top-level heading so that org-capture
-     ;; will add the new entry as a child entry.
-     (goto-char (point-min)))
-
    (setq org-src-fontify-natively t )
    (setq org-src-tab-acts-natively t )
    (setq org-src-window-setup 'current-window )
@@ -2180,21 +2196,23 @@ Hiding leading stars
                                                   "* %? %^G\n")
            ("W" "Work Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
             "* %?\t\t:work:\n")
+           ;; ADD THESE IN LATER... you don't have the bandwidth for 
+           ;; ALl of these sub types
            ;; ("Q" "Questions" entry (file+olp+datetree "~/Projects/org/questions.org")
            ;;  "* %?\t\t:questions:\n   :PROPERTIES:\n    :CREATED:%T\n    :END:\n\n")
-           ("f" "Finished book"
-            table-line (file "~/Documents/notes/books-read.org")
-            "| %^{Title} | %^{Author} | %u |")
-           ("c" "Cookbook" entry (file "~/Projects/org/cookbook.org" )
-              "%(org-chef-get-recipe-from-url)"
-               :empty-lines 1)
-           ("s" "Subscribe to an RSS feed"
-            plain
-            (file "~/Documents/rss/urls")
-            "%^{Feed URL} \"~%^{Feed name}\"")
+           ;; ("f" "Finished book"
+           ;;  table-line (file "~/Documents/notes/books-read.org")
+           ;;  "| %^{Title} | %^{Author} | %u |")
+           ;; ("c" "Cookbook" entry (file "~/Projects/org/cookbook.org" )
+           ;;    "%(org-chef-get-recipe-from-url)"
+           ;;     :empty-lines 1)
+           ;; ("s" "Subscribe to an RSS feed"
+           ;;  plain
+           ;;  (file "~/Documents/rss/urls")
+           ;;  "%^{Feed URL} \"~%^{Feed name}\"")
            )) 
 
-   (setq org-journal-file-format "%Y%m%d.org")
+   (setq org-journal-file-format "%Y-%m-%d.org")
    (setq org-hide-emphasis-markers t )
 
    (org-babel-do-load-languages
@@ -2403,15 +2421,20 @@ Hiding leading stars
    :END:
 
 #+begin_src emacs-lisp
-  (use-package org-journal
-   :bind (("C-c t" . journal-file-today)
-          ("C-c y" . journal-file-yesterday))
-   :custom
-   (org-journal-dir "~/Projects/org/journal/")
-   (org-journal-file-format "%Y%m%d")
-   (org-journal-date-format "%e %b %Y (%A)")
-   (org-journal-time-format "")
-   :preface
+(setq jd-org-directory (file-name-as-directory "~/Projects/org" ))
+(setq jd-journal-directory (file-name-as-directory (concat jd-org-directory "Roam/daily" )))
+(setq jd-journal-format "%Y-%m-%d.org" )
+(setq jd-journal-date-format "%e %b %Y (%A)")
+
+(use-package org-journal
+  :bind (("C-c t" . journal-file-today)
+         ("C-c y" . journal-file-yesterday))
+  :custom
+  (org-journal-dir jd-journal-directory)
+  (org-journal-file-format "%Y-%m-%d.org")
+  (org-journal-date-format "%e %b %Y (%A)")
+  (org-journal-time-format "")
+  :preface
 
    (defun get-journal-file-yesterday ()
      "Gets filename for yesterday's journal entry."
@@ -2425,6 +2448,15 @@ Hiding leading stars
      "Creates and load a file based on yesterday's date."
      (interactive)
      (find-file (get-journal-file-yesterday))))
+
+   (defun org-journal-find-location ()
+     ;; Open today's journal, but specify a non-nil prefix argument in order to
+     ;; inhibit inserting the heading; org-capture will insert the heading.
+     (org-journal-new-entry t)
+     ;; Position point on the journal's top-level heading so that org-capture
+     ;; will add the new entry as a child entry.
+     (goto-char (point-min)))
+
 #+end_src
 
 #+RESULTS:
@@ -2434,20 +2466,95 @@ Hiding leading stars
    :ID:       88f88606-be20-4201-b4ca-7d7bda997dd5
    :END:
 #+begin_src emacs-lisp
+  ;; Older package
+  ;; (use-package org-roam
+  ;;       :hook 
+  ;;       (after-init . org-roam-mode)
+  ;;       :custom
+  ;;       (org-roam-directory "~/Projects/org/Roam")
+  ;;       :ensure t
+  ;;       :bind (:map org-roam-mode-map
+  ;;               (("C-c n l" . org-roam)
+  ;;                ("C-c n f" . org-roam-find-file)
+  ;;                ("C-c n b" . org-roam-switch-to-buffer)
+  ;;                ("C-c n g" . org-roam-graph-show))
+  ;;               :map org-mode-map
+  ;;               (("C-c n i" . org-roam-insert))))
+
+
+
   (use-package org-roam
-        :hook 
-        (after-init . org-roam-mode)
-        :custom
-        (org-roam-directory "~/Projects/org/Roam")
-        :bind (:map org-roam-mode-map
-                (("C-c n l" . org-roam)
-                 ("C-c n f" . org-roam-find-file)
-                 ("C-c n b" . org-roam-switch-to-buffer)
-                 ("C-c n g" . org-roam-graph-show))
-                :map org-mode-map
-                (("C-c n i" . org-roam-insert))))
+    :ensure t
+    :init 
+    (setq org-roam-v2-ack t)
+    :custom 
+    (org-roam-directory "~/Projects/org/Roam")
+    (org-roam-completion-everywhere t)
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           ("C-c n b" . org-roam-switch-to-buffer)
+           :map org-mode-map
+           ("C-M-i"   . completion-at-point)))
+    
+    ;; :config 
+    ;; (org-roam-setup)
+
 #+end_src
+** Org roam bibtex
+:PROPERTIES:
+:ID:       ffb9c8da-91fd-4506-ba99-40dc61e2dda0
+:END:
+#+begin_src emacs-lisp
+(use-package org-roam-bibtex
+  :after org-roam
+  :load-path "~/.emacs.d/private/org-roam-bibtex/"
+  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :config
+  (require 'org-ref)) 
+#+end_src
+
+*** Bibtex configuration
+:PROPERTIES:
+:ID:       5b2dee9a-8d75-403d-ac7a-14936263067a
+:END:
+#+begin_src emacs-lisp
+    (setq reftex-default-bibliography '("~/Projects/org/Zettelkasten/ref.bib"))
+
+    (setq org-ref-bibliography-notes "~/Projects/org/ref_notes.org"
+          org-ref-default-bibliography '("~/Projects/org/Zettelkasten/ref.bib")
+          org-ref-pdf-directory "~/bibtex-pdfs/")
+
+    (setq bibtex-completion-bibliography "~/Projects/org/Zettelkasten/ref.bib"
+          bibtex-completion-library-path "~/Projects/org/bibtex-pdfs"
+          bibtex-completion-notes-path "~/Projects/org/bibtex-notes")
+
+    ; Optional. Open pdf in external viewer.
+    (setq bibtex-completion-pdf-open-function
+          (lambda (fpath)
+            (start-process "open" "*open*" "open" fpath)))
+#+end_src
+
+** Org Dailies with Org Roam
+:PROPERTIES:
+:ID:       df395930-9949-4d39-bd85-885dbbdcca05
+:END:
+#+begin_src emacs-lisp
+(setq org-roam-dailies-directory "/home/jdamon/Projects/org/Roam/daily")
+(setq org-roam-dailies-capture-templates
+      '(("d" "default" entry
+         "* %?"
+         :if-new (file+head "%<%Y-%m-%d>.org"
+                            "#+title: %<%Y-%m-%d>\n")
+         :target (file+head "%<%Y-%m-%d>.org"
+                            "#+title: %<%Y-%m-%d>\n"))))
+
+#+end_src
+
 ** Org Chef
+   :PROPERTIES:
+   :ID:       9075171f-bf8f-435e-9adb-79185736bcc8
+   :END:
 
 *** Loading things
     :PROPERTIES:
@@ -2692,6 +2799,9 @@ Hiding leading stars
     Set Foreground "Black" and Background "White"
     
 *** Org capturing to the current place in the file
+:PROPERTIES:
+:ID:       5a3d9793-bbe8-4ffa-8109-38f41a4f61ea
+:END:
     
     C-0 C-c c 
 
@@ -2722,11 +2832,42 @@ Hiding leading stars
    :ID:       7a47cc0b-9e58-4dba-9461-452e6d005a4a
    :END:
 #+BEGIN_SRC emacs-lisp
-  (setq mu4e-maildir (expand-file-name "~/Maildir"))
+  ;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+  ;(load-file "/usr/share/emacs/site-lisp/mu4e/mu4e.el")
+   (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+   (require 'mu4e)
+   (setq mail-user-agent 'mu4e-user-agent)
+   (setq mu4e-drafts-folder "/jdamon-gmail/[jdamon].Drafts")
+   (setq mu4e-sent-folder   "/jdamon-gmail/[jdamon].Sent Mail")
+   (setq mu4e-trash-folder  "/jdamon-gmail/[jdamon].Trash")
+   
+   (setq mu4e-sent-messages-behavior 'delete)
+   
+   (setq mu4e-get-mail-command "mbsync jdamon-gmail")
+   
+   ;; something about ourselves
+   (setq
+      user-mail-address "jdamon@gmail.com"
+      user-full-name  "Jimi Damon"
+      mu4e-compose-signature
+       (concat
+         "Jimi Damon\n"
+         "http://www.example.com\n"))
+
+   ;; (See the documentation for `mu4e-sent-messages-behavior' if you have
+   ;; additional non-Gmail addresses and want assign them different
+   ;; behavior.)
+   
+   ;; setup some handy shortcuts
+   ;; you can quickly switch to your Inbox -- press ``ji''
+   ;; then, when you want archive some messages, move them to
+   ;; the 'All Mail' folder by pressing ``ma''.
+
+  ;; (setq mu4e-maildir (expand-file-name "~/Maildir"))
   (setq mu4e-get-mail-command "true")
-  (setq mu4e-change-filenames-when-moving t)
-  (setq smtpmail-queue-mail nil  ;; start in normal mode
-        smtpmail-queue-dir   "~/Maildir/queue/cur")
+  ;; (setq mu4e-change-filenames-when-moving t)
+  ;; (setq smtpmail-queue-mail nil  ;; start in normal mode
+  ;;       smtpmail-queue-dir   "~/Maildir/queue/cur")
   ;; (use-package evil-mu4e)
   ;; (require 'evil-mu4e)
 #+END_SRC
@@ -2766,5 +2907,4 @@ Hiding leading stars
 #+begin_src emacs-lisp
 (require 'org-mu4e)
 #+end_src
-
-
+** Notmuch configuration
