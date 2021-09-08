@@ -1935,6 +1935,16 @@ i.e. change right window to bottom, or change bottom window to right."
 #+END_SRC 
 
 * Publishing and task management with Org-mode
+** Doct setup
+:PROPERTIES:
+:ID:       c15f9ff7-1cb2-4ee3-9f65-c1761a728e89
+:END:
+#+begin_src emacs-lisp
+(use-package doct
+  :ensure t
+  ;;recommended: defer until calling doct
+  :commands (doct))
+#+end_src
 ** Org Setup
 *** Loading Org
     :PROPERTIES:
@@ -2171,217 +2181,244 @@ Hiding leading stars
    :ID:       27a854f7-3c03-4311-a534-d353d5359606
    :END:
 #+BEGIN_SRC emacs-lisp
-   (setq org-src-fontify-natively t )
-   (setq org-src-tab-acts-natively t )
-   (setq org-src-window-setup 'current-window )
-   (setq org-clock-persist 'history)
-   (setq org-log-done t)
-   (setq org-log-into-drawer t)
-   (setq org-tags-column 80)
+(setq org-src-fontify-natively t )
+(setq org-src-tab-acts-natively t )
+(setq org-src-window-setup 'current-window )
+(setq org-clock-persist 'history)
+(setq org-log-done t)
+(setq org-log-into-drawer t)
+(setq org-tags-column 80)
 
-   ;; ("j" "Journal" entry (function org-journal-find-location)
-   ;;  "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?")
-   ;; ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org"
-   ;;                                         "* %?\nEntered on %U\n"))
-   ;                                                   ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
-   ;                                                   "* %?\nEnterered on %U\n   %i\n   %a")
-   ; @todo FIX this journal to use the org-journal
-   ;       but that requires fixing the function org-journal-find-location which is annoying 
-   ;       because it pops up two editor windows, one from the function itself and another
-   ;       from the org-capture.
-   (setq org-capture-templates
-         '(("t" "Todo" entry (file+headline "~/Projects/org/todo.org" "Tasks")
-            "* TODO %?\n%i\n   %a")
-           ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
-                                                  "* %? %^G\n")
-           ("W" "Work Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
-            "* %?\t\t:work:\n")
-           ;; ADD THESE IN LATER... you don't have the bandwidth for 
-           ;; ALl of these sub types
-           ;; ("Q" "Questions" entry (file+olp+datetree "~/Projects/org/questions.org")
-           ;;  "* %?\t\t:questions:\n   :PROPERTIES:\n    :CREATED:%T\n    :END:\n\n")
-           ;; ("f" "Finished book"
-           ;;  table-line (file "~/Documents/notes/books-read.org")
-           ;;  "| %^{Title} | %^{Author} | %u |")
-           ;; ("c" "Cookbook" entry (file "~/Projects/org/cookbook.org" )
-           ;;    "%(org-chef-get-recipe-from-url)"
-           ;;     :empty-lines 1)
-           ;; ("s" "Subscribe to an RSS feed"
-           ;;  plain
-           ;;  (file "~/Documents/rss/urls")
-           ;;  "%^{Feed URL} \"~%^{Feed name}\"")
-           )) 
+(setq jd-org-directory (file-name-as-directory "~/Projects/org" ))
+(setq jd-journal-directory (file-name-as-directory (concat jd-org-directory "Roam/daily" )))
+(setq jd-journal-format "%Y-%m.org" )
+(setq jd-journal-date-format "%e %b %Y (%A)")
 
-   (setq org-journal-file-format "%Y-%m-%d.org")
-   (setq org-hide-emphasis-markers t )
+(defun jd/journal-date-path ()
+                         "Get file path for daily journal."
+                         (expand-file-name
+                          (concat ;; "journal-"
+                                  (format-time-string "%Y-%m") ".org")
+                          jd-journal-directory))
+;; (jd/journal-date-path)
+(defun jd/find-create-date-entry ()
+                             "Append to end of or create Org entry with date heading."
+                             (let ((heading (concat "* " (format-time-string "%Y-%m-%d %A"))))
+                               (save-match-data
+                                 (goto-char (point-min))
+                                 (unless (re-search-forward heading nil 'no-error)
+                                   (end-of-line)
+                                   (newline)
+                                   (insert heading))
+                                 (org-end-of-subtree))))
 
-   (org-babel-do-load-languages
-    'org-babel-load-languages
-    '((python . t)
-      (ledger . t)
-      (latex . t)
-      (ditaa . t)
-      (shell . t)
-      (dot . t)
-      (ruby . t)
-      (scala . t)
-      (kotlin . t)
-      (maxima . t )
-      ))
-   ;;
+;; ("j" "Journal" entry (function org-journal-find-location)
+;;  "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?")
+;; ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org"
+;;                                         "* %?\nEntered on %U\n"))
+;;                                                   ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
+;;                                                   "* %?\nEnterered on %U\n   %i\n   %a")
+;; @todo FIX this journal to use the org-journal
+;;       but that requires fixing the function org-journal-find-location which is annoying 
+;;       because it pops up two editor windows, one from the function itself and another
+;;       from the org-capture.
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/Projects/org/inbox.org" "Tasks")
+         "* TODO %?\n%i\n   %a")
+        ("j" "Journal" plain (file+function jd/journal-date-path jd/find-create-date-entry )
+         "** %?\n" )
+        ("W" "Work Journal" plain (file+function jd/journal-date-path jd/find-create-date-entry )
+         "** \t\t:work:\n" )
+        ;; ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
+        ;;  "* %? %^G\n")
+        ;; ("K" "Journal Test" plain (file+function jd/journal-date-path jd/find-create-date-entry )
+        ;;  "** %?\n" )
+        ;; ("W" "Work Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
+        ;;  "* %?\t\t:work:\n")
+        ;; ADD THESE IN LATER... you don't have the bandwidth for 
+        ;; ALl of these sub types
+        ;; ("Q" "Questions" entry (file+olp+datetree "~/Projects/org/questions.org")
+        ;;  "* %?\t\t:questions:\n   :PROPERTIES:\n    :CREATED:%T\n    :END:\n\n")
+        ;; ("f" "Finished book"
+        ;;  table-line (file "~/Documents/notes/books-read.org")
+        ;;  "| %^{Title} | %^{Author} | %u |")
+        ;; ("c" "Cookbook" entry (file "~/Projects/org/cookbook.org" )
+        ;;    "%(org-chef-get-recipe-from-url)"
+        ;;     :empty-lines 1)
+        ;; ("s" "Subscribe to an RSS feed"
+        ;;  plain
+        ;;  (file "~/Documents/rss/urls")
+        ;;  "%^{Feed URL} \"~%^{Feed name}\"")
+        )) 
 
-   (defun org-journal-save-entry-and-exit()
-     "Simple convenience function.
+;; (setq org-journal-file-format "%Y-%m-%d.org")
+(setq org-hide-emphasis-markers t )
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (ledger . t)
+   (latex . t)
+   (ditaa . t)
+   (shell . t)
+   (dot . t)
+   (ruby . t)
+   (scala . t)
+   (kotlin . t)
+   (maxima . t )
+   ))
+;;
+
+(defun org-journal-save-entry-and-exit()
+  "Simple convenience function.
               Saves the buffer of the current day's entry and kills the window
               Similar to org-capture like behavior"
-     (interactive)
-     (save-buffer)
-     (kill-buffer-and-window))
+  (interactive)
+  (save-buffer)
+  (kill-buffer-and-window))
 
-   ;;----------------------------------------------------------------------
-   ;; OS specific
+;;----------------------------------------------------------------------
+;; OS specific
 
-   (cond
-    ((string-equal system-type "windows-nt") ; Microsoft Windows
+(cond
+ ((string-equal system-type "windows-nt") ; Microsoft Windows
 
-     (progn
-       (setq-default ispell-program-name "C:/bin/Aspell/bin/aspell.exe") 
-       (setq org-ditaa-jar-path "c:/bin/ditaa/ditaa.jar")
-       )
-     )
-    ((string-equal system-type "gnu/linux") ; Linux
-     (progn
-       (setq x-select-enable-clipboard t)
-       (setq org-ditaa-jar-path "/usr/bin/ditaa")
-       )
-     )
+  (progn
+    (setq-default ispell-program-name "C:/bin/Aspell/bin/aspell.exe") 
+    (setq org-ditaa-jar-path "c:/bin/ditaa/ditaa.jar")
     )
+  )
+ ((string-equal system-type "gnu/linux") ; Linux
+  (progn
+    (setq x-select-enable-clipboard t)
+    (setq org-ditaa-jar-path "/usr/bin/ditaa")
+    )
+  )
+ )
+                                        ;(ledger . t)
+                                        ; Use this to save my location in files when i reopen them
+(save-place-mode t)
+
+(org-clock-persistence-insinuate)
+(defun org-archive-done-tasks ()
+  (interactive)
+  (org-map-entries
+   (lambda ()
+     (org-archive-subtree)
+     (setq org-map-continue-from (outline-previous-heading)))
+   "/DONE" 'tree))
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-cb" 'org-switchb)
 
 
-                                           ;(ledger . t)
-                                           ; Use this to save my location in files when i reopen them
-   (save-place-mode t)
 
-   (org-clock-persistence-insinuate)
-   (defun org-archive-done-tasks ()
-     (interactive)
-     (org-map-entries
-      (lambda ()
-        (org-archive-subtree)
-        (setq org-map-continue-from (outline-previous-heading)))
-      "/DONE" 'tree))
-   (global-set-key "\C-cl" 'org-store-link)
-   (global-set-key "\C-ca" 'org-agenda)
-   (global-set-key "\C-cc" 'org-capture)
-   (global-set-key "\C-cb" 'org-switchb)
-
-
-
-   (defun org-agenda-skip-deadline-if-not-thisweek ()
-     "If this function returns nil, the current match should not be skipped.
+(defun org-agenda-skip-deadline-if-not-thisweek ()
+  "If this function returns nil, the current match should not be skipped.
                Otherwise, the function must return a position from where the search
                should be continued."
-     (ignore-errors
-       (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-             (deadline-day
-              (time-to-days
-               (org-time-string-to-time
-                (org-entry-get nil "DEADLINE"))))
-             (now (time-to-days (current-time))))
-         (and deadline-day
-              (not (= deadline-day now))
-              subtree-end))))
-   (setq org-agenda-start-with-log-mode '(closed clock state))
-   (setq org-agenda-log-mode-items '(closed clock state))
+  (ignore-errors
+    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+          (deadline-day
+           (time-to-days
+            (org-time-string-to-time
+             (org-entry-get nil "DEADLINE"))))
+          (now (time-to-days (current-time))))
+      (and deadline-day
+           (not (= deadline-day now))
+           subtree-end))))
+(setq org-agenda-start-with-log-mode '(closed clock state))
+(setq org-agenda-log-mode-items '(closed clock state))
 
-   (defun my-org-agenda-skip-all-siblings-but-first ()
-     "Skip all but the first non-done entry."
-     (let (should-skip-entry)
-       (unless (org-current-is-todo)
-         (setq should-skip-entry nil))
-       (save-excursion
-         (while (and (not should-skip-entry) (org-goto-sibling t))
-           (when (org-current-is-todo)
-             (setq should-skip-entry t))))
-       (when should-skip-entry
-         (or (outline-next-heading)
-             (goto-char (point-max))))))
+(defun my-org-agenda-skip-all-siblings-but-first ()
+  "Skip all but the first non-done entry."
+  (let (should-skip-entry)
+    (unless (org-current-is-todo)
+      (setq should-skip-entry nil))
+    (save-excursion
+      (while (and (not should-skip-entry) (org-goto-sibling t))
+        (when (org-current-is-todo)
+          (setq should-skip-entry t))))
+    (when should-skip-entry
+      (or (outline-next-heading)
+          (goto-char (point-max))))))
 
-   (defun org-current-is-todo ()
-      (string= "TODO" (org-get-todo-state)))
+(defun org-current-is-todo ()
+  (string= "TODO" (org-get-todo-state)))
 
 
-   (setq org-agenda-custom-commands
-         '(("c" "Simple agenda view"
-            ((agenda "")
-             (alltodo "")))
-           ("h" "Work Things"
-            ((agenda "" ((org-agenda-ndays 1)
-                         (org-agenda-sorting-strategy
-                          (quote ((agenda time-up priority-down tag-up))))
-                         (org-deadline-warning-days 0)))
-             ))
-           ("w" "Work tasks" tags-todo "work"
-            ((org-agenda-overriding-header "Office")
-             (org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
-           ("W" "Weely review"
-            ((agenda ""
-                     ((org-agenda-span 'week)
-                      (org-agenda-start-on-weekday 0)
-                      (org-agenda-start-with-log-mode '(closed clock state))
-                      ;; (org-agenda-skip-function
-                      ;;  '(org-agenda-skip-entry-if 'nottodo 'done))
-                      )))
-            )
-           ;; ("1" "Q1" tags-todo "+important+urgent") ; Not needed right now 
-           ;; ("2" "Q2" tags-todo "+important-urgent") ; revisit someday
-           ;; ("3" "Q3" tags-todo "-important+urgent")
-           ;; ("4" "Q4" tags-todo "-important-urgent")
-           ))
+(setq org-agenda-custom-commands
+      '(("c" "Simple agenda view"
+         ((agenda "")
+          (alltodo "")))
+        ("h" "Work Things"
+         ((agenda "" ((org-agenda-ndays 1)
+                      (org-agenda-sorting-strategy
+                       (quote ((agenda time-up priority-down tag-up))))
+                      (org-deadline-warning-days 0)))
+          ))
+        ("w" "Work tasks" tags-todo "work"
+         ((org-agenda-overriding-header "Office")
+          (org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
+        ("W" "Weely review"
+         ((agenda ""
+                  ((org-agenda-span 'week)
+                   (org-agenda-start-on-weekday 0)
+                   (org-agenda-start-with-log-mode '(closed clock state))
+                   ;; (org-agenda-skip-function
+                   ;;  '(org-agenda-skip-entry-if 'nottodo 'done))
+                   )))
+         )
+        ;; ("1" "Q1" tags-todo "+important+urgent") ; Not needed right now 
+        ;; ("2" "Q2" tags-todo "+important-urgent") ; revisit someday
+        ;; ("3" "Q3" tags-todo "-important+urgent")
+        ;; ("4" "Q4" tags-todo "-important-urgent")
+        ))
 
-   (defun jmd-org-tasks-closed-in-month (&optional month year match-string)
-     "Produces an org agenda tags view list of the tasks completed 
+(defun jmd-org-tasks-closed-in-month (&optional month year match-string)
+  "Produces an org agenda tags view list of the tasks completed 
         in the specified month and year. Month parameter expects a number 
         from 1 to 12. Year parameter expects a four digit number. Defaults 
         to the current month when arguments are not provided. Additional search
         criteria can be provided via the optional match-string argument "
-     (interactive)
-     (let* ((today (calendar-current-date))
-            (for-month (or month (calendar-extract-month today)))
-            (for-year  (or year  (calendar-extract-year today))))
-       (org-tags-view nil 
-                      (concat
-                       match-string
-                       (format "+CLOSED>=\"[%d-%02d-01]\"" 
-                               for-year for-month)
-                       (format "+CLOSED<=\"[%d-%02d-%02d]\"" 
-                               for-year for-month 
-                               (calendar-last-day-of-month for-month for-year))))))
+  (interactive)
+  (let* ((today (calendar-current-date))
+         (for-month (or month (calendar-extract-month today)))
+         (for-year  (or year  (calendar-extract-year today))))
+    (org-tags-view nil 
+                   (concat
+                    match-string
+                    (format "+CLOSED>=\"[%d-%02d-01]\"" 
+                            for-year for-month)
+                    (format "+CLOSED<=\"[%d-%02d-%02d]\"" 
+                            for-year for-month 
+                            (calendar-last-day-of-month for-month for-year))))))
 
-   (defun jmd-org-tasks-query-for-month (&optional month year)
-     (interactive)
-     (let* ((today (calendar-current-date))
-            (for-month (or month (calendar-extract-month today)))
-            (for-year  (or year  (calendar-extract-year today))))
-       (concat
-        (format "+CLOSED>=\"[%d-%02d-01]\"" for-year for-month)
-        (format "+CLOSED<=\"[%d-%02d-%02d]\"" for-year for-month  (calendar-last-day-of-month for-month for-year)))
-       ))
+(defun jmd-org-tasks-query-for-month (&optional month year)
+  (interactive)
+  (let* ((today (calendar-current-date))
+         (for-month (or month (calendar-extract-month today)))
+         (for-year  (or year  (calendar-extract-year today))))
+    (concat
+     (format "+CLOSED>=\"[%d-%02d-01]\"" for-year for-month)
+     (format "+CLOSED<=\"[%d-%02d-%02d]\"" for-year for-month  (calendar-last-day-of-month for-month for-year)))
+    ))
 
-   (defun jmd-work-tasks-last-month ()
-     "Produces an org agenda tags view list of all the tasks completed
+(defun jmd-work-tasks-last-month ()
+  "Produces an org agenda tags view list of all the tasks completed
           last month with for work "
-     (interactive)
-     (let* ((today (calendar-current-date))
-            (for-month (calendar-extract-month today))
-            (for-year  (calendar-extract-year today)))
-       (calendar-increment-month for-month for-year -1)
-       (org-tags-view nil (concat "TODO=\"DONE\"" 
-                                  (jmd-org-tasks-query-for-month for-month for-year) 
-                                  "|ARCHIVE_ITAGS=\"work\""
-                                  (jmd-org-tasks-query-for-month for-month for-year)))))
+  (interactive)
+  (let* ((today (calendar-current-date))
+         (for-month (calendar-extract-month today))
+         (for-year  (calendar-extract-year today)))
+    (calendar-increment-month for-month for-year -1)
+    (org-tags-view nil (concat "TODO=\"DONE\"" 
+                               (jmd-org-tasks-query-for-month for-month for-year) 
+                               "|ARCHIVE_ITAGS=\"work\""
+                               (jmd-org-tasks-query-for-month for-month for-year)))))
 
-   ;; (define-key org-journal-mode-map (kbd "C-x C-s") 'org-journal-save-entry-and-exit)
+;; (define-key org-journal-mode-map (kbd "C-x C-s") 'org-journal-save-entry-and-exit)
  #+END_SRC
 ** Org Download
    :PROPERTIES:
@@ -2421,41 +2458,66 @@ Hiding leading stars
    :END:
 
 #+begin_src emacs-lisp
-(setq jd-org-directory (file-name-as-directory "~/Projects/org" ))
-(setq jd-journal-directory (file-name-as-directory (concat jd-org-directory "Roam/daily" )))
-(setq jd-journal-format "%Y-%m-%d.org" )
-(setq jd-journal-date-format "%e %b %Y (%A)")
 
 (use-package org-journal
+  :ensure t
+  :defer t
   :bind (("C-c t" . journal-file-today)
          ("C-c y" . journal-file-yesterday))
   :custom
   (org-journal-dir jd-journal-directory)
-  (org-journal-file-format "%Y-%m-%d.org")
+  (org-journal-file-type "weekly")
   (org-journal-date-format "%e %b %Y (%A)")
-  (org-journal-time-format "")
+  (org-journal-time-format "%H:%M ")
+  (org-journal-enable-agenda-integration t)
   :preface
+  (defalias 'journal-file-today 'org-journal-new-entry)
+  (defun journal-file-yesterday ()
+    "Creates and load a file based on yesterday's date."
+    (interactive)
+    (find-file (get-journal-file-yesterday)))
+  :config
+  ;; in case you want .gpg preserved files
+  ;;(setq org-agenda-file-regexp "\\`\\\([^.].*\\.org\\\|[0-9]\\\{8\\\}\\\(\\.gpg\\\)?\\\)\\'")
+  (add-to-list 'org-agenda-files jd-journal-directory)
+  (org-journal-update-auto-mode-alist)
+  )
+  
+;; (setq org-agenda-text-search-extra-files (apply 'append
+;; 						(mapcar
+;; 						 (lambda (directory)
+;; 						   (directory-files-recursively
+;; 						    directory org-agenda-file-regexp))
+;; 						 '("~/Projects/org/Roam/daily/"))))
+;; (use-package org-journal
+;;   :bind (("C-c t" . journal-file-today)
+;;          ("C-c y" . journal-file-yesterday))
+;;   :custom
+;;   (org-journal-dir jd-journal-directory)
+;;   (org-journal-file-format "%Y-%m.org")
+;;   ;; (org-journal-date-format "%e %b %Y (%A)")
+;;   (org-journal-time-format "")
+;;   :preface
+;;   (defun get-journal-file-yesterday ()
+;;     "Gets filename for yesterday's journal entry."
+;;     (let* ((yesterday (time-subtract (current-time) (days-to-time 1)))
+;;            (daily-name (format-time-string "%Y%m%d" yesterday)))
+;;       (expand-file-name (concat org-journal-dir daily-name))))
+;;   (defalias 'journal-file-today 'org-journal-new-entry)
 
-   (defun get-journal-file-yesterday ()
-     "Gets filename for yesterday's journal entry."
-     (let* ((yesterday (time-subtract (current-time) (days-to-time 1)))
-            (daily-name (format-time-string "%Y%m%d" yesterday)))
-       (expand-file-name (concat org-journal-dir daily-name))))
+;;   (defun journal-file-yesterday ()
+;;     "Creates and load a file based on yesterday's date."
+;;     (interactive)
+;;     (find-file (get-journal-file-yesterday))))
 
-   (defalias 'journal-file-today 'org-journal-new-entry)
+(defun org-journal-find-location ()
+  ;; Open today's journal, but specify a non-nil prefix argument in order to
+  ;; inhibit inserting the heading; org-capture will insert the heading.
+  (org-journal-new-entry t)
+  ;; Position point on the journal's top-level heading so that org-capture
+  ;; will add the new entry as a child entry.
+  (goto-char (point-min)))
 
-   (defun journal-file-yesterday ()
-     "Creates and load a file based on yesterday's date."
-     (interactive)
-     (find-file (get-journal-file-yesterday))))
-
-   (defun org-journal-find-location ()
-     ;; Open today's journal, but specify a non-nil prefix argument in order to
-     ;; inhibit inserting the heading; org-capture will insert the heading.
-     (org-journal-new-entry t)
-     ;; Position point on the journal's top-level heading so that org-capture
-     ;; will add the new entry as a child entry.
-     (goto-char (point-min)))
 
 #+end_src
 
