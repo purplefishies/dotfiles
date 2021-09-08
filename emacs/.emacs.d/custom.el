@@ -21,6 +21,7 @@
  '(fci-rule-color "#424242")
  '(flycheck-color-mode-line-face-to-color 'mode-line-buffer-id)
  '(frame-background-mode 'dark)
+ '(helm-completion-style 'emacs)
  '(highlight-changes-colors '("#d33682" "#6c71c4"))
  '(highlight-symbol-colors
    '("#eef6d970af00" "#cef5e0cccfbb" "#fd55c91cb29c" "#dadbd2efdc17" "#e0a3de02afa1" "#f84bcba1ad99" "#d28bd9ebdf8a"))
@@ -47,7 +48,7 @@
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
  '(ob-ipython-command "ipython")
  '(org-agenda-files
-   '("~/Projects/org/personal.org" "~/Projects/org/archive.org" "~/Projects/org/todo.org" "~/Projects/org/work_projects.org" "~/Dropbox/inbox.org" "~/Projects/org/gtd.org" "~/Projects/org/journal.org"))
+   '("/home/jdamon/Projects/org/personal.org" "/home/jdamon/Projects/org/archive.org" "/home/jdamon/Projects/org/todo.org" "/home/jdamon/Projects/org/work_projects.org" "/home/jdamon/Dropbox/inbox.org" "/home/jdamon/Projects/org/gtd.org" "/home/jdamon/Projects/org/journal.org"))
  '(org-agenda-todo-ignore-deadlines 'far)
  '(org-agenda-todo-ignore-scheduled 'all)
  '(org-agenda-todo-ignore-timestamp 'future)
@@ -58,9 +59,9 @@
    '(:foreground "Black" :background "White" :scale 2.0 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
                  ("begin" "$1" "$" "$$" "\\(" "\\[")))
  '(org-id-link-to-org-use-id t)
- '(org-journal-date-format "%e %b %Y (%A)")
  '(org-journal-dir "~/Projects/org/Roam/daily" nil nil "Customized with use-package org-journal")
- '(org-journal-file-format "%Y-%m-%d.org" nil nil "Customized with use-package org-journal")
+ '(org-journal-enable-agenda-integration t)
+ '(org-journal-file-format "%Y-%m.org")
  '(org-journal-time-format "")
  '(org-lowest-priority 68)
  '(org-modules
@@ -72,7 +73,7 @@
  '(org-roam-directory "~/Projects/org/Roam")
  '(org-tags-match-list-sublevels nil)
  '(package-selected-packages
-   '(helm-bibtexkey biblio org-roam org-ref perspective doom-modeline diminish helm-bibtex magit org-anki notmuch org-chef ox-hugo ob-ess-julia ob-ipython clipboard-collector org-download org-gcal org-roam-bibtex bitbake windresize org-caldav ox-gfm mu4e-alert ess ob-go ob-coffeescript yasnippet-snippets yasnippet highlight-doxygen all-the-icons flycheck-kotlin ledger-mode command-log-mode color-theme-sanityinc-tomorrow sanityinc-tomorrow-night solarized-theme deft ivy helm-org-rifle anki-editor spice-mode projectile forge dumb-jump ag rspec-mode chruby moody org-plus-contrib gnu-elpa-keyring-update org-journal kotlin-mode ensime cedit cdlatex ledger-import flycheck-ledger org-babel-eval-in-repl graphviz-dot-mode dot-mode org-drill-table dash yaml-mode scala-mode polymode passthword org-bullets org neotree markdown-mode json-mode groovy-mode gradle-mode gitignore-mode color-theme-modern cmake-mode chess bind-key auto-complete auctex))
+   '(promise doct helm-bibtexkey biblio org-roam org-ref perspective doom-modeline diminish helm-bibtex magit org-anki notmuch org-chef ox-hugo ob-ess-julia ob-ipython clipboard-collector org-download org-gcal org-roam-bibtex bitbake windresize org-caldav ox-gfm mu4e-alert ess ob-go ob-coffeescript yasnippet-snippets yasnippet highlight-doxygen all-the-icons flycheck-kotlin ledger-mode command-log-mode color-theme-sanityinc-tomorrow sanityinc-tomorrow-night solarized-theme deft ivy helm-org-rifle anki-editor spice-mode projectile forge dumb-jump ag rspec-mode chruby moody org-plus-contrib gnu-elpa-keyring-update org-journal kotlin-mode ensime cedit cdlatex ledger-import flycheck-ledger org-babel-eval-in-repl graphviz-dot-mode dot-mode org-drill-table dash yaml-mode scala-mode polymode passthword org-bullets org neotree markdown-mode json-mode groovy-mode gradle-mode gitignore-mode color-theme-modern cmake-mode chess bind-key auto-complete auctex))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(send-mail-function 'smtpmail-send-it)
