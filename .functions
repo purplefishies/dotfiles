@@ -40,7 +40,7 @@ function save_fen {
     for i in "$@"
     do
         nname=$(basename "$i" .fen)
-        /bin/cp -f "$i" "$FEN_PUZZLES/${nname}_$(fen_name "$i").fen"
+        /bin/cp -f -p  "$i" "$FEN_PUZZLES/${nname}_$(fen_name "$i").fen"
     done
 }
 
@@ -57,7 +57,7 @@ function save_pgn {
     for i in "$@"
     do
         nname="$(basename "$i" .pgn)"
-        /bin/cp -f "$i" "$PGN_GAMES/${nname}_$(fen_name "$i").pgn"
+        /bin/cp -f -p "$i" "$PGN_GAMES/${nname}_$(fen_name "$i").pgn"
     done
 }
 
@@ -803,9 +803,16 @@ function emacs {
          fi       
 }
 
-#function eemacs {
-#         emacsclient --create-frame $* >/dev/null 2>&1
-#}
+function emacsclient {
+    if [[ -S /tmp/emacs1000/server ]] ; then
+        export EMACS_SOCKET_NAME=/tmp/emacs1000/server
+    fi
+    /usr/bin/emacsclient "$@"
+}
+
+function eemacs {
+         emacsclient --create-frame $@
+}
 
 function diff {
     git diff --no-index $@
@@ -832,11 +839,11 @@ function load1() {
 }
 
 function uri() {
-    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:$\s@&=+,]/)' "$@" 2>/dev/null
+    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:$\s@&=+,]/)' "$@"
 }
 
 function uri2file() {
-    ruby -ruri -e 'puts File.expand_path(URI.unescape(ARGV[0]).gsub(/^\S+?:\/\//,""))' "$@" 2>/dev/null
+    ruby -ruri -e 'puts File.expand_path(URI.unescape(ARGV[0]).gsub(/^\S+?:\/\//,""))' "$@"
 }
 
 
