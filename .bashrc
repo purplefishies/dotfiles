@@ -14,7 +14,7 @@
 #                1. New prompt which displays infor`mation to the Title.
 #****************************************************************************
 
-
+[[ $- == *i* ]] || return
 
 
 if [ -t 0 ] ; then
@@ -49,16 +49,19 @@ BASH_VRS=`echo $BASH_VERSION | sed 's/^\([0-9]\)\..*/\1/'`
 export DIFF_APP=bcompare
 
 # Chess
-export CHESS_DIR=$HOME/Projects/CHESS
-export FEN_PUZZLES=$HOME/Projects/CHESS/FenPuzzles
-export PGN_GAMES=$HOME/Projects/CHESS/PGNGames
+export CHESS_DIR=/media/jdamon/NAS/Chess
+export FEN_PUZZLES=${CHESS_DIR}/FenPuzzles
+export PGN_GAMES=${CHESS_DIR}/PGNGames
 
-if [[ ! -d $FEN_PUZZLES ]] ; then
-    mkdir -p $FEN_PUZZLES
-fi
+if [[ -d $CHESS_DIR ]] ; then
 
-if [[ ! -d $PGN_GAMES ]] ; then
-    mkdir -p $PGN_GAMES
+    if [[ ! -d $FEN_PUZZLES ]] ; then
+        mkdir -p $FEN_PUZZLES
+    fi
+
+    if [[ ! -d $PGN_GAMES ]] ; then
+        mkdir -p $PGN_GAMES
+    fi
 fi
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -67,14 +70,6 @@ fi
 if [ -f $HOME/.functions ] ; then
     source $HOME/.functions
 fi
-
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Load work stuff
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-if [ -f $HOME/.work ] ; then
-    source $HOME/.work
-fi
-
 
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -106,9 +101,6 @@ test -f ${HOME}/.env && ldenv ${HOME}/.env
 
 export GRADLE_OPTS="-Dorg.gradle.daemon=true,org.gradle.jvmargs=-Xmx2048M"
 
-
-
-
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Clearing temporary variables
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -122,8 +114,7 @@ export PATH="$PATH:/sbin:/bin:/usr/bin:/usr/local/bin:/usr/sbin:"
 export PATH="$PATH:$HOME/Scripts"
 export PATH="$PATH:/usr/games"
 export PATH="$PATH:/usr/local/cuda/bin"
-
-export PATH="$PATH:/usr/lib/lapack"
+  export PATH="$PATH:/usr/lib/lapack"
 export PATH="$PATH:/opt/local/bin"
 
 export PATH="$PATH:$HOME/Tools/bin"
@@ -151,6 +142,9 @@ if [[ -f "/usr/share/bash-completion/bash_completion" ]] ; then
     source "/usr/share/bash-completion/bash_completion"
 fi
 
+if [[ -f "$HOME/.bash_stuff/modules/init/bash" ]] ; then
+    source "$HOME/.bash_stuff/modules/init/bash"
+fi
 
 if [[ -f "${HOME}/.colors" ]] ; then
     oldIFS=${IFS}
@@ -201,7 +195,7 @@ else
 fi
 
 # Old mac colors
-export LSCOLORS="Exfxcxdxbxegedabagacad"
+# export LSCOLORS="Exfxcxdxbxegedabagacad"
 
 if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
     source $HOME/.bash_stuff/cdargs/cdargs-bash.sh
@@ -237,7 +231,7 @@ export HISTFILENEWNAME=bash_history
 export HISTPREFIX=""
 export HISTFILE=$HOME/${HISTFILENAME}
 export HISTCONTROL="ignoredups:erasedups"
-export HISTIGNORE="ls:ll:more *:lless *:history:history *:source .bashrc:clear_last_history:tmux *attach"
+export HISTIGNORE="ls:ll:more *:lless *:history:history *:source .bashrc:clear_last_history:tmux *attach:reboot:restart:sudo*reboot"
 export HISTDIRECTORY=$HOME/.bashcmd_history 
 export HIST_RESET_OFFSET=2000
 export HIST_ROLLOVER_SIZE=10000
@@ -269,8 +263,8 @@ function rollover_history() {
         history -c >/dev/null
         history -r >/dev/null
     fi
-
-    if [[ -f $(which timeout3) ]]
+    
+    if [[ $(type -t timeout3) == "file" ]]
     then
        eval $(timeout3 -d 0 -i 0.1 -t ${DEFAULT_TIMEOUT} git_stats.rb)
     fi
@@ -300,7 +294,7 @@ export MANPATH=/usr/share/man:/usr/man:/usr/local/share/man
 export PAGER=less
 export LESSOPEN="| /usr/bin/source-highlight-esc.sh %s "
 export LESS="-X -R"
-export LC_ALL="C"
+#export LC_ALL="UTF-8"
 export LESSCHARSET=utf-8
 
 export RI="--format ansi --width 100"
@@ -313,7 +307,9 @@ fi
 
 export COMP_WORDBREAKS=${COMP_WORDBREAKS/\:/}
 
+export SDK_ROOT=/Developer/SDKs/android-sdk-mac_86
 export PATH=$PATH:$SDK_ROOT/tools/
+export PATH=$PATH:/opt/local/lib/mysql5/bin
 
 # 
 # Android
@@ -330,8 +326,6 @@ fi
 if [ -f "/opt/local/etc/profile.d/cdargs-bash.sh" ]; then
     source /opt/local/etc/profile.d/cdargs-bash.sh
 fi
-
-
 
 export PERL5LIB="${HOME}/perl5/lib/perl5:${HOME}"
 
@@ -397,6 +391,7 @@ if [ -n "$(type -t cprompt 2>/dev/null)" ] && [ "$(type -t cprompt 2>/dev/null)"
 then 
     cprompt devel
 fi
+export MODULEPATH=$HOME/Modules
 
 if [ -n "$TMUX" ]; then
     function refresh {
@@ -422,6 +417,14 @@ else
 
 fi
 
+function reload {
+    module purge
+    module load preconfig/usb-development-latest-ai16
+    cdb mcbridelib/..
+    . sourceme.sh
+    cd -
+}
+
 function cleantex {
     for i in *.tex
     do
@@ -443,8 +446,8 @@ function getkey {
     fi
 }
 
-#export LANG="en_US.UTF-8"
-#export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 
 if [ -f ${HOME}/dotfiles/android_bc ] ; then
     source ${HOME}/dotfiles/android_bc
@@ -455,6 +458,13 @@ if [ -f ${HOME}/Scripts/rand_tmux_color.rb ] ; then
 fi
 
 alias tmux='TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb) tmux -2'
+
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+export PATH="/home/jdamon/.cask/bin:$PATH"
+
+
 
 # source /opt/ros/kinetic/setup.bash
 # PATH="/home/jdamon/perl5/bin${PATH:+:${PATH}}"; export PATH;
@@ -483,11 +493,16 @@ if [[ -f /usr/share/lmod/lmod/init/bash ]]
 then
     source /usr/share/lmod/lmod/init/bash
 fi
-
 alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_ws/src -w /home/developer/catkin_ws/ -u developer -it ^Ccker.cloudsmith.io/automodality/dev/amros-melodic:latest"
 export PATH="${PATH}:$HOME/.jlenv/bin"
 
-if [[ -f $HOME/Scripts/fortune.rb ]] 
-then
-   fortune.rb $(/bin/ls -d ${HOME}/Quotes.txt ${HOME}/Quotes.txt  ${HOME}/Quotes.txt ${HOME}/Quotes.txt /usr/share/games/fortunes | sort -R | head -1) | fold  -w 50 -s  | cowsay -f tux -n | lolcat -t -p 2
-fi
+fortune.rb $(/bin/ls -d ${QUOTES_FILE} ${QUOTES_FILE}  ${QUOTES_FILE} ${QUOTES_FILE} /usr/share/games/fortunes | sort -R | head -1) | fold  -w 50 -s  | cowsay -f tux -n | lolcat -t -p 2
+
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+#PATH="/home/jimi_damon/perl5/bin${PATH:+:${PATH}}"; export PATH;
+#PERL5LIB="/home/jimi_damon/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+#PERL_LOCAL_LIB_ROOT="/home/jimi_damon/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+#PERL_MB_OPT="--install_base \"/home/jimi_damon/perl5\""; export PERL_MB_OPT;
+#PERL_MM_OPT="INSTALL_BASE=/home/jimi_damon/perl5"; export PERL_MM_OPT;
