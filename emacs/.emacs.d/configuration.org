@@ -21,7 +21,12 @@ not /totally/ sure about that, but we're gettin' close.
 #+BEGIN_SRC emacs-lisp
   (require 'use-package-ensure)
   (setq use-package-always-ensure t)
-  ;(setq load-prefer-newer nil)
+  (add-to-list 'load-path "~/elisp/org-mode/lisp")  
+  (require 'org-loaddefs)
+  ;; (package-initialize)
+  ;; (use-package straight)
+
+
 #+END_SRC
 
 Always compile packages, and use the newest version available.
@@ -31,7 +36,14 @@ Always compile packages, and use the newest version available.
     :config (auto-compile-on-load-mode))
 
   ;(setq load-prefer-newer nil)
+
+
+   (use-package dash)
+   (use-package queue)
+
 #+END_SRC
+
+
 
 * Personal information
 ** Who am I? Where am I?
@@ -70,6 +82,30 @@ Always compile packages, and use the newest version available.
     (dolist (pattern patterns)
       (add-to-list 'auto-mode-alist (cons pattern mode))))
 #+END_SRC
+
+* Completions
+** Helm
+:PROPERTIES:
+:ID:       64ad626c-0362-4c48-80a9-b0a7b30c584c
+:END:
+#+begin_src emacs-lisp
+  ;; helm completion system
+  (use-package helm
+    :config
+    (require 'helm-config)   
+    :init
+    (helm-mode 1)
+    :bind
+    (("M-x"     . helm-M-x)
+     ("C-x C-f" . helm-find-files)
+     ("C-x b"   . helm-mini)
+     ("C-x C-r" . helm-recentf)
+     ("C-c i"   . helm-imenu)
+     ("M-y"     . helm-show-kill-ring)
+     :map helm-map
+     ("C-z" . helm-select-action)
+     ("<tab>" . helm-execute-persistent-action)))
+#+end_src
 
 * UI preferences
 ** Tweak window chrome
@@ -124,7 +160,8 @@ window on top of a cool european city backdrop. I like the Sanityinc tomorrow th
 I'm still not sure why this can't be loaded through use-package
 
 #+BEGIN_SRC emacs-lisp
-  (require 'color-theme-sanityinc-tomorrow)
+   (use-package color-theme-sanityinc-tomorrow)
+  ;(require 'color-theme-sanityinc-tomorrow)
 
   (defun transparency (value)
     "Sets the transparency of the frame window. 0=transparent/100=opaque."
@@ -233,11 +270,11 @@ as point goes.
    :ID:       0699fe67-413f-4db8-adbe-855fb3e91fb4
    :END:
 #+BEGIN_SRC emacs-lisp
-(defvar server-socket-dir
-  (let ((uid (user-uid)))
-    (if (floatp uid)
-        (format "/tmp/emacs%1.0f" uid)
-      (format "/tmp/emacs%d" uid))))
+;; (defvar server-socket-dir
+;;   (let ((uid (user-uid)))
+;;     (if (floatp uid)
+;;         (format "/tmp/emacs%1.0f" uid)
+;;       (format "/tmp/emacs%d" uid))))
 (require 'server)
 (server-ensure-safe-dir server-socket-dir)
 (server-start) 
@@ -371,8 +408,8 @@ as point goes.
    :ID:       d9a29cfd-2707-46c1-be8c-7e094d29727a
    :END:
 #+begin_src emacs-lisp
-(load "/usr/share/emacs/site-lisp/clang-format/clang-format.el" )
-(global-set-key [f7] 'clang-format-region)
+;; (load "/usr/share/emacs/site-lisp/clang-format-12/clang-format.el" )
+;; (global-set-key [f7] 'clang-format-region)
 (defun run-clang-format ()
   "Runs clang-format on cpp,h files in catkin_ws/ and reverts buffer."
   (interactive)
@@ -479,11 +516,11 @@ same directory as the org-buffer and insert a link to this file."
   (setq filename
         (concat
          (make-temp-name
-          (concat (buffer-file-name)
+          (concat (file-name-nondirectory (buffer-file-name))
                   "_"
                   (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
   (call-process "import" nil nil nil filename)
-  (insert (concat "[[" filename "]]"))
+  (insert (concat "[[./" (file-name-nondirectory filename) "]]"))
   (org-display-inline-images))
 #+end_src
 
@@ -501,7 +538,9 @@ version control. That's all in here.
 Set up =ag= for displaying search results.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ag)
+  (use-package ag
+ :after (dash queue)
+)
 #+END_SRC
 
 ** =company=
@@ -542,6 +581,7 @@ doesn't require any additional setup. I've bound its most useful command to
    :PROPERTIES:
    :ID:       aab1fb3d-a834-4ee4-b3a7-5e36bb92e4f0
    :END:
+
 
  #+BEGIN_SRC emacs-lisp
    (use-package flycheck)
@@ -1250,7 +1290,7 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
    :ID:       4ada1d84-08e8-4251-a45a-f2dcd65e00e3
    :END:
 #+begin_src emacs-lisp
- (add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima/")
+
  (autoload 'maxima-mode "maxima" "Maxima mode" t)
  (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
  (autoload 'maxima "maxima" "Maxima interaction" t)
@@ -1478,12 +1518,12 @@ my buffer.
    :END:
 
 #+begin_src emacs-lisp
-(use-package yasnippet
-  :ensure t 
-  :config 
-  (use-package yasnippet-snippets
-    :ensure t)
-  (yas-reload-all))
+  ;; (use-package yasnippet
+  ;;   :ensure t 
+  ;;   :config 
+  ;;   (use-package yasnippet-snippets
+  ;;     :ensure t)
+  ;;   (yas-reload-all))
 #+end_src
 
   Adding a custom snippet for Doxygen
@@ -1526,120 +1566,116 @@ my buffer.
   :ID:       e9ab343c-4e8e-4f1e-b294-9d38a5360c01
   :END:
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'emacs-lisp-mode-hook
-              (lambda ()
-                (push '(">=" . ?≥) prettify-symbols-alist)))
-  (lambda (x y)
-    (if (>= x y)
-        (something)
-      (something-else)))
-;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-; Useful for copying and pasting in emacs in a terminal
-; Not sure if this will cause a bug or not
-;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  (defun now ()
-    "Insert string for the current time formatted like '2:34 PM' or 1507121460"
-    (interactive)                 ; permit invocation in minibuffer
-    (insert (format-time-string "%D %-I:%M %p"))
-    )
+    (add-hook 'emacs-lisp-mode-hook
+		(lambda ()
+		  (push '(">=" . ?≥) prettify-symbols-alist)))
+    (lambda (x y)
+      (if (>= x y)
+	  (something)
+	(something-else)))
+  ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  ; Useful for copying and pasting in emacs in a terminal
+  ; Not sure if this will cause a bug or not
+  ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    (defun now ()
+      "Insert string for the current time formatted like '2:34 PM' or 1507121460"
+      (interactive)                 ; permit invocation in minibuffer
+      (insert (format-time-string "%D %-I:%M %p"))
+      )
 
-;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-; Compilation stuff
-;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  (defun save-all-and-compile ()
-    (save-some-buffers 1)
-    (compile compile-command))
+  ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  ; Compilation stuff
+  ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    (defun save-all-and-compile ()
+      (save-some-buffers 1)
+      (compile compile-command))
 
-  (setq compilation-ask-about-save nil)
-  (global-set-key [f5] 'compile)
+    (setq compilation-ask-about-save nil)
+    (global-set-key [f5] 'compile)
 
-  (setq TeX-PDF-from-DVI "Dvips") 
-  ;; (add-to-list 'load-path "/home/jdamon/.emacs.d/share/emacs/site-lisp")
-  ;; (add-to-list 'load-path "/usr/share/emacs24/site-lisp/")
-  ;; (add-to-list 'load-path "/usr/share/emacs24/site-lisp/auto-complete");
-  ;; (condition-case nil
-  ;; (require 'auto-complete-config)
-  ;; (add-to-list 'ac-dictionary-directories "/usr/share/emacs23/site-lisp//ac-dict")
-  ;; (ac-config-default)
-  ;; (error nil)
-  ;; )
-  ;; (add-to-list 'load-path "/home/jdamon/.emacs.d/neotree" )
-  ;; (require 'neotree)
-  ;; (global-set-key [f8] 'neotree-toggle)
-                                          ;check system name
-  (add-to-list 'load-path "/home/jdamon/.emacs.d/lisp")
-  (add-to-list 'load-path "/home/jdamon/.emacs.d/xcscope")
-  (add-to-list 'load-path "/usr/share/emacs23/site-lisp/")
+    (setq TeX-PDF-from-DVI "Dvips") 
+    ;; (setq load-path (cons "~/elisp" load-path))
 
-  (condition-case nil
-      (load "auctex.el" nil t t)
-    (load "preview-latex.el" nil t t)
-    (error nil)
-    )
+    ;; (add-to-list 'load-path "/home/jdamon/.emacs.d/lisp")
+    ;; (add-to-list 'load-path "/home/jdamon/.emacs.d/lisp")
+    ;; (add-to-list 'load-path "/home/jdamon/.emacs.d/xcscope")
 
-  (condition-case nil
-      (load "ggtags.elc" nil t t )
-    (add-hook 'c-mode-common-hook
-              (lambda ()
-                (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-                  (ggtags-mode 1))))
-    (error nil)
-    )
-  ;; (load "smart-compile.el" nil t t )
-;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-; Auto compilation
-;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  ;; (load "mode-compile.el" nil t t )
-  (defun mode-compile-quiet ()
-    (interactive)
-    (flet ((read-string (&rest args) ""))
-      (mode-compile)))
+    ;; (use-package auctex )
+    ;; (use-package auctex
+    ;; :defer t
+    ;; :ensure t)
+    (use-package tex
+    :ensure auctex)
 
-  ;; Bury the compilation buffer when compilation is finished and successful.
-  (add-to-list 'compilation-finish-functions
-               (lambda (buffer msg)
-                 (when 
-                     (bury-buffer buffer)
-                   (replace-buffer-in-windows buffer))))
+    (condition-case nil
+	(load "auctex.el" nil t t)
+      (load "preview-latex.el" nil t t)
+      (error nil)
+      )
 
-  ;; C-c C-% will set a buffer local hook to use mode-compile after saving
-  (global-set-key '[(ctrl c) (ctrl %)]
-                  (lambda () 
-                    (interactive)
-                    (if (member 'mode-compile-quiet after-save-hook)
-                        (progn
-                          (setq after-save-hook 
-                                (remove 'mode-compile-quiet after-save-hook))
-                          (message "No longer compiling after saving."))
-                      (progn
-                        (add-to-list 'after-save-hook 'mode-compile-quiet)
-                        (message "Compiling after saving.")))))
+    (condition-case nil
+	(load "ggtags.elc" nil t t )
+      (add-hook 'c-mode-common-hook
+		(lambda ()
+		  (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+		    (ggtags-mode 1))))
+      (error nil)
+      )
+    ;; (load "smart-compile.el" nil t t )
+  ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  ; Auto compilation
+  ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    ;; (load "mode-compile.el" nil t t )
+    (defun mode-compile-quiet ()
+      (interactive)
+      (flet ((read-string (&rest args) ""))
+	(mode-compile)))
 
-  ;; Prevent compilation buffer from showing up
-  ;; (defadvice compile (around compile/save-window-excursion first () activate)
-  ;;   (save-window-excursion ad-do-it))
+    ;; Bury the compilation buffer when compilation is finished and successful.
+    (add-to-list 'compilation-finish-functions
+		 (lambda (buffer msg)
+		   (when 
+		       (bury-buffer buffer)
+		     (replace-buffer-in-windows buffer))))
 
-  ;; Bury the compilation buffer when compilation is finished and successful.
-  (add-to-list 'compilation-finish-functions
-               (lambda (buffer msg)
-                 (when 
-                     (bury-buffer buffer)
-                   (replace-buffer-in-windows buffer))))
+    ;; C-c C-% will set a buffer local hook to use mode-compile after saving
+    (global-set-key '[(ctrl c) (ctrl %)]
+		    (lambda () 
+		      (interactive)
+		      (if (member 'mode-compile-quiet after-save-hook)
+			  (progn
+			    (setq after-save-hook 
+				  (remove 'mode-compile-quiet after-save-hook))
+			    (message "No longer compiling after saving."))
+			(progn
+			  (add-to-list 'after-save-hook 'mode-compile-quiet)
+			  (message "Compiling after saving.")))))
 
-  (setq compilation-scroll-output 'first-error)
+    ;; Prevent compilation buffer from showing up
+    ;; (defadvice compile (around compile/save-window-excursion first () activate)
+    ;;   (save-window-excursion ad-do-it))
 
-  ;; (require  'xcscope )
-  (define-key global-map [(control f4)]  'cscope-pop-mark)
-  (define-key global-map [(control f5)]  'cscope-find-this-text-string)
-  (define-key global-map [(control f6)]  'cscope-find-this-symbol)
-  (define-key global-map [(control f7)]  'cscope-find-functions-calling-this-function)
-  (define-key global-map [(control f8)]  'cscope-find-called-functions)
-  (define-key global-map [(control f9)]  'cscope-prev-symbol)
-  (define-key global-map [(control f10)] 'cscope-next-symbol)
-         ;;; XEmacs backwards compatibility file
-  (line-number-mode t)
-                                          ;(put 'my-operator 'scheme-indent-function 3)
-                                          ; Stuff for setting up key bindings...
+    ;; Bury the compilation buffer when compilation is finished and successful.
+    (add-to-list 'compilation-finish-functions
+		 (lambda (buffer msg)
+		   (when 
+		       (bury-buffer buffer)
+		     (replace-buffer-in-windows buffer))))
+
+    (setq compilation-scroll-output 'first-error)
+
+    ;; (require  'xcscope )
+    (define-key global-map [(control f4)]  'cscope-pop-mark)
+    (define-key global-map [(control f5)]  'cscope-find-this-text-string)
+    (define-key global-map [(control f6)]  'cscope-find-this-symbol)
+    (define-key global-map [(control f7)]  'cscope-find-functions-calling-this-function)
+    (define-key global-map [(control f8)]  'cscope-find-called-functions)
+    (define-key global-map [(control f9)]  'cscope-prev-symbol)
+    (define-key global-map [(control f10)] 'cscope-next-symbol)
+	   ;;; XEmacs backwards compatibility file
+    (line-number-mode t)
+					    ;(put 'my-operator 'scheme-indent-function 3)
+					    ; Stuff for setting up key bindings...
 
   (condition-case nil
       (require 'auto-complete-config)
@@ -1823,9 +1859,11 @@ my buffer.
     (insert "\n")
     )
 
-  (add-hook 'c-mode-common-hook 'linum-mode)
+  (add-hook 'c-mode-common-hook 'display-line-numbers-mode)
+  ;(remove-hook 'c-mode-common-hook 'linum-mode)
   (add-hook 'c-mode-common-hook 'outline-minor-mode ) 
-  (add-hook 'python-mode-hook 'linum-mode)
+  (add-hook 'python-mode-hook 'display-line-numbers-mode)
+  ;(remove-hook 'python-mode-hook 'linum-mode)
 
   (put 'upcase-region 'disabled nil)
   (put 'downcase-region 'disabled nil)
@@ -1896,9 +1934,9 @@ i.e. change right window to bottom, or change bottom window to right."
   (setq org-deadline-warning-days 0)
   (use-package flycheck-ledger :after ledger-mode )
 
-  (setq org-return-follows-link t )
-  (require 'org-jira)
-  (setq jiralib-url "https://automodality.atlassian.net")
+    (setq org-return-follows-link t )
+    ;; (use-package org-jira)
+    ;; (setq jiralib-url "https://automodality.atlassian.net")
 
   (defconst org-jira-progress-issue-flow
   '(("To Do" . "In Progress")
@@ -1910,13 +1948,26 @@ i.e. change right window to bottom, or change bottom window to right."
 #+END_SRC 
 
 * Publishing and task management with Org-mode
+** Doct setup
+:PROPERTIES:
+:ID:       c15f9ff7-1cb2-4ee3-9f65-c1761a728e89
+:END:
+#+begin_src emacs-lisp
+(use-package doct
+  :ensure t
+  ;;recommended: defer until calling doct
+  :commands (doct))
+#+end_src
 ** Org Setup
 *** Loading Org
     :PROPERTIES:
     :ID:       95c0226c-cd84-42c2-89cf-c0d3d8190ffc
     :END:
 #+begin_src emacs-lisp
-  (use-package org)
+  (use-package org
+    :ensure t
+    :pin gnu
+    )
 #+end_src
 
 *** Org Directory Setup
@@ -1924,8 +1975,13 @@ i.e. change right window to bottom, or change bottom window to right."
     :ID:       d507ec22-cf8d-4edd-b1a3-adae9fdf1c31
     :END:
 #+BEGIN_SRC emacs-lisp
-  (setq org-directory "~/Projects/org")
-  (add-hook 'org-mode-hook 'outline-minor-mode)
+(setq org-directory "~/Dropbox/org/")
+(setq dropbox-directory "~/Dropbox/org/")
+(add-hook 'org-mode-hook 'outline-minor-mode)
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
+(add-hook 'org-mode-hook 'turn-on-flyspell)
+(setq org-startup-indented t)
+
 #+END_SRC
 
 *** Scaling Preview Latex 
@@ -2019,7 +2075,9 @@ Hiding leading stars
    :ID:       6fd53e38-0adf-4036-988b-4abe2968d8ee
    :END:
 #+begin_src emacs-lisp
-(add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+  (use-package tex
+  :ensure auctex)
+  ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 #+end_src
 
 ** Org images
@@ -2053,7 +2111,8 @@ Hiding leading stars
      "Return the absolute address of an org file, given its relative name."
      (concat (file-name-as-directory org-directory) filename))
 
-   (setq org-inbox-file "~/Dropbox/inbox.org")
+;(setq org-inbox-file "~/Dropbox/inbox.org")
+(setq org-inbox-file (append dropbox-directory "/inbox" ))
    (setq org-index-file (org-file-path "index.org"))
    (setq org-archive-location
          (concat (org-file-path "archive.org") "::"))
@@ -2147,235 +2206,272 @@ Hiding leading stars
    :END:
 
 #+BEGIN_SRC emacs-lisp
+(setq org-src-fontify-natively t )
+(setq org-src-tab-acts-natively t )
+(setq org-src-window-setup 'current-window )
+(setq org-clock-persist 'history)
+(setq org-log-done t)
+(setq org-log-into-drawer t)
+(setq org-tags-column 80)
 
-   (defun org-journal-find-location ()
-     ;; Open today's journal, but specify a non-nil prefix argument in order to
-     ;; inhibit inserting the heading; org-capture will insert the heading.
-     (org-journal-new-entry t)
-     ;; Position point on the journal's top-level heading so that org-capture
-     ;; will add the new entry as a child entry.
-     (goto-char (point-min)))
+(setq jd-org-directory (file-name-as-directory "~/Dropbox/org" ))                                                                                     
+;; (setq jd-journal-directory (file-name-as-directory (concat jd-org-directory "Roam/daily" )))                                                           
+;(setq jd-journal-directory (file-name-as-directory (concat jd-org-directory "journal.org" )))                                                           
+(setq jd-journal-directory (file-name-as-directory jd-org-directory))
+(setq jd-journal-format "%Y-%m.org" )                                                                                                                  
+(setq jd-journal-date-format "%Y-%m-%d %A")                                                                                                            
 
-   (setq org-src-fontify-natively t )
-   (setq org-src-tab-acts-natively t )
-   (setq org-src-window-setup 'current-window )
-   (setq org-clock-persist 'history)
-   (setq org-log-done t)
-   (setq org-log-into-drawer t)
-   (setq org-tags-column 80)
+(setq jd-current-work-project "" )                                                                                                                     
 
-   ;; ("j" "Journal" entry (function org-journal-find-location)
-   ;;  "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?")
-   ;; ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org"
-   ;;                                         "* %?\nEntered on %U\n"))
-   ;                                                   ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
-   ;                                                   "* %?\nEnterered on %U\n   %i\n   %a")
-   ; @todo FIX this journal to use the org-journal
-   ;       but that requires fixing the function org-journal-find-location which is annoying 
-   ;       because it pops up two editor windows, one from the function itself and another
-   ;       from the org-capture.
-   (setq org-capture-templates
-         '(("t" "Todo" entry (file+headline "~/Projects/org/todo.org" "Tasks")
-            "* TODO %?\n%i\n   %a")
-           ("j" "Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
-                                                  "* %? %^G\n  %T\n")
-           ("W" "Work Journal" entry (file+olp+datetree "~/Projects/org/journal.org")
-            "* %?\t\t:work:\n   %T\n\n")
-           ;; ("Q" "Questions" entry (file+olp+datetree "~/Projects/org/questions.org")
-           ;;  "* %?\t\t:questions:\n   :PROPERTIES:\n    :CREATED:%T\n    :END:\n\n")
-           ("f" "Finished book"
-            table-line (file "~/Documents/notes/books-read.org")
-            "| %^{Title} | %^{Author} | %u |")
-           ("c" "Cookbook" entry (file "~/Projects/org/cookbook.org" )
-              "%(org-chef-get-recipe-from-url)"
-               :empty-lines 1)
-           ("s" "Subscribe to an RSS feed"
-            plain
-            (file "~/Documents/rss/urls")
-            "%^{Feed URL} \"~%^{Feed name}\"")
-           )) 
+(defun jd/current-work-project())
 
-   (setq org-journal-file-format "%Y%m%d.org")
-   (setq org-hide-emphasis-markers t )
+                         
+(defun jd/journal-date-path ()
+  "Get file path for daily journal."
+  (expand-file-name
+   (concat ;; "journal-"
+    (format-time-string "%Y-%m") ".org")
+   jd-journal-directory))
+;; (jd/journal-date-path)
 
-   (org-babel-do-load-languages
-    'org-babel-load-languages
-    '((python . t)
-      (ledger . t)
-      (latex . t)
-      (ditaa . t)
-      (shell . t)
-      (dot . t)
-      (ruby . t)
-      (scala . t)
-      (kotlin . t)
-      (maxima . t )
-      ))
-   ;;
 
-   (defun org-journal-save-entry-and-exit()
-     "Simple convenience function.
-              Saves the buffer of the current day's entry and kills the window
-              Similar to org-capture like behavior"
-     (interactive)
-     (save-buffer)
-     (kill-buffer-and-window))
 
-   ;;----------------------------------------------------------------------
-   ;; OS specific
+(defun jd/find-create-date-entry ()
+  "Append to end of or create Org entry with date heading."
+  (let ((heading (concat "* " (format-time-string "%Y-%m-%d %A"))))
+    (save-match-data
+      (goto-char (point-min))
+      (unless (re-search-forward heading nil 'no-error)
+        (end-of-line)
+        (newline)
+        (insert heading))
+      (org-end-of-subtree))))
 
-   (cond
-    ((string-equal system-type "windows-nt") ; Microsoft Windows
+;; @todo FIX this journal to use the org-journal
+;;       but that requires fixing the function org-journal-find-location which is annoying 
+;;       because it pops up two editor windows, one from the function itself and another
+;;       from the org-capture.
 
-     (progn
-       (setq-default ispell-program-name "C:/bin/Aspell/bin/aspell.exe") 
-       (setq org-ditaa-jar-path "c:/bin/ditaa/ditaa.jar")
-       )
-     )
-    ((string-equal system-type "gnu/linux") ; Linux
-     (progn
-       (setq x-select-enable-clipboard t)
-       (setq org-ditaa-jar-path "/usr/bin/ditaa")
-       )
-     )
+(defcustom my-org-personal-capture-filename nil                                                                                                        
+      "Non-nil means automatically use as personal capture filename"                                                                                       
+      :type '(string)                                                                                                                                      
+      :group 'myorg                                                                                                                                        
+      )                                                                                                                                                    
+                      
+(defcustom my-org-work-capture-filename nil                                                                                                            
+  "Non-nil means automatically use as personal capture filename"                                                                                       
+  :type '(string)                                                                                                                                      
+  :group 'myorg                                                                                                                                        
+  )                                                                                                                                                    
+
+(defvar my-org-work-capture-filename nil                                                                                                               
+  "File name for org work capture template.")                                                                                                          
+
+(defun my-org-personal-capture ()                                                                                                                      
+  "Read file name to capture to."                                                                                                                      
+  (interactive)                                                                                                                                        
+  (setq my-org-personal-capture-filename                                                                                                               
+        (read-file-name "Capture to: " "~/Dropbox/personal"  nil t "inbox.org")))                                                                     
+
+(defun my-org-work-capture ()
+  "Read file name to capture to."
+  (interactive)
+  (setq my-org-work-capture-filename
+        (read-file-name "Capture to: " "~/Dropbox/org" nil t "workjournal.org")))
+
+;; jd/journal-date-path
+(setq org-capture-templates                                                                                                                            
+      '(("t" "Todo" entry (file+headline "~/Dropbox/org/inbox.org" "Tasks")  "* TODO %?\n%i\n   %a")                                                                                                                       
+        ("j" "Journal" plain (file+function "~/Dropbox/org/journal.org" jd/find-create-date-entry ) "** %?\n" )                                                                                                                                   
+        ("W" "Work Journal" plain (file+function "~/Dropbox/org/workjournal.org" jd/find-create-date-entry ) "** %?\t\t:work:\n" )                                                                                                                         
+        ("c" "Current Journal" entry (file+function my-org-personal-capture-filename jd/find-create-date-entry )                                       
+         "** %?\t\t:work:\n" )                                                                                                                         
+        ("q" "Questions" plain (file+function "~/Dropbox/org/questions.org" jd/find-create-date-entry) "** %?\t\t:question:\n    :PROPERTIES:\n    :MODIFIED: %U\n    :END:\n" )
+        ))
+                             
+  (setq org-journal-file-format "%Y%m%d.org")
+  (setq org-hide-emphasis-markers t )
+  (use-package ob-kotlin)
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (ledger . t)
+     (latex . t)
+     (ditaa . t)
+     (shell . t)
+     (dot . t)
+     (ruby . t)
+     ;; (scala . t)
+     (kotlin . t)
+     (maxima . t )
+     ))
+  ;;
+
+  (defun org-journal-save-entry-and-exit()
+    "Simple convenience function.
+    Saves the buffer of the current day's entry and kills the window
+    Similar to org-capture like behavior"
+    (interactive)
+    (save-buffer)
+    (kill-buffer-and-window))
+
+  ;;----------------------------------------------------------------------
+  ;; OS specific
+
+  (cond
+   ((string-equal system-type "windows-nt") ; Microsoft Windows
+
+    (progn
+      (setq-default ispell-program-name "C:/bin/Aspell/bin/aspell.exe") 
+      (setq org-ditaa-jar-path "c:/bin/ditaa/ditaa.jar")
+      )
     )
+   ((string-equal system-type "gnu/linux") ; Linux
+    (progn
+      (setq x-select-enable-clipboard t)
+      (setq org-ditaa-jar-path "/usr/bin/ditaa")
+      )
+    )
+   )
 
 
-                                           ;(ledger . t)
-                                           ; Use this to save my location in files when i reopen them
-   (save-place-mode t)
+					  ;(ledger . t)
+					  ; Use this to save my location in files when i reopen them
+  (save-place-mode t)
 
-   (org-clock-persistence-insinuate)
-   (defun org-archive-done-tasks ()
-     (interactive)
-     (org-map-entries
-      (lambda ()
-        (org-archive-subtree)
-        (setq org-map-continue-from (outline-previous-heading)))
-      "/DONE" 'tree))
-   (global-set-key "\C-cl" 'org-store-link)
-   (global-set-key "\C-ca" 'org-agenda)
-   (global-set-key "\C-cc" 'org-capture)
-   (global-set-key "\C-cb" 'org-switchb)
-
-
-
-   (defun org-agenda-skip-deadline-if-not-thisweek ()
-     "If this function returns nil, the current match should not be skipped.
-               Otherwise, the function must return a position from where the search
-               should be continued."
-     (ignore-errors
-       (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-             (deadline-day
-              (time-to-days
-               (org-time-string-to-time
-                (org-entry-get nil "DEADLINE"))))
-             (now (time-to-days (current-time))))
-         (and deadline-day
-              (not (= deadline-day now))
-              subtree-end))))
-   (setq org-agenda-start-with-log-mode '(closed clock state))
-   (setq org-agenda-log-mode-items '(closed clock state))
-
-   (defun my-org-agenda-skip-all-siblings-but-first ()
-     "Skip all but the first non-done entry."
-     (let (should-skip-entry)
-       (unless (org-current-is-todo)
-         (setq should-skip-entry nil))
-       (save-excursion
-         (while (and (not should-skip-entry) (org-goto-sibling t))
-           (when (org-current-is-todo)
-             (setq should-skip-entry t))))
-       (when should-skip-entry
-         (or (outline-next-heading)
-             (goto-char (point-max))))))
-
-   (defun org-current-is-todo ()
-      (string= "TODO" (org-get-todo-state)))
+  (org-clock-persistence-insinuate)
+  (defun org-archive-done-tasks ()
+    (interactive)
+    (org-map-entries
+     (lambda ()
+       (org-archive-subtree)
+       (setq org-map-continue-from (outline-previous-heading)))
+     "/DONE" 'tree))
+  (global-set-key "\C-cl" 'org-store-link)
+  (global-set-key "\C-ca" 'org-agenda)
+  (global-set-key "\C-cc" 'org-capture)
+  (global-set-key "\C-cb" 'org-switchb)
 
 
-   (setq org-agenda-custom-commands
-         '(("c" "Simple agenda view"
-            ((agenda "")
-             (alltodo "")))
-           ("h" "Work Things"
-            ((agenda "" ((org-agenda-ndays 1)
-                         (org-agenda-sorting-strategy
-                          (quote ((agenda time-up priority-down tag-up))))
-                         (org-deadline-warning-days 0)))
-             ))
-           ("w" "Work tasks" tags-todo "work"
-            ((org-agenda-overriding-header "Office")
-             (org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
-           ("W" "Weely review"
-            ((agenda ""
-                     ((org-agenda-span 'week)
-                      (org-agenda-start-on-weekday 0)
-                      (org-agenda-start-with-log-mode '(closed clock state))
-                      ;; (org-agenda-skip-function
-                      ;;  '(org-agenda-skip-entry-if 'nottodo 'done))
-                      )))
-            )
-           ;; ("1" "Q1" tags-todo "+important+urgent") ; Not needed right now 
-           ;; ("2" "Q2" tags-todo "+important-urgent") ; revisit someday
-           ;; ("3" "Q3" tags-todo "-important+urgent")
-           ;; ("4" "Q4" tags-todo "-important-urgent")
-           ))
 
-   (defun jmd-org-tasks-closed-in-month (&optional month year match-string)
-     "Produces an org agenda tags view list of the tasks completed 
-        in the specified month and year. Month parameter expects a number 
-        from 1 to 12. Year parameter expects a four digit number. Defaults 
-        to the current month when arguments are not provided. Additional search
-        criteria can be provided via the optional match-string argument "
-     (interactive)
-     (let* ((today (calendar-current-date))
-            (for-month (or month (calendar-extract-month today)))
-            (for-year  (or year  (calendar-extract-year today))))
-       (org-tags-view nil 
-                      (concat
-                       match-string
-                       (format "+CLOSED>=\"[%d-%02d-01]\"" 
-                               for-year for-month)
-                       (format "+CLOSED<=\"[%d-%02d-%02d]\"" 
-                               for-year for-month 
-                               (calendar-last-day-of-month for-month for-year))))))
+  (defun org-agenda-skip-deadline-if-not-thisweek ()
+    "If this function returns nil, the current match should not be skipped.
+    Otherwise, the function must return a position from where the search
+    should be continued."
+    (ignore-errors
+      (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+	    (deadline-day
+	     (time-to-days
+	      (org-time-string-to-time
+	       (org-entry-get nil "DEADLINE"))))
+	    (now (time-to-days (current-time))))
+	(and deadline-day
+	     (not (= deadline-day now))
+	     subtree-end))))
+  (setq org-agenda-start-with-log-mode '(closed clock state))
+  (setq org-agenda-log-mode-items '(closed clock state))
 
-   (defun jmd-org-tasks-query-for-month (&optional month year)
-     (interactive)
-     (let* ((today (calendar-current-date))
-            (for-month (or month (calendar-extract-month today)))
-            (for-year  (or year  (calendar-extract-year today))))
-       (concat
-        (format "+CLOSED>=\"[%d-%02d-01]\"" for-year for-month)
-        (format "+CLOSED<=\"[%d-%02d-%02d]\"" for-year for-month  (calendar-last-day-of-month for-month for-year)))
-       ))
+  (defun my-org-agenda-skip-all-siblings-but-first ()
+    "Skip all but the first non-done entry."
+    (let (should-skip-entry)
+      (unless (org-current-is-todo)
+	(setq should-skip-entry nil))
+      (save-excursion
+	(while (and (not should-skip-entry) (org-goto-sibling t))
+	  (when (org-current-is-todo)
+	    (setq should-skip-entry t))))
+      (when should-skip-entry
+	(or (outline-next-heading)
+	    (goto-char (point-max))))))
 
-   (defun jmd-work-tasks-last-month ()
-     "Produces an org agenda tags view list of all the tasks completed
-          last month with for work "
-     (interactive)
-     (let* ((today (calendar-current-date))
-            (for-month (calendar-extract-month today))
-            (for-year  (calendar-extract-year today)))
-       (calendar-increment-month for-month for-year -1)
-       (org-tags-view nil (concat "TODO=\"DONE\"" 
-                                  (jmd-org-tasks-query-for-month for-month for-year) 
-                                  "|ARCHIVE_ITAGS=\"work\""
-                                  (jmd-org-tasks-query-for-month for-month for-year)))))
+  (defun org-current-is-todo ()
+     (string= "TODO" (org-get-todo-state)))
 
-   ;; (define-key org-journal-mode-map (kbd "C-x C-s") 'org-journal-save-entry-and-exit)
+
+  (setq org-agenda-custom-commands
+	'(("c" "Simple agenda view"
+	   ((agenda "")
+	    (alltodo "")))
+	  ("h" "Work Things"
+	   ((agenda "" ((org-agenda-ndays 1)
+			(org-agenda-sorting-strategy
+			 (quote ((agenda time-up priority-down tag-up))))
+			(org-deadline-warning-days 0)))
+	    ))
+	  ("w" "Work tasks" tags-todo "work"
+	   ((org-agenda-overriding-header "Office")
+	    (org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
+	  ("W" "Weely review"
+	   ((agenda ""
+		    ((org-agenda-span 'week)
+		     (org-agenda-start-on-weekday 0)
+		     (org-agenda-start-with-log-mode '(closed clock state))
+		     ;; (org-agenda-skip-function
+		     ;;  '(org-agenda-skip-entry-if 'nottodo 'done))
+		     )))
+	   )
+	  ;; ("1" "Q1" tags-todo "+important+urgent") ; Not needed right now 
+	  ;; ("2" "Q2" tags-todo "+important-urgent") ; revisit someday
+	  ;; ("3" "Q3" tags-todo "-important+urgent")
+	  ;; ("4" "Q4" tags-todo "-important-urgent")
+	  ))
+
+  (defun jmd-org-tasks-closed-in-month (&optional month year match-string)
+    "Produces an org agenda tags view list of the tasks completed 
+    in the specified month and year. Month parameter expects a number 
+    from 1 to 12. Year parameter expects a four digit number. Defaults 
+    to the current month when arguments are not provided. Additional search
+    criteria can be provided via the optional match-string argument "
+    (interactive)
+    (let* ((today (calendar-current-date))
+	   (for-month (or month (calendar-extract-month today)))
+	   (for-year  (or year  (calendar-extract-year today))))
+      (org-tags-view nil 
+		     (concat
+		      match-string
+		      (format "+CLOSED>=\"[%d-%02d-01]\"" 
+			      for-year for-month)
+		      (format "+CLOSED<=\"[%d-%02d-%02d]\"" 
+			      for-year for-month 
+			      (calendar-last-day-of-month for-month for-year))))))
+
+  (defun jmd-org-tasks-query-for-month (&optional month year)
+    (interactive)
+    (let* ((today (calendar-current-date))
+	   (for-month (or month (calendar-extract-month today)))
+	   (for-year  (or year  (calendar-extract-year today))))
+      (concat
+       (format "+CLOSED>=\"[%d-%02d-01]\"" for-year for-month)
+       (format "+CLOSED<=\"[%d-%02d-%02d]\"" for-year for-month  (calendar-last-day-of-month for-month for-year)))
+      ))
+
+  (defun jmd-work-tasks-last-month ()
+    "Produces an org agenda tags view list of all the tasks completed
+    last month with for work "
+    (interactive)
+    (let* ((today (calendar-current-date))
+	   (for-month (calendar-extract-month today))
+	   (for-year  (calendar-extract-year today)))
+      (calendar-increment-month for-month for-year -1)
+      (org-tags-view nil (concat "TODO=\"DONE\"" 
+				 (jmd-org-tasks-query-for-month for-month for-year) 
+				 "|ARCHIVE_ITAGS=\"work\""
+				 (jmd-org-tasks-query-for-month for-month for-year)))))
+
+  ;; (define-key org-journal-mode-map (kbd "C-x C-s") 'org-journal-save-entry-and-exit)
  #+END_SRC
 ** Org Download
    :PROPERTIES:
    :ID:       9568b3af-6ec8-4642-86e7-47720f17796d
    :END:
 #+BEGIN_SRC emacs-lisp
-  (require 'org-download)
+  ;; (require 'org-download)
+  (use-package org-download)
   ;; Drag-and-drop to `dired`
   (add-hook 'dired-mode-hook 'org-download-enable)
   (add-hook 'org-mode 'org-download-enable)
-  (setq-default org-download-image-dir "~/Projects/org/Pictures/")
+  (setq-default org-download-image-dir "~/Dropbox/org/Pictures/")
   ;; (use-package org-download
   ;;   :ensure t
   ;;   :config
@@ -2408,7 +2504,7 @@ Hiding leading stars
    :bind (("C-c t" . journal-file-today)
           ("C-c y" . journal-file-yesterday))
    :custom
-   (org-journal-dir "~/Projects/org/journal/")
+   (org-journal-dir "~/Dropbox/org/journal/")
    (org-journal-file-format "%Y%m%d")
    (org-journal-date-format "%e %b %Y (%A)")
    (org-journal-time-format "")
@@ -2435,20 +2531,178 @@ Hiding leading stars
    :ID:       88f88606-be20-4201-b4ca-7d7bda997dd5
    :END:
 #+begin_src emacs-lisp
+  ;; Older package
+  ;; (use-package org-roam
+  ;;       :hook 
+  ;;       (after-init . org-roam-mode)
+  ;;       :custom
+  ;;       (org-roam-directory "~/Dropbox/org/Roam")
+  ;;       :ensure t
+  ;;       :bind (:map org-roam-mode-map
+  ;;               (("C-c n l" . org-roam)
+  ;;                ("C-c n f" . org-roam-find-file)
+  ;;                ("C-c n b" . org-roam-switch-to-buffer)
+  ;;                ("C-c n g" . org-roam-graph-show))
+  ;;               :map org-mode-map
+  ;;               (("C-c n i" . org-roam-insert))))
+
   (use-package org-roam
-        :hook 
-        (after-init . org-roam-mode)
-        :custom
-        (org-roam-directory "~/Projects/org/Roam")
-        :bind (:map org-roam-mode-map
-                (("C-c n l" . org-roam)
-                 ("C-c n f" . org-roam-find-file)
-                 ("C-c n b" . org-roam-switch-to-buffer)
-                 ("C-c n g" . org-roam-graph-show))
-                :map org-mode-map
-                (("C-c n i" . org-roam-insert))))
+    :ensure t
+    :init 
+    (setq org-roam-v2-ack t)
+    :custom 
+    (org-roam-directory "~/Dropbox/org")
+    (org-roam-completion-everywhere t)
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           ("C-c n I" . org-roam-node-insert-immediate)
+           ("C-c n b" . org-roam-switch-to-buffer)
+           :map org-mode-map
+           ("C-M-i"   . completion-at-point))
+    :config 
+    (org-roam-db-autosync-mode))
+
+    ;; (org-roam-setup)
 #+end_src
+*** Insert nodes immediately without switching buffers
+:PROPERTIES:
+:ID:       550f0ee4-5567-4253-8242-0b1c43365fb9
+:END:
+#+begin_src emacs-lisp
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (push arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+
+;; (defun org-roam-node-insert-immediate (arg &rest args)
+;;   (interactive "P")
+;;   (let ((args (cons arg args))
+;;         (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+;;                                                   '(:immediate-finish)))))
+;;                                           (apply #'org-roam-node-insert args)))
+#+end_src
+** Org ROAM bibtex
+:PROPERTIES:
+:ID:       ffb9c8da-91fd-4506-ba99-40dc61e2dda0
+:END:
+#+begin_src emacs-lisp
+(use-package org-roam-bibtex
+  :after org-roam
+  :load-path "~/Dropbox/org/Roam/"
+  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :config
+  (require 'org-ref)) 
+
+(setq orb-note-actions-interface 'helm)
+(setq orb-preformat-keywords   '(("citekey" . "=key=") "note" "title" "url" "file" "author-or-editor" "keywords"))
+(setq orb-templates
+      '(("r" "ref" plain #'org-roam-capture--get-point ""
+          %^{note}
+         :file-name "${citekey}"
+         :head "#+TITLE: ${title}\n#+ROAM_KEY: ${ref}\n"
+         :unnarrowed t)))
+
+#+end_src
+
+
+*** Zotero setup
+:PROPERTIES:
+:CAPTURED: <2022-03-17 02:53>
+:ANKI_NOTE_ID: 1647511009260
+:END:
+
+1. Zotero is setup to use ~/Zotero
+2. This is a symlink to Dropbox/Zotero
+3. syncing is enabled that allows the bibliography to be synced to the
+   cloud
+4. Exporting will export a .bib file into ~/Dropbox/org/Roam/
+
+*** Bibtex configuration
+:PROPERTIES:
+:ID:       5b2dee9a-8d75-403d-ac7a-14936263067a
+:END:
+#+begin_src emacs-lisp
+    (setq reftex-default-bibliography '("~/Dropbox/org/Zettelkasten/ref.bib"))
+
+    (setq org-ref-bibliography-notes "~/Dropbox/org/ref_notes.org"
+          org-ref-default-bibliography '("~/Dropbox/org/Zettelkasten/ref.bib")
+          org-ref-pdf-directory "~/bibtex-pdfs/")
+
+    (setq bibtex-completion-bibliography "~/Dropbox/org/Zettelkasten/ref.bib"
+          bibtex-completion-library-path "~/Dropbox/org/bibtex-pdfs"
+          bibtex-completion-notes-path "~/Dropbox/org/bibtex-notes")
+
+    ; Optional. Open pdf in external viewer.
+    (setq bibtex-completion-pdf-open-function
+          (lambda (fpath)
+            (start-process "open" "*open*" "open" fpath)))
+#+end_src
+
+** Org Roam UI
+#+begin_src emacs-lisp
+(use-package websocket
+    :after org-roam)
+
+(use-package org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+#+end_src
+
+
+** Helm Bibtex
+#+begin_src emacs-lisp
+(use-package helm-bibtex )
+
+(autoload 'helm-bibtex "helm-bibtex" "" t)
+(setq bibtex-completion-bibliography
+      '("~/Dropbox/org/Zettelkasten/Zettelkasten.bib"))
+#+end_src
+
+** Citar
+#+begin_src emacs-lisp
+(use-package citar
+  :bind (("C-c b" . citar-insert-citation)
+         :map minibuffer-local-map
+         ("M-b" . citar-insert-preset))
+  :custom
+  (citar-bibliography '("~/Dropbox/org/Zettelkasten/Zettelkasten.bib")))
+
+(use-package citar-embark
+  :after citar embark
+  :no-require
+  :config (citar-embark-mode))
+
+#+end_src
+** Org Dailies with Org Roam
+:PROPERTIES:
+:ID:       df395930-9949-4d39-bd85-885dbbdcca05
+:END:
+#+begin_src emacs-lisp
+;; (setq org-roam-dailies-directory "/home/jdamon/Dropbox/org/Roam/daily")
+;; (setq org-roam-dailies-capture-templates
+;;       '(("d" "default" entry
+;;          "* %?"
+;;          :if-new (file+head "%<%Y-%m-%d>.org"
+;;                             "#+title: %<%Y-%m-%d>\n")
+;;          :target (file+head "%<%Y-%m-%d>.org"
+;;                             "#+title: %<%Y-%m-%d>\n"))))
+#+end_src
+
 ** Org Chef
+   :PROPERTIES:
+   :ID:       9075171f-bf8f-435e-9adb-79185736bcc8
+   :END:
 
 *** Loading things
     :PROPERTIES:
@@ -2469,7 +2723,7 @@ Hiding leading stars
    property's modified tag and hash
 
   #+begin_src emacs-lisp
-   (defun yant/getentryhash ()
+   (defun jmd/getentryhash ()
      "Get the hash sum of the text in current entry, except :HASH: and :MODIFIED: property texts."
      (save-excursion
        (let* ((beg (progn (org-back-to-heading) (point)))
@@ -2495,26 +2749,28 @@ Hiding leading stars
          (secure-hash 'md5 str-nohash-nomod-nopropbeg-end)
          )))
    
-   (defun yant/update-modification-time ()
+   (defun jmd/update-modification-time ()
      "Set the :MODIFIED: property of the current entry to NOW and update :HASH: property."
       (interactive)
-     (org-set-property "HASH" (format "%s" (yant/getentryhash)))    
+     (org-set-property "HASH" (format "%s" (jmd/getentryhash)))    
      (org-set-property "MODIFIED" (format-time-string "[%Y-%m-%d %H:%M]")))
-   (defun yant/skip-nonmodified ()
+   (defun jmd/skip-nonmodified ()
      "Skip org entries, which were not modified according to the :HASH: property"
      (interactive)
      (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-       (if (string= (org-entry-get (point) "HASH" nil) (format "%s" (yant/getentryhash)))
+       (if (string= (org-entry-get (point) "HASH" nil) (format "%s" (jmd/getentryhash)))
        next-headline
          nil)))
    
    ;;   (add-hook 'before-save-hook (lambda ()
    ;;                  (when (eq major-mode 'org-mode)
-   ;;                (org-map-entries #'yant/update-modification-time nil 'file #'yant/skip-nonmodified))))  
+   ;;                (org-map-entries #'jmd/update-modification-time nil 'file #'jmd/skip-nonmodified))))  
   #+end_src
 
-
 ** Adding CREATED to new captures
+   :PROPERTIES:
+   :ID:       3c7067eb-4002-4333-bf78-8792e2ac6f70
+   :END:
    #+begin_src emacs-lisp
    (defun add-property-with-date-captured ()
      "Add DATE_CAPTURED property to the current item."
@@ -2522,6 +2778,15 @@ Hiding leading stars
      (org-set-property "CAPTURED" (format-time-string "<%Y-%m-%d %H:%M>")))
    
    (add-hook 'org-capture-before-finalize-hook 'add-property-with-date-captured)
+
+   (defun update-capture () 
+     (interactive)
+     (org-set-property "CAPTURED" (format-time-string "<%Y-%m-%d %H:%M>")))
+  
+
+   (defalias  'add-timestamp 'update-cature)
+
+
    #+end_src
 
 ** Deft
@@ -2533,7 +2798,7 @@ Hiding leading stars
   (use-package deft
     :bind ("<f8>" . deft)
     :commands (deft)
-    :config (setq deft-directory "~/Projects/org"
+    :config (setq deft-directory "~/Dropbox/org"
                   deft-extensions '("md" "org")))
   (global-set-key (kbd "C-c d") 'deft)
   (setq deft-extensions '("org"))
@@ -2548,7 +2813,7 @@ Hiding leading stars
 #+begin_src emacs-lisp
 (setq org-agenda-todo-ignore-scheduled t)
 (setq org-agenda-todo-ignore-deadlines t)
-(setq org-default-priority ?D)
+(setq org-default-priority ?C)
 #+end_src
 ** Org limiting Agenda views
    :PROPERTIES:
@@ -2559,6 +2824,18 @@ Hiding leading stars
 (setq org-agenda-todo-ignore-scheduled 'future)
 (setq org-agenda-todo-ignore-deadlines 'future)
 (setq org-agenda-tags-todo-honor-ignore-options t)
+#+end_src
+** Org Hugo integration
+   :PROPERTIES:
+   :ID:       cffb64ed-4493-44cf-949f-d40d75a784c6
+   :END:
+
+For exporting 
+#+begin_src emacs-lisp
+(use-package ox-hugo
+  :ensure t   ;Auto-install the package from Melpa
+  :pin melpa  ;`package-archives' should already have ("melpa" . "https://melpa.org/packages/")
+  :after ox)
 #+end_src
 
 ** Common Emacs Commands/Stuff and mneumonics
@@ -2602,6 +2879,9 @@ Hiding leading stars
     (make-frame-command)
 
 *** Track changes in the code (change buffer when the files changes underneath)
+:PROPERTIES:
+:ID:       a721095c-926c-4a8f-ac65-6ff4ab9e3067
+:END:
      (global-auto-revert-mode t )
      (setq auto-revert-use-notify nil)
 
@@ -2682,8 +2962,84 @@ Hiding leading stars
 
     Set Foreground "Black" and Background "White"
     
+*** Org capturing to the current place in the file
+:PROPERTIES:
+:ID:       5a3d9793-bbe8-4ffa-8109-38f41a4f61ea
+:END:
+    
+    C-0 C-c c 
 
-* Email 
+    This is useful for setting up the "CREATED" tag where you can track  
+    your ideas.
+
+    #+begin_src emacs-lisp
+    (defun org-capture-at-point ()
+      "Insert an org capture template at point."
+      (interactive)
+      (org-capture 0))
+    
+    ;(global-set-key (kbd "C-c C-c") #'org-capture-at-point)
+    #+end_src
+
+** Org Agenda hide blocked TODOS
+   :PROPERTIES:
+   :ID:       27c8e2a0-3577-49c5-a55b-f87986cf4b8a
+   :END:
+#+begin_src emacs-lisp
+;; This will hide blocked tasks in agenda
+;(setq org-agenda-dim-blocked-tasks 'invisible)
+;; This will show blocked tasks in agena
+(setq org-agenda-dim-blocked-tasks nil)
+#+end_src
+
+** Beacon
+(beacon-mode t)
+** Minimap
+:PROPERTIES:
+:ID:       50df8633-601b-46c5-ab8f-9ee6fa0326c5
+:END:
+
+:PROPERTIES:
+:ID:       579815c4-8e23-4cd6-bce9-1e2139634c3d
+:END:
+#+begin_src emacs-lisp
+;; (setq minimap-window-location 'right) 
+;; (map! :leader 
+;;       (:prefix ("t" . "toggle")
+;;                :desc "Toggle minimap-mode" "m" #'minimap-mode))
+#+end_src
+
+** Removing bound variables
+:PROPERTIES:
+:ID:       240fe594-bad4-4519-9893-890d51c6a875
+:END:
+
+#+begin_src emacs-lisp
+; (makeunbound 'my-variable)
+; (fmakeunbound 'my-function)
+;; (org-read-date "3-2-5")
+;; (org-read-date nil nil "+1")
+#+end_src
+
+** Org date manipulations for schedules and deadlines
+:PROPERTIES:
+:ID:       fcf50e17-315f-4dc8-8b7c-d8cdc00bb35b
+:END:
+
+- [[https://sachachua.com/blog/2015/08/org-mode-date-arithmetic/][Sasha Chua's page on doing smart date math]]
+
+#+begin_example
+(org-read-date nil nil "+1")
+(org-read-date nil nil "++mon" nil (org-time-string-to-time "2022-03-15"))
+#+end_example
+
+** Inserting shell commands
+
+(insert (shell-command-to-string "/bin/echo hello"))
+
+
+* Email
+
 ** Outgoing Email server 
    :PROPERTIES:
    :ID:       008c9a0f-b7e1-48d5-86a3-8cbb43a28100
@@ -2698,11 +3054,44 @@ Hiding leading stars
    :ID:       7a47cc0b-9e58-4dba-9461-452e6d005a4a
    :END:
 #+BEGIN_SRC emacs-lisp
-  (setq mu4e-maildir (expand-file-name "~/Maildir"))
-  (setq mu4e-get-mail-command "true")
-  (setq mu4e-change-filenames-when-moving t)
-  (setq smtpmail-queue-mail nil  ;; start in normal mode
-        smtpmail-queue-dir   "~/Maildir/queue/cur")
+;;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+;;(load-file "/usr/share/emacs/site-lisp/mu4e/mu4e.el")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+(require 'mu4e)
+(setq mu4e-sent-messages-behavior 'delete)
+(setq mu4e-maildir (expand-file-name "~/Maildir"))
+(setq mu4e-get-mail-command "true")
+(setq mail-user-agent 'mu4e-user-agent)
+(setq mu4e-drafts-folder "/jdamon-gmail/[jdamon].Drafts")
+(setq mu4e-sent-folder   "/jdamon-gmail/[jdamon].Sent Mail")
+(setq mu4e-trash-folder  "/jdamon-gmail/[jdamon].Trash")
+
+(setq mu4e-sent-messages-behavior 'delete)
+
+(setq mu4e-get-mail-command "mbsync jdamon-gmail")
+
+;; something about ourselves
+   (setq
+      user-mail-address "jdamon@gmail.com"
+      user-full-name  "Jimi Damon"
+      mu4e-compose-signature
+       (concat
+         "Jimi Damon\n"
+         "\n"))
+
+   ;; (See the documentation for `mu4e-sent-messages-behavior' if you have
+   ;; additional non-Gmail addresses and want assign them different
+   ;; behavior.)
+   
+   ;; setup some handy shortcuts
+   ;; you can quickly switch to your Inbox -- press ``ji''
+   ;; then, when you want archive some messages, move them to
+   ;; the 'All Mail' folder by pressing ``ma''.
+
+
+  ;; (setq mu4e-change-filenames-when-moving t)
+  ;; (setq smtpmail-queue-mail nil  ;; start in normal mode
+  ;;       smtpmail-queue-dir   "~/Maildir/queue/cur")
   ;; (use-package evil-mu4e)
   ;; (require 'evil-mu4e)
 #+END_SRC
@@ -2742,5 +3131,67 @@ Hiding leading stars
 #+begin_src emacs-lisp
 (require 'org-mu4e)
 #+end_src
+** Notmuch configuration
+* Misc
+** Close all buffers
+   :PROPERTIES:
+   :ID:       1394a00c-9d25-48b0-a645-c1cfcb542e1e
+   :END:
+   
+   - [[https://stackoverflow.com/questions/20596475/how-can-i-close-all-opened-frames-in-emacsclient][Reference for closing all buffers]]
+
+   #+begin_src emacs-lisp
+(defun close-all-other-buffers-and-frames ()
+  "Destroy all frames except this one, kill all buffers, display `*scratch*'."
+  (interactive)
+  (set-buffer "*scratch*")
+  (delete-other-frames)
+  (let ((l (buffer-list)) b)
+    (while l
+      (setq b (car l)
+            l (cdr l) )
+      (and (buffer-file-name b)
+           (kill-buffer b) ) ) ) )
+   #+end_src
+
+** Custom blocking
+   :PROPERTIES:
+   :ID:       48df7b8e-d097-4ca6-9764-647842fbded3
+   :END:
+#+begin_src emacs-lisp
+(defun org-agenda-skip-if-blocked ()
+  (let ((next-headline (save-excursion
+                         (or (outline-next-heading) (point-max)))))
+    (if (org-entry-blocked-p) next-headline)))
+
+(defun org-agenda-skip-if-not-blocked ()
+  (let ((next-headline (save-excursion
+                         (or (outline-next-heading) (point-max)))))
+    (if (not (org-entry-blocked-p)) next-headline)))
+
+(add-to-list 'org-agenda-custom-commands
+             '("U" "Unblocked TODOs" alltodo ""
+               ((org-agenda-skip-function '(org-agenda-skip-if-blocked))
+                (org-enforce-todo-checkbox-dependencies nil))
+               ))
+
+(add-to-list 'org-agenda-custom-commands
+             '("R" "Recurring TODOs" alltodo ""
+               ((org-agenda-skip-function '(org-agenda-skip-if-not-blocked))
+                (org-enforce-todo-checkbox-dependencies nil))
+                ))
+
+
+#+end_src
+
+
+* Global revert
+  :PROPERTIES:
+  :ID:       737ce712-3ea6-4758-b9ad-09fefbde2626
+  :END:
+#+begin_src emacs-lisp
+(global-auto-revert-mode t)
+#+end_src
+
 
 
