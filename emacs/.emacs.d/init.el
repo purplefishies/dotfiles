@@ -1,19 +1,18 @@
 (setq inhibit-splash-screen t)
 ;; Configure package.el to include MELPA.
 
-
+(require 'package)
 (when (>= emacs-major-version 24)
-  ;; (package-initialize)
   (require 'package)
-  (package-initialize)
-  ;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t )
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t )
-  (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-)
-  ;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+  ;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t )
+  (package-initialize)
+  (assq-delete-all 'org package--builtins)
+  (assq-delete-all 'org package--builtin-versions)
+)
 
 ;; Ensure that use-package is installed.
 ;; If use-package isn't already installed, it's extremely likely that this is a
