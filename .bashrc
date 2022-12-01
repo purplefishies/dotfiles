@@ -333,7 +333,7 @@ alias ack='/usr/bin/ack-grep'
 alias aack='/usr/bin/ack-grep --color'
 
 if [[ -f "$HOME/.emacs.d/key-bindings.el" ]] ; then
-    EXTRA="--eval '(load-file  (concat (getenv \"HOME\") \"/.emacs.d/key-bindings.el\"))'"
+    EXTRA=" --eval '(load-file  (concat (getenv \"HOME\") \"/.emacs.d/bash-edit.el\"))' "
 else 
     EXTRA=""
 fi
