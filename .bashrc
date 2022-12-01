@@ -121,14 +121,13 @@ export PATH="$PATH:$HOME/Tools/bin"
 
 export PERLDB_OPTS=HistFile=$HOME/.perldb.hist
 # Android stuff
-export ANDROID_HOME=${HOME}/Tools/android-sdk-linux
-export ANDROID_SDK=${HOME}/Tools/android-sdk-linux
-export ANDROID_NDK=${HOME}/Tools/android-ndk-r10e
-export ANDROID_SDK_HOME=$ANDROID_SDK
-export ANDROID_NDK_HOME=$ANDROID_NDK
-
-export ANDROID_NDK_ROOT=${HOME}/Tools/android-ndk-r10e
-export ANDROID_TOOLS_DIR=$ANDROID_SDK/tools
+# export ANDROID_HOME=${HOME}/Tools/android-sdk-linux
+# export ANDROID_SDK=${HOME}/Tools/android-sdk-linux
+# export ANDROID_NDK=${HOME}/Tools/android-ndk-r10e
+# export ANDROID_SDK_HOME=$ANDROID_SDK
+# export ANDROID_NDK_HOME=$ANDROID_NDK
+# export ANDROID_NDK_ROOT=${HOME}/Tools/android-ndk-r10e
+# export ANDROID_TOOLS_DIR=$ANDROID_SDK/tools
 
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
@@ -333,14 +332,20 @@ export PERL5LIB="${HOME}/perl5/lib/perl5:${HOME}"
 alias ack='/usr/bin/ack-grep'
 alias aack='/usr/bin/ack-grep --color'
 
+if [[ -f "$HOME/.emacs.d/key-bindings.el" ]] ; then
+    EXTRA="--eval '(load-file  (concat (getenv \"HOME\") \"/.emacs.d/key-bindings.el\"))'"
+else 
+    EXTRA=""
+fi
+
 if [ "$DISPLAY" ] ; then
-    export EDITOR="$(which emacs) -q -nw "
+    export EDITOR="$(which emacs) ${EXTRA} -q -nw "
     export ALTERNATE_EDITOR="emacs -q "      
-    export VISUAL="$(which emacs) -q -nw "
+    export VISUAL="$(which emacs) ${EXTRA} -q -nw "
 else 
     export ALTERNATE_EDITOR=""      
-    export EDITOR="$(which emacs) -q -nw "
-    export VISUAL="$(which emacs) -q  "
+    export EDITOR="$(which emacs) ${EXTRA} -q -nw "
+    export VISUAL="$(which emacs) ${EXTRA} -q -nw "
 fi
 
 
@@ -483,7 +488,7 @@ export PATH="/home/jdamon/.cask/bin:$PATH"
 export SDKMAN_DIR="/home/jdamon/.sdkman"
 [[ -s "/home/jdamon/.sdkman/bin/sdkman-init.sh" ]] && source "/home/jdamon/.sdkman/bin/sdkman-init.sh"
 
-export EMAIL="jdamon@automodality.com"
+export EMAIL="jdamon@gmail.com"
 export NAME="Jimi Damon"
 export DEBEMAIL=$EMAIL
 export TOOLSDIR=$HOME/Tools
@@ -501,8 +506,16 @@ fortune.rb $(/bin/ls -d ${QUOTES_FILE} ${QUOTES_FILE}  ${QUOTES_FILE} ${QUOTES_F
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-#PATH="/home/jimi_damon/perl5/bin${PATH:+:${PATH}}"; export PATH;
-#PERL5LIB="/home/jimi_damon/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-#PERL_LOCAL_LIB_ROOT="/home/jimi_damon/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-#PERL_MB_OPT="--install_base \"/home/jimi_damon/perl5\""; export PERL_MB_OPT;
-#PERL_MM_OPT="INSTALL_BASE=/home/jimi_damon/perl5"; export PERL_MM_OPT;
+PATH="/home/jimi_damon/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/jimi_damon/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/jimi_damon/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/jimi_damon/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/jimi_damon/perl5"; export PERL_MM_OPT;
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+. "$HOME/.cargo/env"
+
+
+source /home/jimi_damon/Projects/work/gstreamer_xilinx/data/bash-completion/completions/gst-inspect-1.0
