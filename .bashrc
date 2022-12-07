@@ -193,14 +193,9 @@ else
     export LS_COLORS="no=00:fi=00:di=00;36:*.pdf=01;33:ln=01;36:pi=40;33:so=00;35:do=00;35:bd=40;33;01:cd=40;33;01:or=40;21;01:mi=01;05;37;41:su=37;41:sg=30;43:tw=30;42:ow=34;42:st=37;44:ex=00;32:*.cmd=00;32:*.exe=00;32:*.com=00;32:*.btm=00;32:*.bat=00;32:*.sh=00;32:*.csh=00;32:*.tar=00;31:*.tgz=00;31:*.svgz=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.lzma=00;31:*.zip=00;31:*.z=00;31:*.Z=00;31:*.dz=00;31:*.gz=00;31:*.bz2=00;31:*.tbz2=00;31:*.bz=00;31:*.tz=00;31:*.deb=00;31:*.rpm=00;31:*.jar=01;32:*.rar=00;31:*.ace=00;31:*.zoo=00;31:*.cpio=00;31:*.7z=00;31:*.rz=00;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=00;35:*.ppm=00;35:*.tga=00;35:*.xbm=00;35:*.xpm=00;35:*.tif=00;35:*.tiff=00;35:*.png=01;35:*.mng=00;35:*.pcx=00;35:*.mov=00;35:*.mpg=00;35:*.mpeg=00;35:*.m2v=00;35:*.mkv=00;35:*.ogm=00;35:*.mp4=00;35:*.m4v=00;35:*.mp4v=00;35:*.vob=00;35:*.qt=00;35:*.nuv=00;35:*.wmv=00;35:*.asf=00;35:*.rm=00;35:*.rmvb=00;35:*.flc=00;35:*.avi=00;35:*.fli=00;35:*.gl=00;35:*.dl=00;35:*.xcf=00;35:*.xwd=00;35:*.yuv=00;35:*.svg=00;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:"
 fi
 
-# Old mac colors
-# export LSCOLORS="Exfxcxdxbxegedabagacad"
-
 if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
     source $HOME/.bash_stuff/cdargs/cdargs-bash.sh
-fi
-
-if [[ -f "/usr/share/doc/cdargs/examples/cdargs-bash.sh" ]] ; then
+elif [[ -f "/usr/share/doc/cdargs/examples/cdargs-bash.sh" ]] ; then
     source "/usr/share/doc/cdargs/examples/cdargs-bash.sh"
 fi
 
@@ -209,7 +204,6 @@ if [[ -f "/etc/bash_completion" ]] ; then
 else
     echo "Can't find file /etc/bash_completion to source...please install" >> $HOME/bash_errors.log
 fi
-
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # My Custom History settings
@@ -325,8 +319,6 @@ fi
 if [ -f "/opt/local/etc/profile.d/cdargs-bash.sh" ]; then
     source /opt/local/etc/profile.d/cdargs-bash.sh
 fi
-
-export PERL5LIB="${HOME}/perl5/lib/perl5:${HOME}"
 
 
 alias ack='/usr/bin/ack-grep'
@@ -466,23 +458,7 @@ alias tmux='TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb) tmux -2'
 
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-
 export PATH="/home/jdamon/.cask/bin:$PATH"
-
-
-
-# source /opt/ros/kinetic/setup.bash
-# PATH="/home/jdamon/perl5/bin${PATH:+:${PATH}}"; export PATH;
-# PERL5LIB="/home/jdamon/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-# PERL_LOCAL_LIB_ROOT="/home/jdamon/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-# PERL_MB_OPT="--install_base \"/home/jdamon/perl5\""; export PERL_MB_OPT;
-# PERL_MM_OPT="INSTALL_BASE=/home/jdamon/perl5"; export PERL_MM_OPT;
-#if [[ -f $HOME/catkin_ws/devel/setup.bash ]] ;  then
-#    source $HOME/catkin_ws/devel/setup.bash
-#fi
-# export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:$LD_LIBRARY_PATH
-# export PATH=/usr/local/cuda-9.0/bin:$PATH
-
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/jdamon/.sdkman"
@@ -494,15 +470,13 @@ export DEBEMAIL=$EMAIL
 export TOOLSDIR=$HOME/Tools
 export MODULEPATH=$HOME/Modules
 
-if [[ -f /usr/share/lmod/lmod/init/bash ]]
-then
-    source /usr/share/lmod/lmod/init/bash
+if [[ -f $HOME/.local_bash ]] ;  then
+ source $HOME/.local_bash
 fi
+
+
 alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_ws/src -w /home/developer/catkin_ws/ -u developer -it ^Ccker.cloudsmith.io/automodality/dev/amros-melodic:latest"
 export PATH="${PATH}:$HOME/.jlenv/bin"
-
-fortune.rb $(/bin/ls -d ${QUOTES_FILE} ${QUOTES_FILE}  ${QUOTES_FILE} ${QUOTES_FILE} /usr/share/games/fortunes | sort -R | head -1) | fold  -w 50 -s  | cowsay -f tux -n | lolcat -t -p 2
-
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
@@ -512,10 +486,4 @@ PERL_LOCAL_LIB_ROOT="/home/jimi_damon/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_
 PERL_MB_OPT="--install_base \"/home/jimi_damon/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/jimi_damon/perl5"; export PERL_MM_OPT;
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-. "$HOME/.cargo/env"
 
-
-source /home/jimi_damon/Projects/work/gstreamer_xilinx/data/bash-completion/completions/gst-inspect-1.0
