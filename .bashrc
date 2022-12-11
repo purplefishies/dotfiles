@@ -454,8 +454,6 @@ if [ -f ${HOME}/Scripts/rand_tmux_color.rb ] ; then
     export TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb)
 fi
 
-alias tmux='TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb) tmux -2'
-
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="/home/jdamon/.cask/bin:$PATH"
@@ -463,12 +461,6 @@ export PATH="/home/jdamon/.cask/bin:$PATH"
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/jdamon/.sdkman"
 [[ -s "/home/jdamon/.sdkman/bin/sdkman-init.sh" ]] && source "/home/jdamon/.sdkman/bin/sdkman-init.sh"
-
-export EMAIL="jdamon@gmail.com"
-export NAME="Jimi Damon"
-export DEBEMAIL=$EMAIL
-export TOOLSDIR=$HOME/Tools
-export MODULEPATH=$HOME/Modules
 
 if [[ -f $HOME/.local_bash ]] ;  then
  source $HOME/.local_bash
@@ -480,10 +472,5 @@ export PATH="${PATH}:$HOME/.jlenv/bin"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-PATH="/home/jimi_damon/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="/home/jimi_damon/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="/home/jimi_damon/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"/home/jimi_damon/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/home/jimi_damon/perl5"; export PERL_MM_OPT;
 
 
