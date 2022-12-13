@@ -114,21 +114,11 @@ export PATH="$PATH:/sbin:/bin:/usr/bin:/usr/local/bin:/usr/sbin:"
 export PATH="$PATH:$HOME/Scripts"
 export PATH="$PATH:/usr/games"
 export PATH="$PATH:/usr/local/cuda/bin"
-  export PATH="$PATH:/usr/lib/lapack"
+export PATH="$PATH:/usr/lib/lapack"
 export PATH="$PATH:/opt/local/bin"
-
 export PATH="$PATH:$HOME/Tools/bin"
-
 export PERLDB_OPTS=HistFile=$HOME/.perldb.hist
 # Android stuff
-# export ANDROID_HOME=${HOME}/Tools/android-sdk-linux
-# export ANDROID_SDK=${HOME}/Tools/android-sdk-linux
-# export ANDROID_NDK=${HOME}/Tools/android-ndk-r10e
-# export ANDROID_SDK_HOME=$ANDROID_SDK
-# export ANDROID_NDK_HOME=$ANDROID_NDK
-# export ANDROID_NDK_ROOT=${HOME}/Tools/android-ndk-r10e
-# export ANDROID_TOOLS_DIR=$ANDROID_SDK/tools
-
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
 export ACK_PAGER="less"
@@ -378,8 +368,6 @@ function virtualenv_info(){
 # disable the default virtualenv prompt change
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 VENV="\$(virtualenv_info)";
-# the '...' are for irrelevant info here.
-#export PS1="... ${VENV} ..."
 
 export LONG_PROMPT="${VENV}${LONG_PROMPT}"
 export PS1=${LONG_PROMPT}
@@ -398,8 +386,6 @@ if [ -n "$TMUX" ]; then
         export $(tmux show-environment | grep "^GPG_AGENT_INFO" )  > /dev/null 2>&1
         export $(tmux show-environment | grep "^GNOME_KEYRING_CONTROL" ) > /dev/null 2>&1
     }
-    
-
 else
     function refresh { 
         echo -ne ""
