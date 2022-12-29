@@ -14,6 +14,7 @@
 #                1. New prompt which displays infor`mation to the Title.
 #****************************************************************************
 
+# Needed for ssh/ing without running .bashrc commands
 [[ $- == *i* ]] || return
 
 
@@ -92,13 +93,9 @@ else
     fi
 fi
 
-
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
 # Setting up the PATH environment and Environmental variables
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-test -f ${HOME}/.env && ldenv ${HOME}/.env
-
 export GRADLE_OPTS="-Dorg.gradle.daemon=true,org.gradle.jvmargs=-Xmx2048M"
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -109,7 +106,6 @@ unset lowos
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Linux Path stuff
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
 export PATH="$PATH:/sbin:/bin:/usr/bin:/usr/local/bin:/usr/sbin:"
 export PATH="$PATH:$HOME/Scripts"
 export PATH="$PATH:/usr/games"
@@ -257,8 +253,6 @@ export PROMPT_COMMAND="rollover_history"
 # Load the old history
 history -n 
 
-
-
 export ECLIPSE_PLUGIN_HOME=$HOME/Tools/eclipse/plugins
 
 if [ -f "${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.jar" ] ; then
@@ -289,7 +283,6 @@ if [ -d "$HOME/.bash" ] ; then
 fi
 
 export COMP_WORDBREAKS=${COMP_WORDBREAKS/\:/}
-
 export SDK_ROOT=/Developer/SDKs/android-sdk-mac_86
 export PATH=$PATH:$SDK_ROOT/tools/
 export PATH=$PATH:/opt/local/lib/mysql5/bin
@@ -297,7 +290,6 @@ export PATH=$PATH:/opt/local/lib/mysql5/bin
 # 
 # Android
 #
-
 if [ -d "$ANDROID_TOOLS_DIR" ] ; then
     export PATH=$PATH:${HOME}/Tools/android-sdk-linux/tools
 fi
@@ -330,9 +322,7 @@ else
     export VISUAL="$(which emacs) ${EXTRA} -q -nw "
 fi
 
-
 export TEXINPUTS="$HOME/Latex://;"
-
 
 fd=0
 if [[ -t "$fd" || -p /dev/stdin ]]
@@ -351,7 +341,6 @@ elif [ "$COLORTERM" == "rxvt-xpm" ]
 then
     TERM=rxvt-256color
 fi
-
 
 function virtualenv_info(){
     # Get Virtual Env
