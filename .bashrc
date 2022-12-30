@@ -44,9 +44,8 @@ my_version_num=`echo $BASH_VERSION | /usr/bin/perl -ne 's/^(\d+)\..*/$1/; print 
 MY_CAD="${HOME}/Scripts/CAD"
 BASH_VRS=`echo $BASH_VERSION | sed 's/^\([0-9]\)\..*/\1/'`
 
-#
+
 # Diff Application
-#
 export DIFF_APP=bcompare
 
 # Chess
@@ -97,11 +96,6 @@ fi
 # Setting up the PATH environment and Environmental variables
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 export GRADLE_OPTS="-Dorg.gradle.daemon=true,org.gradle.jvmargs=-Xmx2048M"
-
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Clearing temporary variables
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-unset lowos
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Linux Path stuff
@@ -161,6 +155,7 @@ else
         ""
     }
 fi
+
 if [[ "$(type -t __git_ps1 )" == "function" ]] ; then
     LONG_PROMPT=${LONG_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
     SHORT_PROMPT=${SHORT_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
@@ -253,16 +248,6 @@ export PROMPT_COMMAND="rollover_history"
 # Load the old history
 history -n 
 
-export ECLIPSE_PLUGIN_HOME=$HOME/Tools/eclipse/plugins
-
-if [ -f "${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.jar" ] ; then
-    export CLASSPATH=${ECLIPSE_PLUGIN_HOME}/org.junit_4.10.0.v4_10_0_v20120426-0900/junit.jar
-fi
-
-if [ -f "/tools/mxlcad/gnutools/etc/bash_completion" ] ; then
-  . /tools/mxlcad/gnutools/etc/bash_completion
-fi
-
 export MANPATH=/usr/share/man:/usr/man:/usr/local/share/man
 
 #
@@ -271,7 +256,8 @@ export MANPATH=/usr/share/man:/usr/man:/usr/local/share/man
 export PAGER=less
 export LESSOPEN="| /usr/bin/source-highlight-esc.sh %s "
 export LESS="-X -R"
-#export LC_ALL="UTF-8"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 export LESSCHARSET=utf-8
 
 export RI="--format ansi --width 100"
@@ -418,8 +404,7 @@ function getkey {
     fi
 }
 
-export LANG="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
+
 
 if [ -f ${HOME}/dotfiles/android_bc ] ; then
     source ${HOME}/dotfiles/android_bc
