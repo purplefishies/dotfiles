@@ -111,6 +111,10 @@ export PERLDB_OPTS=HistFile=$HOME/.perldb.hist
 # Android stuff
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
+export PATH=$PATH:$SDK_ROOT/tools/
+export PATH=$PATH:/opt/local/lib/mysql5/bin
+
+
 export ACK_PAGER="less"
 
 if [[ -f "/etc/bash_completion" ]] ; then
@@ -135,6 +139,8 @@ if [[ -f "${HOME}/.colors" ]] ; then
         IFS=$oldIFS
     fi
 fi
+
+
 
 TITLEBAR="\[\033]0;\u@\H: \w\007\]"
 LONG_PROMPT=$TITLEBAR
@@ -248,7 +254,7 @@ export PROMPT_COMMAND="rollover_history"
 # Load the old history
 history -n 
 
-export MANPATH=/usr/share/man:/usr/man:/usr/local/share/man
+
 
 #
 # Pager configuration
@@ -260,18 +266,15 @@ export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export LESSCHARSET=utf-8
 
+# Ruby ri command
 export RI="--format ansi --width 100"
 
-if [ -d "$HOME/.bash" ] ; then
-    for i in `/bin/ls $HOME/.bash/*.sh` ; do
-        . $i
-    done
-fi
+# Man
+export MANPATH=/usr/share/man:/usr/man:/usr/local/share/man
+
 
 export COMP_WORDBREAKS=${COMP_WORDBREAKS/\:/}
 export SDK_ROOT=/Developer/SDKs/android-sdk-mac_86
-export PATH=$PATH:$SDK_ROOT/tools/
-export PATH=$PATH:/opt/local/lib/mysql5/bin
 
 # 
 # Android
@@ -353,6 +356,7 @@ then
 fi
 export MODULEPATH=$HOME/Modules
 
+# Tmux refresh environment
 if [ -n "$TMUX" ]; then
     function refresh {
         export $(tmux show-environment | grep "^SSH_AUTH_SOCK")  > /dev/null 2>&1
@@ -388,7 +392,7 @@ function cleantex {
     do
         j=$(echo $i | perl -ne 's/\..*//g;print;')
         echo "Cleaning $j.tex"
-        rm -f $j.{aux,pdf,pdf,dvi,log,out} 2> /dev/null
+        rm -f $j.{aux,pdf,pdf,dvi,log,out,bib} 2> /dev/null
 
     done
     echo "Cleaning ~ files"
@@ -403,7 +407,6 @@ function getkey {
         grep $1 $2 | perl -ane 'print $F[1];'
     fi
 }
-
 
 
 if [ -f ${HOME}/dotfiles/android_bc ] ; then
