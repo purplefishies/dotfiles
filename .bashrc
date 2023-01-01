@@ -97,6 +97,9 @@ fi
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 export GRADLE_OPTS="-Dorg.gradle.daemon=true,org.gradle.jvmargs=-Xmx2048M"
 
+# Perl 
+export PERLDB_OPTS=HistFile=$HOME/.perldb.hist
+
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Linux Path stuff
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -107,15 +110,19 @@ export PATH="$PATH:/usr/local/cuda/bin"
 export PATH="$PATH:/usr/lib/lapack"
 export PATH="$PATH:/opt/local/bin"
 export PATH="$PATH:$HOME/Tools/bin"
-export PERLDB_OPTS=HistFile=$HOME/.perldb.hist
+
 # Android stuff
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
 export PATH=$PATH:$SDK_ROOT/tools/
 export PATH=$PATH:/opt/local/lib/mysql5/bin
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+export PATH="/home/jdamon/.cask/bin:$PATH"
+export PATH="${PATH}:$HOME/.jlenv/bin"
 
 
-export ACK_PAGER="less"
+
+
 
 if [[ -f "/etc/bash_completion" ]] ; then
     source "/etc/bash_completion"
@@ -139,7 +146,6 @@ if [[ -f "${HOME}/.colors" ]] ; then
         IFS=$oldIFS
     fi
 fi
-
 
 
 TITLEBAR="\[\033]0;\u@\H: \w\007\]"
@@ -255,16 +261,16 @@ export PROMPT_COMMAND="rollover_history"
 history -n 
 
 
-
-#
 # Pager configuration
-#
 export PAGER=less
 export LESSOPEN="| /usr/bin/source-highlight-esc.sh %s "
 export LESS="-X -R"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export LESSCHARSET=utf-8
+
+# Ack 
+export ACK_PAGER="less"
 
 # Ruby ri command
 export RI="--format ansi --width 100"
@@ -290,6 +296,19 @@ fi
 if [ -f "/opt/local/etc/profile.d/cdargs-bash.sh" ]; then
     source /opt/local/etc/profile.d/cdargs-bash.sh
 fi
+
+if [ -f ${HOME}/dotfiles/android_bc ] ; then
+    source ${HOME}/dotfiles/android_bc
+fi
+
+if [[ -f $HOME/.local_bash ]] ;  then
+    source $HOME/.local_bash
+fi
+
+if [ -f ${HOME}/Scripts/rand_tmux_color.rb ] ; then
+    export TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb)
+fi
+
 
 
 alias ack='/usr/bin/ack-grep'
@@ -409,29 +428,13 @@ function getkey {
 }
 
 
-if [ -f ${HOME}/dotfiles/android_bc ] ; then
-    source ${HOME}/dotfiles/android_bc
-fi
-
-if [ -f ${HOME}/Scripts/rand_tmux_color.rb ] ; then
-    export TMUX_HOST_COLOUR=$(${HOME}/Scripts/rand_tmux_color.rb)
-fi
-
-
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export PATH="/home/jdamon/.cask/bin:$PATH"
-
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/jdamon/.sdkman"
 [[ -s "/home/jdamon/.sdkman/bin/sdkman-init.sh" ]] && source "/home/jdamon/.sdkman/bin/sdkman-init.sh"
 
-if [[ -f $HOME/.local_bash ]] ;  then
- source $HOME/.local_bash
-fi
 
+alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_ws/src -w /home/developer/catkin_ws/ -u developer -it docker.cloudsmith.io/automodality/dev/amros-melodic:latest"
 
-alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_ws/src -w /home/developer/catkin_ws/ -u developer -it ^Ccker.cloudsmith.io/automodality/dev/amros-melodic:latest"
-export PATH="${PATH}:$HOME/.jlenv/bin"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
