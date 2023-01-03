@@ -35,15 +35,6 @@ if [ -t 0 ] ; then
     BOLD=$(tput bold)
 fi
 
-PERL="/usr/bin/perl"
-MY_OS=`uname -s`
-MY_TEST="test"
-
-MY_ID=`id | perl -ne 's/^\S+=\d+\((\S+?)\).*/$1/; print;'`
-my_version_num=`echo $BASH_VERSION | /usr/bin/perl -ne 's/^(\d+)\..*/$1/; print ; '`
-MY_CAD="${HOME}/Scripts/CAD"
-BASH_VRS=`echo $BASH_VERSION | sed 's/^\([0-9]\)\..*/\1/'`
-
 
 # Diff Application
 export DIFF_APP=bcompare
