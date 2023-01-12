@@ -37,7 +37,7 @@ function fen_name {
 
 
 function uniq_dir_name {
-    find "$@" -type f \( -exec sha1sum "$PWD"/{} \; \) | awk '{print $1}' | sort | sha1sum | perl -ne 's/^(.{8}).*/$1/;print;'
+    find "$1" -type f \( -exec sha1sum {} \; \) | awk '{print $1}' | sort | sha1sum | perl -ne 's/^(.{8}).*/$1/;print;'
 }
 
 function paste_fen {
@@ -71,7 +71,8 @@ function save {
                 echo "Can't determing SAVEDIR from '$1'"
             else
                 if [[ -d "$fname" ]] ; then
-                    /bin/cp -vf -p -r "$fname" "${dir}/${nname}_$(uniq_dir_name "$fname")"
+                    nname=$(basename "$fname" )
+                    /bin/cp -vf -p -r "$fname" "${dir}/$(basename ${nname})_$(uniq_dir_name "$fname")"
                 elif [[ -f "$fname" ]] ; then
                     /bin/cp -vf -p -r "$fname" "${dir}/${nname}_$(fen_name "$fname")${suffix}"
                 else
