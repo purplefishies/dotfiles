@@ -156,11 +156,15 @@ fi
 TITLEBAR="\[\033]0;\u@\H: \w\007\]"
 LONG_PROMPT=$TITLEBAR
 MYGREEN=$(printf "\033[38;5;42m\n")
-if [[ -f /.dockerenv ]] || grep -Eq '(lxc|docker)' /proc/1/cgroup; 
-then 
-    LONG_PROMPT=${LONG_PROMPT}'\[$MYGREEN\](docker-\h)\[$RESET\] \W '
+if [[ -d /proc/1/cgroup ]] ; then
+    if [[ -f /.dockerenv ]] || grep -Eq '(lxc|docker)' /proc/1/cgroup; 
+    then 
+	LONG_PROMPT=${LONG_PROMPT}'\[$MYGREEN\](docker-\h)\[$RESET\] \W '
+    else
+	LONG_PROMPT="${LONG_PROMPT}\h \W"
+    fi
 else
-    LONG_PROMPT="${LONG_PROMPT}\h \W"
+ 	LONG_PROMPT="${LONG_PROMPT}\h \W"	
 fi
 
 if [[ "$(type -t __svn_ps1 )" == "function" ]] ; then
