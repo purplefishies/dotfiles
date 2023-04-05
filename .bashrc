@@ -68,7 +68,7 @@ fi
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-if [[ "${HOME}/.alias" -nt "${HOME}/.bash_alias" ]] ; then
+if [[ -f $HOME/.alias && "${HOME}/.alias" -nt "${HOME}/.bash_alias" ]] ; then
     if [ -f "${HOME}/.bash_alias" ]; then
         rm "${HOME}/.bash_alias"
     fi
@@ -78,7 +78,7 @@ if [[ "${HOME}/.alias" -nt "${HOME}/.bash_alias" ]] ; then
 elif [[ -f "${HOME}/.bash_alias" ]]; then
     source ${HOME}/.bash_alias >&1 >/dev/null
 else
-    if [ "$(type -t ldalias)" ] ; then
+    if [[ "$(type -t ldalias)" && -f "${HOME}/.alias" ]] ; then
         ldalias "${HOME}/.alias"
     fi
 fi
