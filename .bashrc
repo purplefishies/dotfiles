@@ -127,6 +127,11 @@ if [[ -f "$HOME/.bash_stuff/modules/init/bash" ]] ; then
     source "$HOME/.bash_stuff/modules/init/bash"
 fi
 
+if [[ -f "$HOME/.bash_stuff/git/git-prompt.sh" ]] ; then
+    source "$HOME/.bash_stuff/git/git-prompt.sh"
+fi
+
+
 if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
     source $HOME/.bash_stuff/cdargs/cdargs-bash.sh
 elif [[ -f "/usr/share/doc/cdargs/examples/cdargs-bash.sh" ]] ; then
@@ -138,8 +143,6 @@ if [[ -f "/etc/bash_completion" ]] ; then
 else
     echo "Can't find file /etc/bash_completion to source...please install" >> $HOME/bash_errors.log
 fi
-
-
 
 if [[ -f "${HOME}/.colors" ]] ; then
     oldIFS=${IFS}
@@ -155,16 +158,19 @@ fi
 
 TITLEBAR="\[\033]0;\u@\H: \w\007\]"
 LONG_PROMPT=$TITLEBAR
-MYGREEN=$(printf "\033[38;5;42m\n")
+DOCKER_COLOR=$(printf "\033[38;5;42m\n")
+DIRECTORY_COLOR=""
+GIT_COLOR=$GREEN
+
 if [[ -d /proc/1/cgroup ]] ; then
     if [[ -f /.dockerenv ]] || grep -Eq '(lxc|docker)' /proc/1/cgroup; 
     then 
-	LONG_PROMPT=${LONG_PROMPT}'\[$MYGREEN\](docker-\h)\[$RESET\] \W '
+	LONG_PROMPT=${LONG_PROMPT}'\[$DOCKER_COLOR\](docker-\h)\[$RESET\] \W '
     else
-	LONG_PROMPT="${LONG_PROMPT}\h \W"
+	LONG_PROMPT=${LONG_PROMPT}'\h \[$RESET\]\W '
     fi
 else
- 	LONG_PROMPT="${LONG_PROMPT}\h \W"	
+ 	LONG_PROMPT=${LONG_PROMPT}'\h \[$RESET\]\W '
 fi
 
 if [[ "$(type -t __svn_ps1 )" == "function" ]] ; then
@@ -177,9 +183,12 @@ else
     }
 fi
 
+GIT_COLOR=$(printf "\033[38;5;35m\n")
+
+
 if [[ "$(type -t __git_ps1 )" == "function" ]] ; then
-    LONG_PROMPT=${LONG_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
-    SHORT_PROMPT=${SHORT_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
+    LONG_PROMPT=${LONG_PROMPT}'${GIT_COLOR}''$(__git_ps1 "(%s)")\[$RESET\] % '
+    SHORT_PROMPT="${SHORT_PROMPT}${GIT_COLOR}$(__git_ps1 "(%s)")\[$RESET\] % "
     STEALTH_PROMPT=${STEALTH_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
     tty -s && export PS1=$LONG_PROMPT
 else
@@ -365,15 +374,20 @@ function virtualenv_info(){
 
 # disable the default virtualenv prompt change
 export VIRTUAL_ENV_DISABLE_PROMPT=1
-VENV="\$(virtualenv_info)";
+export COOLRED=$(printf "\033[38;5;197m\n")
+export LAVENDER=$(printf "\033[38;5;147m\n")
+export LIGHTGREEN=$(printf "\033[38;5;114m\n")
 
-export LONG_PROMPT="${VENV}${LONG_PROMPT}"
+
+VENV='${COOLRED}'"\$(virtualenv_info)";
+
+export LONG_PROMPT=${VENV}"${LONG_PROMPT}"
 export PS1=${LONG_PROMPT}
 
-if [ -n "$(type -t cprompt 2>/dev/null)" ] && [ "$(type -t cprompt 2>/dev/null)" = function ]
-then 
-    cprompt devel
-fi
+#if [ -n "$(type -t cprompt 2>/dev/null)" ] && [ "$(type -t cprompt 2>/dev/null)" = function ]
+#then 
+#    cprompt devel
+#fi
 export MODULEPATH=$HOME/Modules
 
 # Tmux refresh environment
