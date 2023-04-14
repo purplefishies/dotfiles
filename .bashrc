@@ -158,6 +158,7 @@ fi
 
 TITLEBAR="\[\033]0;\u@\H: \w\007\]"
 LONG_PROMPT=$TITLEBAR
+SHORT_PROMPT=$TITLEBAR
 DOCKER_COLOR=$(printf "\033[38;5;42m\n")
 DIRECTORY_COLOR=""
 GIT_COLOR=$GREEN
@@ -174,8 +175,8 @@ else
 fi
 
 if [[ "$(type -t __svn_ps1 )" == "function" ]] ; then
-    LONG_PROMPT=${LONG_PROMPT}${SVN_COLOR}'$(__svn_ps1)'
-    SHORT_PROMPT=${SHORT_PROMPT}${SVN_COLOR}'$(__svn_ps1)'
+    LONG_PROMPT=${LONG_PROMPT}'\[${SVN_COLOR}\]''$(__svn_ps1)'
+    SHORT_PROMPT=${SHORT_PROMPT}'\[${SVN_COLOR}\]''$(__svn_ps1)'
 else
     echo "Can't find definition for __svn_ps1" >> $HOME/bash_errors.log
     function __svn_ps1() {
@@ -187,8 +188,8 @@ GIT_COLOR=$(printf "\033[38;5;35m\n")
 
 
 if [[ "$(type -t __git_ps1 )" == "function" ]] ; then
-    LONG_PROMPT=${LONG_PROMPT}'${GIT_COLOR}''$(__git_ps1 "(%s)")\[$RESET\] % '
-    SHORT_PROMPT="${SHORT_PROMPT}${GIT_COLOR}$(__git_ps1 "(%s)")\[$RESET\] % "
+    LONG_PROMPT=${LONG_PROMPT}'\[${GIT_COLOR}\]''$(__git_ps1 "(%s)")\[$RESET\] % '
+    SHORT_PROMPT=${SHORT_PROMPT}'\[${GIT_COLOR}\]''$(__git_ps1 "(%s)")\[$RESET\] % '
     STEALTH_PROMPT=${STEALTH_PROMPT}${GIT_COLOR}'$(__git_ps1 "(%s)")\[$RESET\]% '
     tty -s && export PS1=$LONG_PROMPT
 else
@@ -379,7 +380,7 @@ export LAVENDER=$(printf "\033[38;5;147m\n")
 export LIGHTGREEN=$(printf "\033[38;5;114m\n")
 
 
-VENV='${COOLRED}'"\$(virtualenv_info)";
+VENV='\[${COOLRED}\]'"\$(virtualenv_info)";
 
 export LONG_PROMPT=${VENV}"${LONG_PROMPT}"
 export PS1=${LONG_PROMPT}
@@ -451,7 +452,11 @@ export SDKMAN_DIR="/home/jdamon/.sdkman"
 alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_ws/src -w /home/developer/catkin_ws/ -u developer -it docker.cloudsmith.io/automodality/dev/amros-melodic:latest"
 
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 
 
+PATH="/home/JDamon/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/JDamon/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/JDamon/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/JDamon/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/JDamon/perl5"; export PERL_MM_OPT;
