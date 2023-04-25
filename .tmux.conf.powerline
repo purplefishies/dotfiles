@@ -1,0 +1,34 @@
+set-option -g status cn
+set-option -g status-interval 2
+set-option -g status-c8 on
+set-option -g status-justify "centre"
+set-option -g status-left-length 79
+set-option -g status-right-length 90
+set-option -g status-left "#(~/.tmux/tmux-powerline/powerline.sh left)"
+set-option -g status-right "#(~/.tmux/tmux-powerline/powerline.sh right)"
+
+#set-option -g default-command "reattach-to-user-namespace -l /usr/local/bin/fish"
+#set-option -g default-shell "/usr/local/bin/fish"
+set-window-option -g mode-keys emacs
+
+#set -g prefix C-a
+#bind -t vi-copy v begin-selection
+#bind -t vi-copy y copy-selection
+#bind h select-pane -L
+#bind j select-pane -D
+#bind k select-pane -U
+#bind l select-pane -R
+
+#bind ^C new-window -n fish -c "#{pane_current_path}"
+#bind c new-window -n fish -c "#{pane_current_path}"
+
+#bind-key C-c run "tmux save-buffer - | reattach-to-user-namespace pbcopy"
+#bind-key C-v run "reattach-to-user-namespace pbpaste | tmux load-buffer - && tmux paste-buffer"
+# Screensaver setting.
+#set -g lock-after-time 600
+#set -g lock-command "cmatrix -s -b"
+
+#bind -n C-k clear-history
+#set -g default-terminal "screen-256color"
+#set-option -g renumber-windows on
+
