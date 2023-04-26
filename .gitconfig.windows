@@ -1,0 +1,18 @@
+
+[alias]
+        trash = "!git status --porcelain -z | perl -ne 's/( M [^\\0]+\\0)//g; s/(\\A|\\0)\\?\\?\\s/\\0/g;print;' | perl -pne 's/^\\0//g' | xargs -0 -n 50 --verbose trash -v "
+
+
+[diff]
+	tool = bc4
+[difftool "bc4"]
+	cmd = '"C:/Users/jdamon/AppData/Local/Beyond Compare 4/BComp.exe"' "$(cygpath -w $LOCAL)" "$(cygpath -w $REMOTE)" 
+[difftool]
+	prompt = false
+[merge]
+	tool = bc4
+
+[mergetool "bc4"]
+        cmd = '"C:/Users/jdamon/AppData/Local/Beyond Compare 4/BComp.exe"' "$(cygpath -w $LOCAL)" "$(cygpath -w $REMOTE)" "$(cygpath -w $BASE)" "$(cygpath -w $MERGED)"
+	bc4 = trustExitCode
+        keepBackup = false
