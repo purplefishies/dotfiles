@@ -9,12 +9,13 @@ export ZSH="$HOME/.oh-my-zsh"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ##ZSH_THEME="robbyrussell"
-ZSH_THEME="robbyrussell"
+#ZSH_THEME="robbyrussell"
+ZSH_THEME="dst"
 ## Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
 # If set to an empty array, this variable will have no effect.
-ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" "candy" )
+ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" "candy" "dst" )
 
 alias ztheme='(){ export ZSH_THEME="$@" && source $ZSH/oh-my-zsh.sh }'
 
@@ -62,7 +63,15 @@ alias ztheme='(){ export ZSH_THEME="$@" && source $ZSH/oh-my-zsh.sh }'
 # "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 # or set a custom format using the strftime function format specifications,
 # see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
+HIST_STAMPS="yyyy-mm-dd"
+HISTFILE=.zsh_history
+setopt INC_APPEND_HISTORY
+export HISTTIMEFORMAT="[%F %T] "
+setopt EXTENDED_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_NO_FUNCTIONS 
+export HISTORY_IGNORE="ls|ll|more *|lless *|history|history *|source .bashrc|clear_last_history|tmux *attach|reboot|restart|sudo*reboot"
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -75,7 +84,7 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zshmarks )
+plugins=(git zshmarks git-prompt)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -105,10 +114,50 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+#[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 
 bindkey '^G' emacs-forward-word
 bindkey '^F' emacs-backward-word
 bindkey '^B' backward-kill-word
 bindkey '^N' kill-word
+if [[ -f "$HOME/.emacs.d/key-bindings.el" ]] ; then
+    EXTRA=" --eval '(load-file  (concat (getenv \"HOME\") \"/.emacs.d/bash-edit.el\"))' "
+else 
+    EXTRA=""
+fi
+if [ "$DISPLAY" ] ; then
+    export EDITOR="$(which emacs) ${EXTRA} -q -nw "
+    export ALTERNATE_EDITOR="emacs -q "      
+    export VISUAL="$(which emacs) ${EXTRA} -q -nw "
+else 
+    export ALTERNATE_EDITOR=""      
+    export EDITOR="$(which emacs) ${EXTRA} -q -nw "
+    export VISUAL="$(which emacs) ${EXTRA} -q -nw "
+fi
+if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
+    source $HOME/.bash_stuff/cdargs/cdargs-bash.sh
+elif [[ -f "/usr/share/doc/cdargs/examples/cdargs-bash.sh" ]] ; then
+    source "/usr/share/doc/cdargs/examples/cdargs-bash.sh"
+fi
+source $HOME/.bash_alias 
+if [[ -f /etc/profile.d/fzf.zsh ]] ; then
+    source /etc/profile.d/fzf.zsh
+fi
+if [[ -f /etc/profile.d/fzf-completion.zsh ]] ; then
+    source /etc/profile.d/fzf-completion.zsh
+fi
+ZSH_THEME_GIT_PROMPT_PREFIX="("
+ZSH_THEME_GIT_PROMPT_SUFFIX=")"
+ZSH_THEME_GIT_PROMPT_SEPARATOR="|"
+ZSH_THEME_GIT_PROMPT_BRANCH="%{%F{35}%}"
+ZSH_THEME_GIT_PROMPT_STAGED="%{$fg[red]%}%{?%G%}"
+ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{?%G%}"
+ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[blue]%}%{?%G%}"
+ZSH_THEME_GIT_PROMPT_DELETED="%{$fg[blue]%}%{-%G%}"
+ZSH_THEME_GIT_PROMPT_BEHIND="%{?%G%}"
+ZSH_THEME_GIT_PROMPT_AHEAD="%{?%G%}"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}%{…%G%}"
+ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[blue]%}%{?%G%}"
+ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{?%G%}"
+ZSH_THEME_GIT_PROMPT_UPSTREAM_SEPARATOR="->"
