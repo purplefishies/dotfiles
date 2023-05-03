@@ -102,6 +102,12 @@ export PATH="$PATH:/usr/lib/lapack"
 export PATH="$PATH:/opt/local/bin"
 export PATH="$PATH:$HOME/Tools/bin"
 
+if [[ "$OSTYPE" =~ ^linux ]]; then
+    source $HOME/.bash_linux
+elif [[ "$OSTYPE" =~ ^cygwin ]] ; then
+    source $HOME/.bash_cygwin
+fi
+
 # Android stuff
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
@@ -112,6 +118,10 @@ export PATH="/home/jdamon/.cask/bin:$PATH"
 export PATH="${PATH}:$HOME/.jlenv/bin"
 
 
+if [[ -f $HOME/.bash_work ]]
+then
+    source $HOME/.bash_work
+fi
 
 
 # bash completion 
@@ -322,8 +332,7 @@ fi
 
 
 
-alias ack='/usr/bin/ack-grep'
-alias aack='/usr/bin/ack-grep --color'
+
 
 if [[ -f "$HOME/.emacs.d/key-bindings.el" ]] ; then
     EXTRA=" --eval '(load-file  (concat (getenv \"HOME\") \"/.emacs.d/bash-edit.el\"))' "
