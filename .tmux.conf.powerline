@@ -4,8 +4,8 @@ set-option -g status-c8 on
 set-option -g status-justify "centre"
 set-option -g status-left-length 79
 set-option -g status-right-length 90
-set-option -g status-left "#(~/.tmux/tmux-powerline/powerline.sh left)"
-set-option -g status-right "#(~/.tmux/tmux-powerline/powerline.sh right)"
+set-option -g status-left "#(~/.tmux/plugins/tmux-powerline/powerline.sh left)"
+#set-option -g status-right "#(~/.tmux/tmux-powerline/powerline.sh right)"
 
 #set-option -g default-command "reattach-to-user-namespace -l /usr/local/bin/fish"
 #set-option -g default-shell "/usr/local/bin/fish"
