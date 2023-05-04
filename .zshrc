@@ -64,7 +64,7 @@ alias ztheme='(){ export ZSH_THEME="$@" && source $ZSH/oh-my-zsh.sh }'
 # or set a custom format using the strftime function format specifications,
 # see 'man strftime' for details.
 HIST_STAMPS="yyyy-mm-dd"
-HISTFILE=.zsh_history
+HISTFILE=$HOME/.zsh_history
 setopt INC_APPEND_HISTORY
 export HISTTIMEFORMAT="[%F %T] "
 setopt EXTENDED_HISTORY
@@ -76,6 +76,7 @@ export HISTORY_IGNORE="ls|ll|more *|lless *|history|history *|source .bashrc|cle
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+eval $(dircolors -b $HOME/.ls_colors )
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 
@@ -84,7 +85,7 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zshmarks git-prompt)
+plugins=(git zshmarks git-prompt virtualenv)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -147,17 +148,29 @@ fi
 if [[ -f /etc/profile.d/fzf-completion.zsh ]] ; then
     source /etc/profile.d/fzf-completion.zsh
 fi
+NEWLINE=$'\n'
+# export PROMPT="
+# %(?, ,%{$fg[red]%}FAIL%{$reset_color%}
+# )
+# %{%{$reset_color%}%{%F{147}%}%m%{$reset_color%} %{$reset_color%}%1d $(git_super_status)
+# $(prompt_char) "
+#export RPROMPT="%{%F{29}[%*]%}%{$reset_color%}"
+#export PROMPT="%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}: %{$fg_bold[blue]%}%1d%{$reset_color%}$(git_prompt_info)${NEWLINE}%% "
+#export RPROMPT="%{%F{29}[%*]%}%{$reset_color%}"
+#export RPROMPT="%{$fg[green]%}%*%{$reset_color%}"
+export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
+export PROMPT='%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}$(virtualenv_info)%{$reset_color%}%{%F{147}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(git_super_status)${NEWLINE}%F{241}%% %F{reset_color}'
 ZSH_THEME_GIT_PROMPT_PREFIX="("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")"
 ZSH_THEME_GIT_PROMPT_SEPARATOR="|"
 ZSH_THEME_GIT_PROMPT_BRANCH="%{%F{35}%}"
-ZSH_THEME_GIT_PROMPT_STAGED="%{$fg[red]%}%{?%G%}"
-ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{?%G%}"
-ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[blue]%}%{?%G%}"
+ZSH_THEME_GIT_PROMPT_STAGED="%{$fg[red]%}%{●%G%}"
+ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{✖%G%}"
+ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[blue]%}%{✚%G%}"
 ZSH_THEME_GIT_PROMPT_DELETED="%{$fg[blue]%}%{-%G%}"
-ZSH_THEME_GIT_PROMPT_BEHIND="%{?%G%}"
-ZSH_THEME_GIT_PROMPT_AHEAD="%{?%G%}"
-ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}%{�%G%}"
-ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[blue]%}%{?%G%}"
-ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{?%G%}"
+ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%G%}"
+ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}%{…%G%}"
+ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[blue]%}%{⚑%G%}"
+ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{✔%G%}"
 ZSH_THEME_GIT_PROMPT_UPSTREAM_SEPARATOR="->"
