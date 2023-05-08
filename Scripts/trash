@@ -1,0 +1,39 @@
+#!/usr/bin/env wpython
+#
+# A simple script for taking out the trash
+#
+#
+from optparse import OptionParser
+import os
+import re
+import winshell
+
+parser = OptionParser()
+
+parser.add_option("-r","--recursive",dest="recursive",
+                  help="recursive",
+                  )
+parser.add_option("-f","--force",dest="force",
+                  help="force remove",
+                  )
+
+parser.add_option("-v","--verbose",action="store_true",dest="verbose",default=False,
+                  help="Verbose deletion",
+                  )
+
+(options,args) = parser.parse_args()
+
+#print("Args: %s" % args )
+#print("Opts: %s" % options )
+for i in args:
+    filepath = os.path.abspath(i)
+    if options.verbose:
+        print("Recycling '%s'" % filepath )
+    try: 
+        winshell.delete_file(filepath)
+    except winshell.x_winshell as error:
+        print("Error deleting '{}' ... {}".format(filepath,error))
+
+
+
+
