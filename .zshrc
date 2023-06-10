@@ -174,3 +174,24 @@ ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}%{…%G%}"
 ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[blue]%}%{⚑%G%}"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{✔%G%}"
 ZSH_THEME_GIT_PROMPT_UPSTREAM_SEPARATOR="->"
+
+
+# autoload -U compinit promptinit
+
+autoload -U compinit && compinit
+zmodload -i zsh/complist
+zstyle ':completion:*' menu select
+
+# promptinit
+# prompt pure
+# compinit
+# zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+# fpath=(/usr/local/share/zsh-completions $fpath)
+
+#source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+#source $HOME/.functions
+source $HOME/.functions.zsh
+
+#bind -m emacs-standard -x '"\C-H": hfzf'
+bindkey '^C' hfzf
