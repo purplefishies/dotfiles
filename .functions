@@ -1,6 +1,5 @@
-# coding: utf-8
 #-*- shell-script -*-
-
+# coding: utf-8
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Function Definitions
 # 1. I decided to put my functions into a file .functions just to keep them
@@ -13,6 +12,42 @@
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function licenses {
     /project/hw/bin/lmstat -a -c /cad/flexlm/Synopsys.dir/license.dat | /bin/less
+}
+
+
+if type trash > /dev/null 2>&1 ; then    
+    function rm () {
+        trash "$@"
+    }
+fi
+
+
+function emacs {
+    # local file_to_open="$1"
+    # if pgrep -x "emacs" >/dev/null; then
+    #     emacsclient -n "$file_to_open"
+    # else
+    #     emacs "$file_to_open"
+    # fi
+    emacsclient --alternate-editor="" $@ 
+}
+
+function set_tmux_environment {
+    for i in SSH_AUTH_SOCK DISPLAY DBUS_SESSION_BUS_ADDRESS GNOME_KEYRING_CONTROL SSH_AGENT_PID GPG_AGENT_INFO ; 
+    do
+        cmd="tmux set-environment $i \$${i}"
+        eval $cmd
+    done
+}
+
+
+function refresh {
+    export $(tmux show-environment | grep "^SSH_AUTH_SOCK")  > /dev/null 2>&1
+    export $(tmux show-environment | grep "^SSH_AGENT_PID")  > /dev/null 2>&1
+    export $(tmux show-environment | grep "^DISPLAY")  > /dev/null 2>&1
+    export $(tmux show-environment | grep "^DBUS_SESSION_BUS_ADDRESS")  > /dev/null 2>&1
+    export $(tmux show-environment | grep "^GPG_AGENT_INFO" )  > /dev/null 2>&1
+    export $(tmux show-environment | grep "^GNOME_KEYRING_CONTROL" ) > /dev/null 2>&1
 }
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -36,12 +71,9 @@ function fen_name {
     echo $(sha1sum "$@" | perl -ne 's/^(.{8}).*/$1/;print;')
 }
 
-function save_fen { 
-    for i in "$@"
-    do
-        nname=$(basename "$i" .fen)
-        /bin/cp -f -p  "$i" "$FEN_PUZZLES/${nname}_$(fen_name "$i").fen"
-    done
+
+function uniq_dir_name {
+    find "$1" -type f \( -exec sha1sum {} \; \) | awk '{print $1}' | sort | sha1sum | perl -ne 's/^(.{8}).*/$1/;print;'
 }
 
 function paste_fen {
@@ -53,12 +85,48 @@ function paste_fen {
     pbpaste > ${todir}/${tmp}.fen
 }
 
-function save_pgn {
-    for i in "$@"
-    do
-        nname="$(basename "$i" .pgn)"
-        /bin/cp -f -p "$i" "$PGN_GAMES/${nname}_$(fen_name "$i").pgn"
-    done
+function save() { 
+    # echo "Number $#"
+    if [[  $# -lt  2 ]] ; then
+        echo "Usage save TYPE FILE|DIRECTORY"
+    else
+        for ((i=2;$i<=$#;i++))
+        do
+
+            if [ -n "${ZSH_VERSION}" ] ; then
+                fname=${(P)i}
+            elif [ -n "${BASH_VERSION}" ]; then
+                fname="${!i}"
+            else
+                echo "Unsupported shell "
+                exit 1
+            fi
+            nname=$(echo "$fname" | perl -ne 's/^(.*)\..*$/$1/g;print;')
+            if [[ "$nname" == "$1" ]] ; then
+                suffix=""
+            else
+                suffix=$(echo "$fname" | perl -ne 's/^.*(\..*)$/$1/g;print;')
+            fi
+            # nname=$(basename "$i" .fen)
+            # /bin/cp -f -p  "$i" "$FEN_PUZZLES/${nname}_$(fen_name "$1").fen"
+            
+            dir=$(grep -P "^$1\b" $HOME/.cdargs | perl -ne 's/^\S+\s+(\S.*)$/$1/g;print;' 2>/dev/null)
+            echo "$dir"
+            if [[ -z $dir || $dir == "" ]] ; then
+                echo "Can't determing SAVEDIR from '$1'"
+            else
+                if [[ -d "$fname" ]] ; then
+                    nname=$(basename "$fname" )
+                    /bin/cp -vf -p -r "$fname" "${dir}/$(basename ${nname})_$(uniq_dir_name "$fname")"
+                elif [[ -f "$fname" ]] ; then
+                    /bin/cp -vf -p -r "$fname" "${dir}/${nname}_$(fen_name "$fname")${suffix}"
+                else
+                    echo "Can't find type of file ${fname}"
+                fi
+
+            fi
+        done
+    fi
 }
 
 
@@ -70,7 +138,7 @@ function __git_modified_unadded {
 }
 function __git_uncommited {
     expr $(git status --porcelain 2>/dev/null| grep "^??" | wc -l)
-}
+};
 
 function __git_prompt_jd {
 
@@ -412,48 +480,57 @@ function dir {
     /bin/ls -alF  $1 | grep "^d"
 }
 
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-#
-#
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function dirs {
-    local dir
-    local filter="[^\.]"
-    if [[ "$1" != ""  ]] && [ -d "$1" ]  ; then
-#        echo "Using dir '$@'"
+function __adirs {
+    if [[ -d "$1"  ]] ; then
         dir=$1
-        if [[ $# == 2 ]] ; then
-#            echo "using custom filter"
-            filter=$2
-        fi
+        find "$dir" -maxdepth 1 -type d ! '(' -name "." -o -name ".." -o -wholename "${dir}" ')' -printf "%p\0" | sort -z 
     else
-        dir=.
-#        filter="[^\.]"
-    fi
-#    echo "Using filter '${filter}'"
-    ruby -e "print Dir.entries(\"${dir}\").find_all { 
-            |i| File.directory?(\"${dir}/#{i}\") &&
-                i =~ /^${filter}/
-            }.map{ |i| 
-               if \"${dir}\" == \"\"  || \"${dir}\" == \".\"
-                  i
-               else
-                  File.new(\"${dir}/#{i}\").to_path
-               end
-
-            }.join(\"\n\") + \"\n\""
- }
-
-function ldirs {
-    local IFS=$(echo -ne "\n\r")
-    if [ $# == 1 ] ; then
-        \ls -d $(_dirs $1)
-    else
-        \ls -d $(_dirs . )
+        find . -maxdepth 1 -type d ! '(' -name "." -o -name ".." ')' -printf "%f\0" | sort -z 
     fi
 }
 
+function __afiles {
+    if [[ -d "$1"  ]] ; then
+        find "$1" -maxdepth 1 -type f ! '(' -name "." -o -name ".." ')' -printf "%p\0" | sort -z 
+    else
+        find . -maxdepth 1 -type f ! '(' -name "." -o -name ".." ')' -printf "%f\0" | sort -z 
+    fi
+}
 
+function _ffiles {
+    if [[ -d "$1"  ]] ; then
+        find "$1" -maxdepth 1 -type f ! '(' -name "." -o -name ".." ')' "$@"
+    
+        find . -maxdepth 1 -type f ! '(' -name "." -o -name ".." ')' $@
+    fi
+
+}
+
+function __dirs {
+    __adirs "$@" | grep -z -v -E "^((\./)?[[:alpha:][:blank:]]+/\.|\.[[:alpha:]]+)" 
+}
+
+function ldirs {
+    __dirs "$@" | xargs -0 -r /bin/ls -d -1 --color=always 
+}
+
+function lldirs {
+    __dirs "$@" | xargs -0 -r /bin/ls -d -l --color=always 
+}
+
+function dirs {
+    __dirs "$@" | xargs -0 -r /bin/ls -d --color=always 
+}
+
+function rdirs {
+    __dirs "$@" | xargs -0 -r /bin/ls -d 
+}
+
+
+# alias lld=lldirs
+# alias alf=allfiles
+# alias llf=llfiles
+export LS="ls --color=auto"
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 #  For debugging allocation of memory
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -501,34 +578,6 @@ function All_Colors {
     echo;
     done
     echo
-}
-
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Lists all of the files in a directory... useful for "for" loops
-# 1. Make sure you egrep -v for the "total" string...or else you will
-#    get 1 blank entry... which ain't so good.
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function files {
-    /bin/ls -l | egrep -v "^d|total" | awk '{ print $9 }' | egrep -v "^ *$ "
-}
-
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Lists all of the directories in reverse order...so that the most recent
-# access is at the bottom
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function rdirs {
-    local a=`dirs`
-    local IFS=$(echo -ne "\n\r")
-    ls -Gltdr --color=auto $(_dirs $1 $2)
-}
-
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Lists all of the files in reverse order... so that the most recent
-# access is at the bottom
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function rfiles {
-    local files=`files`
-    ll -ltr $files
 }
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -625,6 +674,7 @@ function open {
 function search {
   tracker-search "$@"
 }
+
 function mdfind {
   tracker-search "$@"
 }
@@ -638,10 +688,6 @@ function mydo {
       flags="$flags $i"
       echo "$i"
    done
-}
-
-function rm () {
-    trash "$@"
 }
 
 function oldrm () {
@@ -783,6 +829,15 @@ function hfind() {
     grep --binary-files=text $@ $(ls $HISTDIRECTORY/* | tac)
 }
 
+#
+# Make it work like __fzf_history__
+# 
+function hfzf() {
+    _files $HOME/.bashcmd_history | statsort -R -0 --mtime | xargs -0 grep -h -Z -P -v "^\#\d+" | uniq | fzf
+}
+
+
+
 function show_cursor()  {
     printf "\033[?25h"
 }
@@ -790,16 +845,12 @@ function hide_cursor() {
     printf "\033[?25l"
 }
 
-#function emacs {
-#         emacsclient $* >/dev/null 2>&1
-#}
-
 function emacs {
          EMACSRUNNING=$(ps -ef |grep emacs | grep -v -P "(emacsclient|grep)" | wc -l)
          if [[ $EMACSRUNNING == 0 ]] ; then
             /usr/bin/emacs "$@"
          else
-            emacsclient $@ >/dev/null 2>&1
+            emacsclient "$@" >/dev/null 2>&1
          fi       
 }
 
@@ -838,8 +889,12 @@ function load1() {
     dd if=/dev/zero of=/dev/null &
 }
 
-function uri() {
-    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:$\s@&=+,]/)' "$@"
+# function uri() {
+#     ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:$\s@&=+,]/)' "$@"
+# }
+
+uri () {
+    ruby -ruri -e 'puts "file://" + URI::DEFAULT_PARSER.escape(File.expand_path(ARGV[0]), /[;?:$\s@&=+,]/)' "$@"
 }
 
 function uri2file() {
@@ -855,4 +910,25 @@ function rmhist() {
         history -d $start
         ((count--))
     done
+}
+
+# Detect if running in Zsh
+if [ -n "$ZSH_VERSION" ]; then
+    # Load Zsh-specific functions
+    if [[ -f "$HOME/.functions.zsh" ]] ; then
+        source "$HOME/.functions.zsh"
+    fi
+elif [ -n "$BASH_VERSION" ]; then
+    # Load Bash-specific functions
+    if [[ -f "$HOME/.functions.bash" ]]; then
+        source "$HOME/.functions.bash"
+    fi
+fi
+
+function mdfind() {
+    ( recollq -c $HOME/.recoll "$@"; recollq -c $HOME/Projects/recoll_nas "$@" )
+}
+
+function orr() {
+    ruby -e 'print "Passwd: ";p=STDIN.gets.chomp;b=File.read(ARGV[0]).bytes.map.with_index{|c,i|c^p.bytes[i%p.size]}.pack("C*");File.write(ARGV[0]+".xx",b)' "$@"
 }
