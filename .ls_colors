@@ -69,6 +69,9 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 *COPYRIGHT 38;5;220;1
 *AUTHORS 38;5;220;1
 *HISTORY 38;5;220;1
+Lists.txt 38;5;49;1
+
+.cmake 38;5;49;1
 .log 38;5;150
 .ledger 38;5;50
 # plain-text {{{2
@@ -88,7 +91,8 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 .aux 38;5;125;2
 # key-value, non-relational data {{{2
 .msg 38;5;178
-.pgn 38;5;178
+.pgn 38;5;111
+.fen 38;5;111
 .xml 38;5;178
 .xmi 38;5;123
 .json 38;5;132
@@ -250,6 +254,9 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 # 2}}}
 # Build stuff {{{2
 *Makefile 38;5;155
+*CMakeLists.txt 38;5;49;1
+*CMakeUserPresets.json  38;5;49;1
+*CMakePresets.json      38;5;49;1
 *MANIFEST 38;5;243
 *pm_to_blib 38;5;240
 # automake
