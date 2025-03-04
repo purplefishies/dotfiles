@@ -14,6 +14,42 @@ function licenses {
     /project/hw/bin/lmstat -a -c /cad/flexlm/Synopsys.dir/license.dat | /bin/less
 }
 
+
+if type trash > /dev/null 2>&1 ; then    
+    function rm () {
+        trash "$@"
+    }
+fi
+
+
+function emacs {
+    # local file_to_open="$1"
+    # if pgrep -x "emacs" >/dev/null; then
+    #     emacsclient -n "$file_to_open"
+    # else
+    #     emacs "$file_to_open"
+    # fi
+    emacsclient --alternate-editor="" $@ 
+}
+
+function set_tmux_environment {
+    for i in SSH_AUTH_SOCK DISPLAY DBUS_SESSION_BUS_ADDRESS GNOME_KEYRING_CONTROL SSH_AGENT_PID GPG_AGENT_INFO ; 
+    do
+        cmd="tmux set-environment $i \$${i}"
+        eval $cmd
+    done
+}
+
+
+function refresh {
+    export $(tmux show-environment | grep "^SSH_AUTH_SOCK")  > /dev/null 2>&1
+    export $(tmux show-environment | grep "^SSH_AGENT_PID")  > /dev/null 2>&1
+    export $(tmux show-environment | grep "^DISPLAY")  > /dev/null 2>&1
+    export $(tmux show-environment | grep "^DBUS_SESSION_BUS_ADDRESS")  > /dev/null 2>&1
+    export $(tmux show-environment | grep "^GPG_AGENT_INFO" )  > /dev/null 2>&1
+    export $(tmux show-environment | grep "^GNOME_KEYRING_CONTROL" ) > /dev/null 2>&1
+}
+
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Color settings for prompts.
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -49,14 +85,22 @@ function paste_fen {
     pbpaste > ${todir}/${tmp}.fen
 }
 
-function save { 
+function save() { 
     # echo "Number $#"
     if [[  $# -lt  2 ]] ; then
         echo "Usage save TYPE FILE|DIRECTORY"
     else
-        for((i=2;$i<=$#;i++))
+        for ((i=2;$i<=$#;i++))
         do
-            fname="${!i}"
+
+            if [ -n "${ZSH_VERSION}" ] ; then
+                fname=${(P)i}
+            elif [ -n "${BASH_VERSION}" ]; then
+                fname="${!i}"
+            else
+                echo "Unsupported shell "
+                exit 1
+            fi
             nname=$(echo "$fname" | perl -ne 's/^(.*)\..*$/$1/g;print;')
             if [[ "$nname" == "$1" ]] ; then
                 suffix=""
@@ -66,7 +110,8 @@ function save {
             # nname=$(basename "$i" .fen)
             # /bin/cp -f -p  "$i" "$FEN_PUZZLES/${nname}_$(fen_name "$1").fen"
             
-            dir=$(grep -P "^$1" $HOME/.cdargs | perl -ne 's/^\S+\s+(\S.*)$/$1/g;print;' 2>/dev/null)
+            dir=$(grep -P "^$1\b" $HOME/.cdargs | perl -ne 's/^\S+\s+(\S.*)$/$1/g;print;' 2>/dev/null)
+            echo "$dir"
             if [[ -z $dir || $dir == "" ]] ; then
                 echo "Can't determing SAVEDIR from '$1'"
             else
@@ -82,8 +127,8 @@ function save {
             fi
         done
     fi
-    # /bin/cp -f -p "$2" ${dir}
 }
+
 
 function __git_modified_files {
     expr $(git status --porcelain 2>/dev/null| grep "^M" | wc -l)
@@ -93,7 +138,7 @@ function __git_modified_unadded {
 }
 function __git_uncommited {
     expr $(git status --porcelain 2>/dev/null| grep "^??" | wc -l)
-}
+};
 
 function __git_prompt_jd {
 
@@ -435,7 +480,7 @@ function dir {
     /bin/ls -alF  $1 | grep "^d"
 }
 
-function _adirs {
+function __adirs {
     if [[ -d "$1"  ]] ; then
         dir=$1
         find "$dir" -maxdepth 1 -type d ! '(' -name "." -o -name ".." -o -wholename "${dir}" ')' -printf "%p\0" | sort -z 
@@ -444,7 +489,7 @@ function _adirs {
     fi
 }
 
-function _afiles {
+function __afiles {
     if [[ -d "$1"  ]] ; then
         find "$1" -maxdepth 1 -type f ! '(' -name "." -o -name ".." ')' -printf "%p\0" | sort -z 
     else
@@ -455,68 +500,36 @@ function _afiles {
 function _ffiles {
     if [[ -d "$1"  ]] ; then
         find "$1" -maxdepth 1 -type f ! '(' -name "." -o -name ".." ')' "$@"
-    else
+    
         find . -maxdepth 1 -type f ! '(' -name "." -o -name ".." ')' $@
     fi
 
 }
 
-function _dirs {
-    _adirs "$@" | grep -z -v -E "^((\.\/)?[[:alpha:][:blank:]]+\/\.|\.[[:alpha:]]+)" 
+function __dirs {
+    __adirs "$@" | grep -z -v -E "^((\./)?[[:alpha:][:blank:]]+/\.|\.[[:alpha:]]+)" 
 }
 
 function ldirs {
-    _dirs "$@" | xargs -0 -r /bin/ls -d -1 --color=always 
+    __dirs "$@" | xargs -0 -r /bin/ls -d -1 --color=always 
 }
 
 function lldirs {
-    _dirs "$@" | xargs -0 -r /bin/ls -d -l --color=always 
+    __dirs "$@" | xargs -0 -r /bin/ls -d -l --color=always 
 }
 
 function dirs {
-    _dirs "$@" | xargs -0 -r /bin/ls -d --color=always 
+    __dirs "$@" | xargs -0 -r /bin/ls -d --color=always 
 }
 
 function rdirs {
-    _dirs "$@" | xargs -0 -r /bin/ls -d 
+    __dirs "$@" | xargs -0 -r /bin/ls -d 
 }
 
 
-function adirs {
-    _adirs "$@" | xargs -0 -r /bin/ls -d --color=always 
-}
-
-function _files {
-    _afiles "$@" | grep -z -v -E "^((\.\/)?[[:alpha:][:blank:]]+\/\.|\.[[:alpha:]]+)" 
-}
-
-function afiles {
-    _afiles "$@" | xargs -0 -r /bin/ls -d --color=always
-}
-
-function files {
-    _files "$@" | xargs -0 -r /bin/ls  --color=always
-}
-
-function rfiles {
-    _files "$@" | xargs -0 -r /bin/ls -d
-}
-
-function lfiles {
-    _files "$@" | xargs -0 -r /bin/ls -d  -1
-}
-
-function llfiles { 
-    _files "$@" | xargs -0 -r /bin/ls -l --color=auto 
-}
-
-function allfiles { 
-    _afiles "$@" | xargs -0 -r /bin/ls -l --color=auto 
-}
-
-alias lld=lldirs
-alias alf=allfiles
-alias llf=llfiles
+# alias lld=lldirs
+# alias alf=allfiles
+# alias llf=llfiles
 export LS="ls --color=auto"
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 #  For debugging allocation of memory
@@ -566,17 +579,6 @@ function All_Colors {
     done
     echo
 }
-
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Lists all of the files in a directory... useful for "for" loops
-# 1. Make sure you egrep -v for the "total" string...or else you will
-#    get 1 blank entry... which ain't so good.
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Lists all of the files in reverse order... so that the most recent
-# access is at the bottom
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Not completed yet...
@@ -672,6 +674,7 @@ function open {
 function search {
   tracker-search "$@"
 }
+
 function mdfind {
   tracker-search "$@"
 }
@@ -685,10 +688,6 @@ function mydo {
       flags="$flags $i"
       echo "$i"
    done
-}
-
-function rm () {
-    trash "$@"
 }
 
 function oldrm () {
@@ -837,7 +836,6 @@ function hfzf() {
     _files $HOME/.bashcmd_history | statsort -R -0 --mtime | xargs -0 grep -h -Z -P -v "^\#\d+" | uniq | fzf
 }
 
-bind -m emacs-standard -x '"\C-H": hfzf'
 
 
 function show_cursor()  {
@@ -891,8 +889,12 @@ function load1() {
     dd if=/dev/zero of=/dev/null &
 }
 
-function uri() {
-    ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:$\s@&=+,]/)' "$@"
+# function uri() {
+#     ruby -ruri -e 'puts "file://" + URI.escape(File.expand_path(ARGV[0]),/[;?:$\s@&=+,]/)' "$@"
+# }
+
+uri () {
+    ruby -ruri -e 'puts "file://" + URI::DEFAULT_PARSER.escape(File.expand_path(ARGV[0]), /[;?:$\s@&=+,]/)' "$@"
 }
 
 function uri2file() {
@@ -908,4 +910,25 @@ function rmhist() {
         history -d $start
         ((count--))
     done
+}
+
+# Detect if running in Zsh
+if [ -n "$ZSH_VERSION" ]; then
+    # Load Zsh-specific functions
+    if [[ -f "$HOME/.functions.zsh" ]] ; then
+        source "$HOME/.functions.zsh"
+    fi
+elif [ -n "$BASH_VERSION" ]; then
+    # Load Bash-specific functions
+    if [[ -f "$HOME/.functions.bash" ]]; then
+        source "$HOME/.functions.bash"
+    fi
+fi
+
+function mdfind() {
+    ( recollq -c $HOME/.recoll "$@"; recollq -c $HOME/Projects/recoll_nas "$@" )
+}
+
+function orr() {
+    ruby -e 'print "Passwd: ";p=STDIN.gets.chomp;b=File.read(ARGV[0]).bytes.map.with_index{|c,i|c^p.bytes[i%p.size]}.pack("C*");File.write(ARGV[0]+".xx",b)' "$@"
 }

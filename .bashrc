@@ -37,6 +37,7 @@ fi
 
 
 # Diff Application
+#
 export DIFF_APP=bcompare
 
 # Chess
@@ -62,26 +63,34 @@ if [ -f $HOME/.functions ] ; then
     source $HOME/.functions
 fi
 
+if [ -f $HOME/.functions.bash ] ; then
+    source $HOME/.functions.bash
+fi
+
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Loading Aliases....
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-if [[ -f $HOME/.alias && "${HOME}/.alias" -nt "${HOME}/.bash_alias" ]] ; then
-    if [ -f "${HOME}/.bash_alias" ]; then
-        rm "${HOME}/.bash_alias"
-    fi
-    if [ "$(type -t ldalias)" ] ; then
-        ldalias "${HOME}/.alias"
-    fi
-elif [[ -f "${HOME}/.bash_alias" ]]; then
-    source ${HOME}/.bash_alias >&1 >/dev/null
-else
+# if [[ -f $HOME/.alias && "${HOME}/.alias" -nt "${HOME}/.bash_alias" ]] ; then
+#     if [ -f "${HOME}/.bash_alias" ]; then
+#         rm "${HOME}/.bash_alias"
+#     fi
+#     if [ "$(type -t ldalias)" ] ; then
+#         ldalias "${HOME}/.alias"
+#     fi
+# elif [[ -f "${HOME}/.bash_alias" ]]; then
+#     source ${HOME}/.bash_alias >&1 >/dev/null
+# else
+#     if [[ -f $HOME/.alias ]] ; then
+# 	source $HOME/.alias
+#     fi
     if [[ "$(type -t ldalias)" && -f "${HOME}/.alias" ]] ; then
-        ldalias "${HOME}/.alias"
+    source "${HOME}/.alias"
     fi
-fi
+# fi
+
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 
 # Setting up the PATH environment and Environmental variables
@@ -102,26 +111,16 @@ export PATH="$PATH:/usr/lib/lapack"
 export PATH="$PATH:/opt/local/bin"
 export PATH="$PATH:$HOME/Tools/bin"
 
-if [[ "$OSTYPE" =~ ^linux ]]; then
-    source $HOME/.bash_linux
-elif [[ "$OSTYPE" =~ ^cygwin ]] ; then
-    source $HOME/.bash_cygwin
-fi
-
 # Android stuff
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_NDK_HOME
 export PATH=$PATH:$SDK_ROOT/tools/
 export PATH=$PATH:/opt/local/lib/mysql5/bin
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export PATH="/home/jdamon/.cask/bin:$PATH"
+#export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+#export PATH="/home/jdamon/.cask/bin:$PATH"
 export PATH="${PATH}:$HOME/.jlenv/bin"
 
 
-if [[ -f $HOME/.bash_work ]]
-then
-    source $HOME/.bash_work
-fi
 
 
 # bash completion 
@@ -332,7 +331,8 @@ fi
 
 
 
-
+alias ack='/usr/bin/ack-grep'
+alias aack='/usr/bin/ack-grep --color'
 
 if [[ -f "$HOME/.emacs.d/key-bindings.el" ]] ; then
     EXTRA=" --eval '(load-file  (concat (getenv \"HOME\") \"/.emacs.d/bash-edit.el\"))' "
@@ -460,8 +460,10 @@ export SDKMAN_DIR="/home/jdamon/.sdkman"
 
 alias developer-dev="docker run -v $HOME/catkin_ws/src/:/home/developer/catkin_ws/src -w /home/developer/catkin_ws/ -u developer -it docker.cloudsmith.io/automodality/dev/amros-melodic:latest"
 
-
-
+export MODULEPATH=$HOME/Modules
+if [[ -f /usr/share/lmod/lmod/init/zsh ]] ; then
+    source /usr/share/lmod/lmod/init/zsh 
+fi
 
 
 PATH="/home/JDamon/perl5/bin${PATH:+:${PATH}}"; export PATH;

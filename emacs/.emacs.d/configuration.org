@@ -44,7 +44,6 @@ Always compile packages, and use the newest version available.
 #+END_SRC
 
 
-
 * Personal information
 ** Who am I? Where am I?
    :PROPERTIES:
@@ -88,11 +87,11 @@ Always compile packages, and use the newest version available.
 :PROPERTIES:
 :ID:       64ad626c-0362-4c48-80a9-b0a7b30c584c
 :END:
+  helm completion system
 #+begin_src emacs-lisp
-  ;; helm completion system
   (use-package helm
     :config
-    (require 'helm-config)   
+    ;; (require 'helm-config)   
     :init
     (helm-mode 1)
     :bind
@@ -160,8 +159,10 @@ window on top of a cool european city backdrop. I like the Sanityinc tomorrow th
 I'm still not sure why this can't be loaded through use-package
 
 #+BEGIN_SRC emacs-lisp
-   (use-package color-theme-sanityinc-tomorrow)
+  ;(use-package color-theme-sanityinc-tomorrow)
   ;(require 'color-theme-sanityinc-tomorrow)
+  ;(use-package color-theme-sanityinc-tomorrow-blue)
+
 
   (defun transparency (value)
     "Sets the transparency of the frame window. 0=transparent/100=opaque."
@@ -171,7 +172,8 @@ I'm still not sure why this can't be loaded through use-package
   (defun jmd/apply-theme ()
     "Apply the `solarized-light' theme and make frames just slightly transparent."
     (interactive)
-    (color-theme-sanityinc-tomorrow-bright)
+    ;(color-theme-sanityinc-tomorrow-bright)
+    (color-theme-sanityinc-tomorrow-blue)
     ;; (load-theme 'solarized-light t)
     (transparency 96))
 #+END_SRC
@@ -253,7 +255,6 @@ as point goes.
     ;(setq scroll-step 1) ;; keyboard scroll one line at a time
 #+END_SRC
 
-
 * General Appearance / Startup
 ** Font Type
    :PROPERTIES:
@@ -330,38 +331,9 @@ as point goes.
    :END:
 
 #+BEGIN_SRC emacs-lisp
-
-  (defun forward-word-correctly (&optional n)
-    "Jump forward a word at a time"
-    (interactive "P")
-    (search-forward-regexp "[][[()_@#A-Za-z0-9&\\*\\\-\\.\\$]+")
-                                          ; [A-Za-z0-9-]+"
-    )
-
-  (defun backward-word-correctly (&optional n)
-    "Jump backward a word at a time"
-    (interactive "P")
-    (let (i)
-      (search-backward-regexp "\\b[ ]+")
-                                          ;    (search-backward-regexp "[A-Za-z0-9_=)]+")
-                                          ;    (search-backward-regexp "[A-Za-z0-9_=\-\\)\\(]+")
-      )
-    )
-
-  (global-set-key "\C-xg" 'goto-line)
-  (global-set-key "\C-b" 'backward-kill-word)
-  (global-set-key "\C-n" 'kill-word)
-  (global-set-key "\C-f" 'backward-word)
-  (global-set-key "\M-s" 'search-forward-regexp)
-  (global-set-key "\C-g" 'forward-word-correctly)
-                                          ; New binding to try out
-  (global-set-key "\M-b" 'backward-sexp)
-  (global-set-key "\M-n" 'forward-sexp)
-
-  (global-set-key "\C-cc" 'comment-region)
-  (global-set-key [(control left)]    'backward-word-correctly)
-  (global-set-key [(control right)] 'forward-word-correctly)
+(load-file  (concat (getenv "HOME") "/.emacs.d/key-bindings.el"))
 #+END_SRC
+
 ** ANSI colors
    :PROPERTIES:
    :ID:       7d3097aa-992e-4873-b88f-c8fc1251c8ad
@@ -694,7 +666,12 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
   (defun my-c-mode-hook ()
     (hs-minor-mode))
   (add-hook 'c++-mode-hook 'my-c-mode-hook)
+#+end_src
 
+*** Global line numbers
+#+begin_src emacs-lisp
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'prog-mode-hook 'hs-minor-mode)
 #+end_src
 
 *** Adds custom C/C++ headers 
@@ -728,31 +705,6 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
       )
     (insert "*/")
 
-    )
-
-  (defun add-c-header( &optional n )
-    "Adds the header title information for the C file"
-    (interactive "P")
-    (let (i count ) 
-      (setq count (/ PERL_HEADER_LENGTH 2))
-      (insert "/*")
-      (dotimes (i count) 
-        (insert "**")
-        )
-      (insert "\n")
-      (insert " * source::name= " (buffer-name) "\n")
-      (insert " * source::desc=\n")
-      (insert " * source::author= " (user-real-login-name) "\n")
-      (insert " * source::cvs= $Id$\n")
-      (insert " * source::changed= $Date$\n")
-      (insert " * source::modusr= $Author$\n")
-      (insert " * source::notes=\n")
-      (insert " * source::todo=\n *")
-      (dotimes (i (- count 1))
-        (insert "**")
-        )
-      (insert "*/")
-      )
     )
 #+END_SRC
 
@@ -1055,235 +1007,6 @@ I like tree-based undo management. I only rarely need it, but when I do, oh boy.
       (indent-for-tab-command)
       )
     )
-
-  (defun add-perl-mod-sub-header( &optional n )
-    "Adds a complex header title for the Perl subroutine"
-    (interactive "P")
-    (let (function_name return_type function_args
-                        args search listargs counter optionalargs) 
-      (setq a (point-marker))
-      (setq optionalargs nil)
-      (end-of-line)
-      (copy-region-as-kill a (point-marker))
-      (setq line (car kill-ring-yank-pointer))    
-      ( posix-string-match "^ *sub +\\([A-Za-z0-9_]+\\) *(\\([&$@;%*\\ ]*\\))?" line )
-      (setq function_name (match-string 1 line))
-      (setq function_args (match-string 2 line))
-      (setq search (posix-string-match "^\\([\\]?[@&%;$*]\\)\\(.*\\)" function_args))
-      (while search
-        (setq arg (match-string 1 function_args))
-        (setq function_args (match-string 2 function_args))
-        (setq search (posix-string-match "^\\([\\]?[&@%;$*]\\)\\(.*\\)" function_args))
-        (cond ((if (eq optionalargs nil) t) 
-               (cond 
-                ((string= arg "\\$")  (push "(SCALAR REF)" listargs ))
-                ((string= arg "\\@")  (push "(ARRAY REF)" listargs ))
-                ((string= arg "\\%")  (push "(HASH REF)" listargs ))
-                ((string= arg "\\*")  (push "(GLOB REF)" listargs ))
-                ((string= arg "\\&")  (push "(CODE REF)" listargs ))
-                ((string= arg "$" )  (push "(SCALAR)" listargs ))
-                ((string= arg "@" )  (push "(ARRAY)" listargs ))
-                ((string= arg "%" )  (push "(HASH)" listargs))
-                ((string= arg "*" )  (push "(GLOB)" listargs))
-                ((string= arg ";" )  (setq optionalargs t))
-                )
-               )                        ;else...
-              ((string= arg "\\$")  (push "(OP:SCALAR REF)" listargs ))
-              ((string= arg "\\@")  (push "(OP:ARRAY REF)" listargs ))
-              ((string= arg "\\%")  (push "(OP:HASH REF)" listargs ))
-              ((string= arg "\\*")  (push "(OP:GLOB REF)" listargs ))
-              ((string= arg "\\&")  (push "(OP:CODE REF)" listargs ))
-              ((string= arg "$" )  (push "(OP:SCALAR)" listargs ))
-              ((string= arg "@" )  (push "(OP:ARRAY)" listargs ))
-              ((string= arg "%" )  (push "(OP:HASH)" listargs))
-              ((string= arg "*" )  (push "(OP:GLOB)" listargs))
-              )
-        )
-      (goto-char a )
-      (add-perl-top-banner)
-      (insert (format "# sub::name= %s\n" function_name ) )
-      (insert "# sub::desc=\n")
-      (insert "# sub::args=\n")
-      (setq counter 1)
-      (dolist (i (reverse listargs))
-        (insert (format "#              %d. %-12s:\n" counter i))
-        (setq counter (+ counter 1))
-        )
-      (insert "# sub::return=\n")
-      (insert "# sub::notes=\n")
-      (insert "#              None\n")
-      (insert "# sub::todo=\n")
-      (insert "#              None\n")
-      (add-perl-top-banner)
-      )
-    )
-
-  (defun sw-add-perl-package-header( &optional n )
-    "Adds a header title for a Perl Package"
-    (interactive "P")
-    (let (function_name return_type function_args )
-
-
-
-      )
-    )
-
-  (defun sw-add-perl-pod-section( &optional n)
-    "Adds POD documentation at the end of the file"
-    (interactive "P")
-    (let ( bufname )
-      (insert "__END__\n")
-      (insert "\n\n=head1 NAME\n\n")
-      (insert (format "%s - INSERT DESCRIPTION\n\n" (buffer-name)))
-      (insert "=head1 SYNOPSIS\n\n=over 12\n\n")
-      (insert "=item B<fuse_layer.pl>\n\n[][]\n\n")
-      (insert "=back\n\n")
-      (insert "=head1 OPTIONS AND ARGUMENTS\n\n")
-      (insert "=over 8\n\n")
-      (insert "=head1 DESCRIPTION\n\n")
-      (insert "=head1 SEE ALSO\n\n")
-      (insert "=head1 AUTHOR\n\n")
-      (insert "Please report bugs to jdamon@maxlinear\n\n")
-      )
-    ); defun
-
-
-  (defun sw-add-perl-mod-sub-header( &optional n )
-    "Adds a complex header title for the Perl subroutine"
-    (interactive "P")
-    (let (function_name return_type function_args
-                        args search listargs counter optionalargs) 
-      (setq a (point-marker))
-      (setq optionalargs nil)
-      (end-of-line)
-      (copy-region-as-kill a (point-marker))
-      (setq line (car kill-ring-yank-pointer))    
-      ( posix-string-match "^ *sub +\\([A-Za-z0-9_]+\\) *(\\([&$@;%*\\ ]*\\))?" line )
-      (setq function_name (match-string 1 line))
-      (setq function_args (match-string 2 line))
-      (setq search (posix-string-match "^\\([\\]?[@&%;$*]\\)\\(.*\\)" function_args))
-      (while search
-        (setq arg (match-string 1 function_args))
-        (setq function_args (match-string 2 function_args))
-        (setq search (posix-string-match "^\\([\\]?[&@%;$*]\\)\\(.*\\)" function_args))
-        (cond ((if (eq optionalargs nil) t) 
-               (cond 
-                ((string= arg "\\$")  (push "(SCALAR REF)" listargs ))
-                ((string= arg "\\@")  (push "(ARRAY REF)" listargs ))
-                ((string= arg "\\%")  (push "(HASH REF)" listargs ))
-                ((string= arg "\\*")  (push "(GLOB REF)" listargs ))
-                ((string= arg "\\&")  (push "(CODE REF)" listargs ))
-                ((string= arg "$" )  (push "(SCALAR)" listargs ))
-                ((string= arg "@" )  (push "(ARRAY)" listargs ))
-                ((string= arg "%" )  (push "(HASH)" listargs))
-                ((string= arg "*" )  (push "(GLOB)" listargs))
-                ((string= arg ";" )  (setq optionalargs t))
-                )
-               )                        ;else...
-              ((string= arg "\\$")  (push "(OP:SCALAR REF)" listargs ))
-              ((string= arg "\\@")  (push "(OP:ARRAY REF)" listargs ))
-              ((string= arg "\\%")  (push "(OP:HASH REF)" listargs ))
-              ((string= arg "\\*")  (push "(OP:GLOB REF)" listargs ))
-              ((string= arg "\\&")  (push "(OP:CODE REF)" listargs ))
-              ((string= arg "$" )  (push "(OP:SCALAR)" listargs ))
-              ((string= arg "@" )  (push "(OP:ARRAY)" listargs ))
-              ((string= arg "%" )  (push "(OP:HASH)" listargs))
-              ((string= arg "*" )  (push "(OP:GLOB)" listargs))
-              )
-        )
-      (goto-char a )
-      (add-perl-top-banner)
-      (insert (format "# Name     : %s\n" function_name ) )
-      (insert "# Desc     :\n")
-      (insert "# Args     :\n")
-      (setq counter 1)
-      (dolist (i (reverse listargs))
-        (insert (format "#              %d. %-12s:\n" counter i))
-        (setq counter (+ counter 1))
-        )
-      (insert "# Returns  :\n")
-      (insert "# Throws   :\n")
-      (insert "# Notes    :\n")
-      (insert "#              none\n")
-      (insert "# Todo     :\n")
-      (insert "#              none\n")
-      (add-perl-top-banner)
-      )
-    )
-;------------------------------------------------------------------------------
-;
-; fn::name= add-c-mod-function-header
-; fn::desc= adds a C function header
-; fn::args= 1: optional, that describes number of characers
-; fn::desc= 1. Goal is to extract from a given line, the args passed to the
-;              function, and the arguments that are returned back to the
-;              user itself.
-; 
-; fn::todos= 1. Paste the elements from the start of the line until the
-;               end of the line into a buffer.............................DONE!
-;            2. Save the current point, and then insert the text above
-;               it........................................................DONE!
-;            3. Eventually allow functions to span multiple lines until it
-;               reaches the '{' character.................................
-;            4. Correctly parse Pointers to functions.....................
-;
-;            5. Allow correct matching for a term such as follows:
-;               const void *key... would be const void *..................DONE!
-;            6. Allow pointer to pointer declarations.....................DONE!
-;
-;            7. Add fix to allow for  function declarations that return
-;               pointers, like :  static int *function()..................DONE!
-;            8. Add fix for base case, such as void Do_something(void)
-;               and just pick up void.....................................
-;------------------------------------------------------------------------------
-  (defun add-c-mod-function-header( &optional n)
-    "Add a default header to a subroutine"
-    (interactive "P")
-    (let (function_name return_type function_args
-                        args i tmp)
-      (setq a (point-marker))
-      (end-of-line)
-      (copy-region-as-kill a (point-marker))
-      (setq line (car kill-ring-yank-pointer))    
-                                          ;    (string-match "\\(.*\\) +\\([A-Za-z0-9_-\\*]+\\) *( *\\([^)]*\\) *) *{?" line)
-      (string-match "\\(.* +\\** *\\)\\([A-Za-z0-9_-]+\\) *( *\\([^)]*\\) *) *{?" line)
-      (setq return_type (match-string 1 line))
-      (setq function_name (match-string 2 line))
-      (setq function_args (match-string 3 line))
-      (setq args (split-string function_args "," )) ; Split on the commas...
-      (goto-char a)
-      (insert "\n")
-      (if n 
-          (setq count n )
-        (setq count (/ PERL_HEADER_LENGTH 2)  )
-        )
-      (insert "/*")
-      (dotimes (i count)
-        (insert "**")
-        )
-      (insert "\n")
-      (insert " * fn::name= " function_name "\n" )
-      (insert " * fn::desc= \n")
-      (insert " * fn::args= \n")
-      (setq i 1)
-      (dolist (value args)
-        (stringp value)
-        (posix-string-match "^ *\\([A-Za-z0-9_ ]+\\**\\)\\b\\w+" value)
-        (setq tmp (match-string 1 value))
-        (insert (format " *%12s%d (%s): \n" " " i tmp) )
-        (setq i (+ i 1))
-        )
-      (insert " * fn::return=\n")
-      (insert (format " *%12s%s: \n" " " return_type ))
-      (insert " * fn::notes=\n")
-      (insert " * fn::todo= \n *")
-      (dotimes (i (- count 1))
-        (insert "**")
-        )
-      (insert "*/\n")
-      )
-    )
-
 #+end_src
 ** Maxima
    :PROPERTIES:
@@ -1889,7 +1612,7 @@ my buffer.
     (add-to-list 'ac-sources 'ac-source-semantic)
     )
 
-  (add-hook 'c-mode-common-hook 'my-add-semantic-to-autocomplete)
+  ;; (add-hook 'c-mode-common-hook 'my-add-semantic-to-autocomplete)
   (electric-indent-mode -1)
 
 (defun window-toggle-split-direction ()
@@ -1931,7 +1654,7 @@ i.e. change right window to bottom, or change bottom window to right."
 
 
   (setq epa-file-cache-passphrase-for-symmetric-encryption t )
-  (setq org-deadline-warning-days 0)
+  (setq org-deadline-warning-days 14)
   (use-package flycheck-ledger :after ledger-mode )
 
     (setq org-return-follows-link t )
@@ -1977,6 +1700,7 @@ i.e. change right window to bottom, or change bottom window to right."
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/Dropbox/org/")
 (setq dropbox-directory "~/Dropbox/org/")
+(setq dropbox-base "~/Dropbox/")
 (add-hook 'org-mode-hook 'outline-minor-mode)
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
 (add-hook 'org-mode-hook 'turn-on-flyspell)
@@ -2016,6 +1740,9 @@ I like to see an outline of pretty bullets instead of a list of asterisks.
   (add-hook 'org-mode-hook 'org-bullets-mode))
 (setq org-bullets-bullet-list '("◉" "○" "✸"  "☯" "✿" "✜" "☯" "◆" "☯" "▶" ))
 
+;(setq org-bullets-bullet-list '("Ⓐ" "Ⓑ" "Ⓒ" "Ⓓ" "Ⓔ" "Ⓕ" "Ⓖ" ))
+;(setq org-bullets-bullet-list '("Ⓐ" "Ⓑ" "Ⓒ" "Ⓓ" "Ⓔ" "Ⓕ" "Ⓖ"))
+;(setq org-bullets-bullet-list '("ⓐ" "ⓑ" "ⓒ" "ⓓ" "ⓔ" "ⓕ" "ⓖ" "ⓗ" "ⓘ" "ⓙ" "ⓚ" "ⓛ" "ⓜ" ))
 #+END_SRC
 
 ** Changing colors of Org 
@@ -2074,6 +1801,9 @@ Hiding leading stars
    :PROPERTIES:
    :ID:       6fd53e38-0adf-4036-988b-4abe2968d8ee
    :END:
+
+   (use-package cdlatex)
+
 #+begin_src emacs-lisp
   (use-package tex
   :ensure auctex)
@@ -2180,8 +1910,6 @@ Hiding leading stars
 #+RESULTS:
 : jmd/mark-done-and-archive
 
-** Enforce 
-
 ** Exporting code
    :PROPERTIES:
    :ID:       67909117-604a-43b0-8d66-24096a099920
@@ -2190,16 +1918,6 @@ Hiding leading stars
 (setq org-confirm-babel-evaluate nil)
 #+end_src
 
-** Org Drill
-   :PROPERTIES:
-   :ID:       f6ba9994-c4e7-4936-b96b-609e0c22e38f
-   :END:
-#+BEGIN_SRC emacs-lisp
-; (eval-after-load "org"
-;   '(progn
-;     (add-to-list 'load-path "/home/jdamon/.emacs.d/elpa/org-drill")
-;     (require 'org-drill)))
-#+END_SRC
 ** Rest of ORG
    :PROPERTIES:
    :ID:       27a854f7-3c03-4311-a534-d353d5359606
@@ -2216,7 +1934,7 @@ Hiding leading stars
 
 (setq jd-org-directory (file-name-as-directory "~/Dropbox/org" ))                                                                                     
 ;; (setq jd-journal-directory (file-name-as-directory (concat jd-org-directory "Roam/daily" )))                                                           
-;(setq jd-journal-directory (file-name-as-directory (concat jd-org-directory "journal.org" )))                                                           
+                                        ;(setq jd-journal-directory (file-name-as-directory (concat jd-org-directory "journal.org" )))                                                           
 (setq jd-journal-directory (file-name-as-directory jd-org-directory))
 (setq jd-journal-format "%Y-%m.org" )                                                                                                                  
 (setq jd-journal-date-format "%Y-%m-%d %A")                                                                                                            
@@ -2225,7 +1943,7 @@ Hiding leading stars
 
 (defun jd/current-work-project())
 
-                         
+
 (defun jd/journal-date-path ()
   "Get file path for daily journal."
   (expand-file-name
@@ -2253,11 +1971,11 @@ Hiding leading stars
 ;;       from the org-capture.
 
 (defcustom my-org-personal-capture-filename nil                                                                                                        
-      "Non-nil means automatically use as personal capture filename"                                                                                       
-      :type '(string)                                                                                                                                      
-      :group 'myorg                                                                                                                                        
-      )                                                                                                                                                    
-                      
+  "Non-nil means automatically use as personal capture filename"                                                                                       
+  :type '(string)                                                                                                                                      
+  :group 'myorg                                                                                                                                        
+  )                                                                                                                                                    
+
 (defcustom my-org-work-capture-filename nil                                                                                                            
   "Non-nil means automatically use as personal capture filename"                                                                                       
   :type '(string)                                                                                                                                      
@@ -2281,186 +1999,277 @@ Hiding leading stars
 
 ;; jd/journal-date-path
 (setq org-capture-templates                                                                                                                            
-      '(("t" "Todo" entry (file+headline "~/Dropbox/org/inbox.org" "Tasks")  "* TODO %?\n%i\n   %a")                                                                                                                       
-        ("j" "Journal" plain (file+function "~/Dropbox/org/journal.org" jd/find-create-date-entry ) "** %?\n" )                                                                                                                                   
-        ("W" "Work Journal" plain (file+function "~/Dropbox/org/workjournal.org" jd/find-create-date-entry ) "** %?\t\t:work:\n" )                                                                                                                         
+      '(("t" "Todo" entry (file+headline "~/Dropbox/org/inbox.org" "Tasks")  "* TODO %?\n%i\n   %a")
+        ("j" "Journal" plain (file+function "~/Dropbox/org/journal.org" jd/find-create-date-entry ) "** %?\n    %i\n\n   %a" )
+        ("W" "Work Journal" plain (file+function "~/Dropbox/org/workjournal.org" jd/find-create-date-entry ) "** %?\t\t:@work:\n    %i\n%a" )
+        ("S" "Someday Task" entry (file+headline "~/Dropbox/org/someday.org" "Tasks")
+         "* %?\t\t:question:\n    :PROPERTIES:\n    :MODIFIED: %U\n    :END:\n")
         ("c" "Current Journal" entry (file+function my-org-personal-capture-filename jd/find-create-date-entry )                                       
          "** %?\t\t:work:\n" )                                                                                                                         
         ("q" "Questions" plain (file+function "~/Dropbox/org/questions.org" jd/find-create-date-entry) "** %?\t\t:question:\n    :PROPERTIES:\n    :MODIFIED: %U\n    :END:\n" )
         ))
-                             
-  (setq org-journal-file-format "%Y%m%d.org")
-  (setq org-hide-emphasis-markers t )
-  (use-package ob-kotlin)
 
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t)
-     (ledger . t)
-     (latex . t)
-     (ditaa . t)
-     (shell . t)
-     (dot . t)
-     (ruby . t)
+(setq org-journal-file-format "%Y%m%d.org")
+(setq org-hide-emphasis-markers t )
+(use-package ob-kotlin)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (ledger . t)
+   (latex . t)
+   (ditaa . t)
+   (shell . t)
+   (dot . t)
+   (ruby . t)
+   (octave . t)
      ;; (scala . t)
-     (kotlin . t)
-     (maxima . t )
-     ))
-  ;;
+   (kotlin . t)
+   (maxima . t )
+   ))
+;;
 
-  (defun org-journal-save-entry-and-exit()
-    "Simple convenience function.
+(defun org-journal-save-entry-and-exit()
+  "Simple convenience function.
     Saves the buffer of the current day's entry and kills the window
     Similar to org-capture like behavior"
-    (interactive)
-    (save-buffer)
-    (kill-buffer-and-window))
+  (interactive)
+  (save-buffer)
+  (kill-buffer-and-window))
 
-  ;;----------------------------------------------------------------------
-  ;; OS specific
+;;----------------------------------------------------------------------
+;; OS specific
 
-  (cond
-   ((string-equal system-type "windows-nt") ; Microsoft Windows
+(cond
+ ((string-equal system-type "windows-nt") ; Microsoft Windows
 
-    (progn
-      (setq-default ispell-program-name "C:/bin/Aspell/bin/aspell.exe") 
-      (setq org-ditaa-jar-path "c:/bin/ditaa/ditaa.jar")
-      )
+  (progn
+    (setq-default ispell-program-name "C:/bin/Aspell/bin/aspell.exe") 
+    (setq org-ditaa-jar-path "c:/bin/ditaa/ditaa.jar")
     )
-   ((string-equal system-type "gnu/linux") ; Linux
-    (progn
-      (setq x-select-enable-clipboard t)
-      (setq org-ditaa-jar-path "/usr/bin/ditaa")
-      )
+  )
+ ((string-equal system-type "gnu/linux") ; Linux
+  (progn
+    (setq x-select-enable-clipboard t)
+    (setq org-ditaa-jar-path "/usr/bin/ditaa")
     )
-   )
+  )
+ )
 
 
-					  ;(ledger . t)
-					  ; Use this to save my location in files when i reopen them
-  (save-place-mode t)
+                                        ;(ledger . t)
+                                        ; Use this to save my location in files when i reopen them
+(save-place-mode t)
 
-  (org-clock-persistence-insinuate)
-  (defun org-archive-done-tasks ()
-    (interactive)
-    (org-map-entries
-     (lambda ()
-       (org-archive-subtree)
-       (setq org-map-continue-from (outline-previous-heading)))
-     "/DONE" 'tree))
-  (global-set-key "\C-cl" 'org-store-link)
-  (global-set-key "\C-ca" 'org-agenda)
-  (global-set-key "\C-cc" 'org-capture)
-  (global-set-key "\C-cb" 'org-switchb)
-
-
-
-  (defun org-agenda-skip-deadline-if-not-thisweek ()
-    "If this function returns nil, the current match should not be skipped.
+(org-clock-persistence-insinuate)
+(defun org-archive-done-tasks ()
+  (interactive)
+  (org-map-entries
+   (lambda ()
+     (org-archive-subtree)
+     (setq org-map-continue-from (outline-previous-heading)))
+   "/DONE" 'tree))
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-cb" 'org-switchb)
+(defun org-agenda-skip-deadline-if-not-thisweek ()
+  "If this function returns nil, the current match should not be skipped.
     Otherwise, the function must return a position from where the search
     should be continued."
-    (ignore-errors
-      (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-	    (deadline-day
-	     (time-to-days
-	      (org-time-string-to-time
-	       (org-entry-get nil "DEADLINE"))))
-	    (now (time-to-days (current-time))))
-	(and deadline-day
-	     (not (= deadline-day now))
-	     subtree-end))))
-  (setq org-agenda-start-with-log-mode '(closed clock state))
-  (setq org-agenda-log-mode-items '(closed clock state))
+  (ignore-errors
+    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+	  (deadline-day
+	   (time-to-days
+	    (org-time-string-to-time
+	     (org-entry-get nil "DEADLINE"))))
+	  (now (time-to-days (current-time))))
+      (and deadline-day
+	   (not (= deadline-day now))
+	   subtree-end))))
+(setq org-agenda-start-with-log-mode '(closed clock state))
+(setq org-agenda-log-mode-items '(closed clock state))
 
-  (defun my-org-agenda-skip-all-siblings-but-first ()
-    "Skip all but the first non-done entry."
-    (let (should-skip-entry)
-      (unless (org-current-is-todo)
-	(setq should-skip-entry nil))
-      (save-excursion
-	(while (and (not should-skip-entry) (org-goto-sibling t))
-	  (when (org-current-is-todo)
-	    (setq should-skip-entry t))))
-      (when should-skip-entry
-	(or (outline-next-heading)
-	    (goto-char (point-max))))))
+(defun my-org-agenda-skip-all-siblings-but-first ()
+  "Skip all but the first non-done entry."
+  (let (should-skip-entry)
+    (unless (org-current-is-todo)
+      (setq should-skip-entry nil))
+    (save-excursion
+      (while (and (not should-skip-entry) (org-goto-sibling t))
+	(when (org-current-is-todo)
+	  (setq should-skip-entry t))))
+    (when should-skip-entry
+      (or (outline-next-heading)
+	  (goto-char (point-max))))))
 
-  (defun org-current-is-todo ()
-     (string= "TODO" (org-get-todo-state)))
+(defun org-current-is-todo ()
+  (string= "TODO" (org-get-todo-state)))
+ #+END_SRC
 
+** Org Agenda
 
-  (setq org-agenda-custom-commands
-	'(("c" "Simple agenda view"
-	   ((agenda "")
-	    (alltodo "")))
-	  ("h" "Work Things"
-	   ((agenda "" ((org-agenda-ndays 1)
-			(org-agenda-sorting-strategy
-			 (quote ((agenda time-up priority-down tag-up))))
-			(org-deadline-warning-days 0)))
-	    ))
-	  ("w" "Work tasks" tags-todo "work"
-	   ((org-agenda-overriding-header "Office")
-	    (org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
-	  ("W" "Weely review"
-	   ((agenda ""
-		    ((org-agenda-span 'week)
-		     (org-agenda-start-on-weekday 0)
-		     (org-agenda-start-with-log-mode '(closed clock state))
-		     ;; (org-agenda-skip-function
-		     ;;  '(org-agenda-skip-entry-if 'nottodo 'done))
-		     )))
-	   )
-	  ;; ("1" "Q1" tags-todo "+important+urgent") ; Not needed right now 
-	  ;; ("2" "Q2" tags-todo "+important-urgent") ; revisit someday
-	  ;; ("3" "Q3" tags-todo "-important+urgent")
-	  ;; ("4" "Q4" tags-todo "-important-urgent")
+#+begin_src emacs-lisp
+(use-package org-super-agenda
+  :config 
+  (org-super-agenda-mode)
+  )
+
+(setq today-plus-7days (org-read-date nil nil "+1"))
+
+(setq org-agenda-files (append (list 
+                                (concat dropbox-directory "workjournal.org")
+                                (concat dropbox-directory "journal.org")
+                                (concat dropbox-directory "personal.org")
+                                (concat dropbox-directory "tickler.org")
+                                (concat dropbox-directory "gtd.org")
+                                (concat dropbox-directory "archive.org")
+                                (concat dropbox-directory "gcal.org")
+                                (concat dropbox-directory "inbox.org")
+                                (concat dropbox-directory "reckoning.org")
+                                (concat dropbox-directory "work.org")
+                                )
+                               ))
+
+(setq org-agenda-custom-commands
+      `(("c" "Simple agenda view"
+	 ((agenda "")
+	  (alltodo "")))
+	("h" "Work Things"
+	 ((agenda "" ((org-agenda-ndays 1)
+		      (org-agenda-sorting-strategy
+		       (quote ((agenda time-up priority-down tag-up))))
+		      (org-deadline-warning-days 0)))
 	  ))
+	("w" "Work tasks" tags-todo "@work"
+	 ((org-agenda-overriding-header "Work")
+	  (org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
+	("W" "Weely review"
+	 ((agenda ""
+		  ((org-agenda-span 'week)
+		   (org-agenda-start-on-weekday 0)
+		   (org-agenda-start-with-log-mode '(closed clock state))
+		   ;; (org-agenda-skip-function
+		   ;;  '(org-agenda-skip-entry-if 'nottodo 'done))
+		   ))
+	  ))
+        ("z" "Zen Super view"
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-super-agenda-groups
+                       '((:name "Today"
+                                :time-grid t  ; Items that appear on the time grid
+                                :todo "TODAY"
+                                :order 1 
+                                )
+                         (:name "Due Today"
+                                :deadline today
+                                :order 2)
+                         (:name "Due Soon"
+                                :deadline  (before ,(org-read-date nil nil "+10" ))
+                                :order 3 
+                                )
+                         ;; (:name "Scheduled soon"
+                         ;;        :scheduled (before ,(format "%s" "2022-12-01"))
+                         ;;        )
+                         ;; (:name "FOO" 
+                         ;;        :deadline (before "2022-11-19"))
+                         ;; (:discard (:deadline (after "2022-11-20")))
+                         ;; ;; (:discard `(:deadline (after ,(org-read-date nil nil "+0" ))))
+                         ;; (:name "Due Soon"
+                         ;;        :deadline (before "2022-11-18")
+                         ;;        :order 3
+                         ;;        )
+                         ;;        ;; :deadline `(before ,(org-read-date nil nil "+10"))
+                         (:habit t 
+                                 :order 4)
+                         (:name "Start Today"
+                                :scheduled today
+                                :order 5
+                                )
+                         
+                         )))); agenda
 
-  (defun jmd-org-tasks-closed-in-month (&optional month year match-string)
-    "Produces an org agenda tags view list of the tasks completed 
+          (alltodo "" ((org-agenda-overriding-header "")
+                       (org-super-agenda-groups
+                        '(
+                          (:name "Inbox"
+                                           :order 6
+                                           :file-path "inbox"
+                                 )
+                          (:name "Waiting"
+                                :todo "WAITING"
+                                )
+                          ;; (:name "Next to do"
+                          ;;        :order 6
+                          ;;        :deadline nil
+                          ;;        :and (:todo "NEXT"))
+                          (:discard (:todo "TODO"))
+                          (:discard (:category "tickler"))
+                          (:discard (:tag "call"))
+                          (:auto-category t :order 9)
+
+                          (:name "Next Steps"
+                                 :and (:todo "NEXT"))
+
+                          ;; (:discard (:anything))
+                          )))); alltodo
+          )
+         )
+        ("o"  "Office stuff" tags-todo "@work" 
+         ((org-agenda-overriding-header "Work")
+          (org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
+        )); org-agenda-custom-commands
+                                ;; :deadline (before "2022-11-20")
+                                ;; :deadline (before '(org-read-date nil nil "+1"))
+
+(defun jmd-org-tasks-closed-in-month (&optional month year match-string)
+  "Produces an org agenda tags view list of the tasks completed 
     in the specified month and year. Month parameter expects a number 
     from 1 to 12. Year parameter expects a four digit number. Defaults 
     to the current month when arguments are not provided. Additional search
     criteria can be provided via the optional match-string argument "
-    (interactive)
-    (let* ((today (calendar-current-date))
-	   (for-month (or month (calendar-extract-month today)))
-	   (for-year  (or year  (calendar-extract-year today))))
-      (org-tags-view nil 
-		     (concat
-		      match-string
-		      (format "+CLOSED>=\"[%d-%02d-01]\"" 
-			      for-year for-month)
-		      (format "+CLOSED<=\"[%d-%02d-%02d]\"" 
-			      for-year for-month 
-			      (calendar-last-day-of-month for-month for-year))))))
+  (interactive)
+  (let* ((today (calendar-current-date))
+	 (for-month (or month (calendar-extract-month today)))
+	 (for-year  (or year  (calendar-extract-year today))))
+    (org-tags-view nil 
+		   (concat
+		    match-string
+		    (format "+CLOSED>=\"[%d-%02d-01]\"" 
+			    for-year for-month)
+		    (format "+CLOSED<=\"[%d-%02d-%02d]\"" 
+			    for-year for-month 
+			    (calendar-last-day-of-month for-month for-year))))))
 
-  (defun jmd-org-tasks-query-for-month (&optional month year)
-    (interactive)
-    (let* ((today (calendar-current-date))
-	   (for-month (or month (calendar-extract-month today)))
-	   (for-year  (or year  (calendar-extract-year today))))
-      (concat
-       (format "+CLOSED>=\"[%d-%02d-01]\"" for-year for-month)
-       (format "+CLOSED<=\"[%d-%02d-%02d]\"" for-year for-month  (calendar-last-day-of-month for-month for-year)))
-      ))
+(defun jmd-org-tasks-query-for-month (&optional month year)
+  (interactive)
+  (let* ((today (calendar-current-date))
+	 (for-month (or month (calendar-extract-month today)))
+	 (for-year  (or year  (calendar-extract-year today))))
+    (concat
+     (format "+CLOSED>=\"[%d-%02d-01]\"" for-year for-month)
+     (format "+CLOSED<=\"[%d-%02d-%02d]\"" for-year for-month  (calendar-last-day-of-month for-month for-year)))
+    ))
 
-  (defun jmd-work-tasks-last-month ()
-    "Produces an org agenda tags view list of all the tasks completed
+(defun jmd-work-tasks-last-month ()
+  "Produces an org agenda tags view list of all the tasks completed
     last month with for work "
-    (interactive)
-    (let* ((today (calendar-current-date))
-	   (for-month (calendar-extract-month today))
-	   (for-year  (calendar-extract-year today)))
-      (calendar-increment-month for-month for-year -1)
-      (org-tags-view nil (concat "TODO=\"DONE\"" 
-				 (jmd-org-tasks-query-for-month for-month for-year) 
-				 "|ARCHIVE_ITAGS=\"work\""
-				 (jmd-org-tasks-query-for-month for-month for-year)))))
+  (interactive)
+  (let* ((today (calendar-current-date))
+	 (for-month (calendar-extract-month today))
+	 (for-year  (calendar-extract-year today)))
+    (calendar-increment-month for-month for-year -1)
+    (org-tags-view nil (concat "TODO=\"DONE\"" 
+			       (jmd-org-tasks-query-for-month for-month for-year) 
+			       "|ARCHIVE_ITAGS=\"work\""
+			       (jmd-org-tasks-query-for-month for-month for-year)))))
 
-  ;; (define-key org-journal-mode-map (kbd "C-x C-s") 'org-journal-save-entry-and-exit)
+;; (define-key org-journal-mode-map (kbd "C-x C-s") 'org-journal-save-entry-and-exit)
  #+END_SRC
+
+ #+RESULTS:
+ : jmd-work-tasks-last-month
+
 ** Org Download
    :PROPERTIES:
    :ID:       9568b3af-6ec8-4642-86e7-47720f17796d
@@ -2500,68 +2309,126 @@ Hiding leading stars
    :END:
 
 #+begin_src emacs-lisp
-  (use-package org-journal
-   :bind (("C-c t" . journal-file-today)
-          ("C-c y" . journal-file-yesterday))
-   :custom
-   (org-journal-dir "~/Dropbox/org/journal/")
-   (org-journal-file-format "%Y%m%d")
-   (org-journal-date-format "%e %b %Y (%A)")
-   (org-journal-time-format "")
-   :preface
-
-   (defun get-journal-file-yesterday ()
-     "Gets filename for yesterday's journal entry."
-     (let* ((yesterday (time-subtract (current-time) (days-to-time 1)))
-            (daily-name (format-time-string "%Y%m%d" yesterday)))
-       (expand-file-name (concat org-journal-dir daily-name))))
-
-   (defalias 'journal-file-today 'org-journal-new-entry)
-
-   (defun journal-file-yesterday ()
-     "Creates and load a file based on yesterday's date."
-     (interactive)
-     (find-file (get-journal-file-yesterday))))
+;; (use-package org-journal
+;;   :ensure t
+;;   :defer t
+;;   :bind (("C-c t" . journal-file-today)
+;;          ("C-c y" . journal-file-yesterday))
+;;   :custom
+;;   (org-journal-dir jd-journal-directory)
+;;   (org-journal-file-type "weekly")
+;;   (org-journal-date-format jd-journal-date-format)
+;;   (org-journal-time-format "%H:%M ")
+;;   (org-journal-enable-agenda-integration t)
+;;   :preface
+;;   (defalias 'journal-file-today 'org-journal-new-entry)
+;;   (defun journal-file-yesterday ()
+;;     "Creates and load a file based on yesterday's date."
+;;     (interactive)
+;;     (find-file (get-journal-file-yesterday)))
+;;   :config
+;;   ;; in case you want .gpg preserved files
+;;   ;;(setq org-agenda-file-regexp "\\`\\\([^.].*\\.org\\\|[0-9]\\\{8\\\}\\\(\\.gpg\\\)?\\\)\\'")
+;;   (add-to-list 'org-agenda-files jd-journal-directory)
+;;   (org-journal-update-auto-mode-alist)
+;;   )
+;; (jmd/find-good-org-files fname)
+;; (setq fname "todo/Receipts/receipts.org")
+;; (setq fname "todo/Receipts/receipts.org.skip")
+(defun jmd/find-good-org-files ( fname)
+  "Creates and load a file based on yesterday's date."
+  (interactive)
+  (if (string-match ".*\\.org\\.skip" fname )
+      (progn                              ; true
+        nil
+        )
+    (progn                           ;False
+      t
+      )
+    )
+  )
 #+end_src
-
-#+RESULTS:
-: journal-file-yesterday
 ** Org Roam
    :PROPERTIES:
    :ID:       88f88606-be20-4201-b4ca-7d7bda997dd5
    :END:
 #+begin_src emacs-lisp
-  ;; Older package
-  ;; (use-package org-roam
-  ;;       :hook 
-  ;;       (after-init . org-roam-mode)
-  ;;       :custom
-  ;;       (org-roam-directory "~/Dropbox/org/Roam")
-  ;;       :ensure t
-  ;;       :bind (:map org-roam-mode-map
-  ;;               (("C-c n l" . org-roam)
-  ;;                ("C-c n f" . org-roam-find-file)
-  ;;                ("C-c n b" . org-roam-switch-to-buffer)
-  ;;                ("C-c n g" . org-roam-graph-show))
-  ;;               :map org-mode-map
-  ;;               (("C-c n i" . org-roam-insert))))
-
   (use-package org-roam
     :ensure t
     :init 
     (setq org-roam-v2-ack t)
     :custom 
-    (org-roam-directory "~/Dropbox/org")
+    (org-roam-directory "~/Dropbox/org/Roam/")
     (org-roam-completion-everywhere t)
+    :custom-face
+    (org-roam-link ((t (:inherit org-link :foreground "#C991E1"))))
+
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n i" . org-roam-node-insert)
+           ("C-c n g" . org-roam-show-graph)
            ("C-c n I" . org-roam-node-insert-immediate)
            ("C-c n b" . org-roam-switch-to-buffer)
            :map org-mode-map
            ("C-M-i"   . completion-at-point))
     :config 
-    (org-roam-db-autosync-mode))
+    (org-roam-db-autosync-mode)
+    (defun jimi_damon/conditional-hugo-enable ()
+      (save-excursion
+        (if (cdr (assoc "SETUPFILE" (org-roam--extract-global-props '("SETUPFILE"))))
+            (org-hugo-auto-export-mode +1)
+          (org-hugo-auto-export-mode -1))))
+    
+    (with-eval-after-load 'org
+      (defun my/org-roam--backlinks-list (file)
+        (if (org-roam--org-roam-file-p file)
+            (--reduce-from
+             (concat acc (format "- [[file:%s][%s]]\n"
+                                 (file-relative-name (car it) org-roam-directory)
+                                 (org-roam--get-title-or-slug (car it))))
+             "" (org-roam-sql [:select [file-from]
+                                       :from file-links
+                                       :where (= file-to $s1)
+                                       :and file-from :not :like $s2] file "%private%"))
+          ""))
+      (defun my/org-export-preprocessor (_backend)
+      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
+        (unless (string= links "")
+          (save-excursion
+            (goto-char (point-max))
+            (insert (concat "\n* Backlinks\n" links))))))
+      (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
+    (setq org-roam-capture-templates
+        '(("d" "default" plain "%?"
+           ;(file+head "path/to/file" "head content")
+      ;; (file+head "path/to/file" "head content")
+           :target (file+head "${slug}.org" "#+SETUPFILE:./hugo_setup.org
+#+HUGO_SECTION: zettels
+#+TITLE: ${title}\n" )
+;; :head "#+SETUPFILE:./hugo_setup.org
+;; #+HUGO_SECTION: zettels
+;; #+HUGO_SLUG: ${slug}
+;; #+TITLE: ${title}\n"
+           :unnarrowed t
+           )
+          ;; ("p" "private" plain (function org-roam--capture-get-point)
+          ;;  "%?"
+          ;;  :target 
+          ;;  ;; :file-name "private-${slug}"
+          ;;  :head "#+TITLE: ${title}\n"
+          ;;  :unnarrowed t)
+          ))
+  (setq org-roam-ref-capture-templates
+        '(("r" "ref" plain (function org-roam--capture-get-point)
+           "%?"
+           :file-name "websites/${slug}"
+           :head "#+SETUPFILE:./hugo_setup.org
+,#+ROAM_KEY: ${ref}
+,#+HUGO_SLUG: ${slug}
+,#+TITLE: ${title}
+
+- source :: ${ref}"
+           :unnarrowed t))))
 
     ;; (org-roam-setup)
 #+end_src
@@ -2588,13 +2455,17 @@ Hiding leading stars
 :PROPERTIES:
 :ID:       ffb9c8da-91fd-4506-ba99-40dc61e2dda0
 :END:
+
 #+begin_src emacs-lisp
+(use-package org-ref)
+
+
 (use-package org-roam-bibtex
-  :after org-roam
+  :after (org-roam org-ref)
   :load-path "~/Dropbox/org/Roam/"
   :hook (org-roam-mode . org-roam-bibtex-mode)
   :config
-  (require 'org-ref)) 
+  (require 'org-ref))
 
 (setq orb-note-actions-interface 'helm)
 (setq orb-preformat-keywords   '(("citekey" . "=key=") "note" "title" "url" "file" "author-or-editor" "keywords"))
@@ -2659,10 +2530,13 @@ Hiding leading stars
           org-roam-ui-open-on-start t))
 #+end_src
 
-
 ** Helm Bibtex
 #+begin_src emacs-lisp
-(use-package helm-bibtex )
+(use-package helm-bibtex 
+  :bind (("C-c n b" . helm-bibtex))
+  )
+
+
 
 (autoload 'helm-bibtex "helm-bibtex" "" t)
 (setq bibtex-completion-bibliography
@@ -2671,12 +2545,12 @@ Hiding leading stars
 
 ** Citar
 #+begin_src emacs-lisp
-(use-package citar
-  :bind (("C-c b" . citar-insert-citation)
-         :map minibuffer-local-map
-         ("M-b" . citar-insert-preset))
-  :custom
-  (citar-bibliography '("~/Dropbox/org/Zettelkasten/Zettelkasten.bib")))
+;; (use-package citar
+;;   :bind (("C-c b" . citar-insert-citation)
+;;          :map minibuffer-local-map
+;;          ("M-b" . citar-insert-preset))
+;;   :custom
+;;   (citar-bibliography '("~/Dropbox/org/Zettelkasten/Zettelkasten.bib")))
 
 (use-package citar-embark
   :after citar embark
@@ -2788,7 +2662,7 @@ Hiding leading stars
 
 
    #+end_src
-
+   
 ** Deft
    :PROPERTIES:
    :ID:       7f20e36b-a779-4791-b964-76623fbd086b
@@ -2807,24 +2681,39 @@ Hiding leading stars
   (setq deft-recursive t)
 #+end_src 
 ** Org sorting
+
+Need o spend some time on this stuff here
    :PROPERTIES:
    :ID:       fc34dd6f-372c-4c01-9e55-7c85254e9493
    :END:
+
 #+begin_src emacs-lisp
-(setq org-agenda-todo-ignore-scheduled t)
-(setq org-agenda-todo-ignore-deadlines t)
+(setq org-agenda-todo-ignore-scheduled nil)
+(setq org-agenda-todo-ignore-deadlines nil)
 (setq org-default-priority ?C)
 #+end_src
-** Org limiting Agenda views
+
+** COMMENT Org limiting Agenda views
    :PROPERTIES:
    :ID:       aeba792b-02be-45c4-97e1-fce803fca70b
    :END:
-
+Not needed any more
 #+begin_src emacs-lisp
-(setq org-agenda-todo-ignore-scheduled 'future)
-(setq org-agenda-todo-ignore-deadlines 'future)
-(setq org-agenda-tags-todo-honor-ignore-options t)
+;; (setq org-agenda-todo-ignore-scheduled 'future)
+;; (setq org-agenda-todo-ignore-deadlines 'future)
+;; (setq org-agenda-tags-todo-honor-ignore-options t)
 #+end_src
+** COMMENT Org Agenda hide blocked TODOS
+   :PROPERTIES:
+   :ID:       27c8e2a0-3577-49c5-a55b-f87986cf4b8a
+   :END:
+#+begin_src emacs-lisp
+;; This will hide blocked tasks in agenda
+;(setq org-agenda-dim-blocked-tasks 'invisible)
+;; This will show blocked tasks in agena
+;; (setq org-agenda-dim-blocked-tasks nil)
+#+end_src
+
 ** Org Hugo integration
    :PROPERTIES:
    :ID:       cffb64ed-4493-44cf-949f-d40d75a784c6
@@ -2981,17 +2870,6 @@ For exporting
     ;(global-set-key (kbd "C-c C-c") #'org-capture-at-point)
     #+end_src
 
-** Org Agenda hide blocked TODOS
-   :PROPERTIES:
-   :ID:       27c8e2a0-3577-49c5-a55b-f87986cf4b8a
-   :END:
-#+begin_src emacs-lisp
-;; This will hide blocked tasks in agenda
-;(setq org-agenda-dim-blocked-tasks 'invisible)
-;; This will show blocked tasks in agena
-(setq org-agenda-dim-blocked-tasks nil)
-#+end_src
-
 ** Beacon
 (beacon-mode t)
 ** Minimap
@@ -3037,7 +2915,6 @@ For exporting
 
 (insert (shell-command-to-string "/bin/echo hello"))
 
-
 * Email
 
 ** Outgoing Email server 
@@ -3056,28 +2933,28 @@ For exporting
 #+BEGIN_SRC emacs-lisp
 ;;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 ;;(load-file "/usr/share/emacs/site-lisp/mu4e/mu4e.el")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-(require 'mu4e)
-(setq mu4e-sent-messages-behavior 'delete)
-(setq mu4e-maildir (expand-file-name "~/Maildir"))
-(setq mu4e-get-mail-command "true")
-(setq mail-user-agent 'mu4e-user-agent)
-(setq mu4e-drafts-folder "/jdamon-gmail/[jdamon].Drafts")
-(setq mu4e-sent-folder   "/jdamon-gmail/[jdamon].Sent Mail")
-(setq mu4e-trash-folder  "/jdamon-gmail/[jdamon].Trash")
+;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/elpa-src/mu4e-1.8.14")
+;; (require 'mu4e)
+;; (setq mu4e-sent-messages-behavior 'delete)
+;; (setq mu4e-maildir (expand-file-name "~/Maildir"))
+;; (setq mu4e-get-mail-command "true")
+;; (setq mail-user-agent 'mu4e-user-agent)
+;; (setq mu4e-drafts-folder "/jdamon-gmail/[jdamon].Drafts")
+;; (setq mu4e-sent-folder   "/jdamon-gmail/[jdamon].Sent Mail")
+;; (setq mu4e-trash-folder  "/jdamon-gmail/[jdamon].Trash")
 
-(setq mu4e-sent-messages-behavior 'delete)
+;; (setq mu4e-sent-messages-behavior 'delete)
 
-(setq mu4e-get-mail-command "mbsync jdamon-gmail")
+;; (setq mu4e-get-mail-command "mbsync jdamon-gmail")
 
-;; something about ourselves
-   (setq
-      user-mail-address "jdamon@gmail.com"
-      user-full-name  "Jimi Damon"
-      mu4e-compose-signature
-       (concat
-         "Jimi Damon\n"
-         "\n"))
+;; ;; something about ourselves
+;;    (setq
+;;       user-mail-address "jdamon@gmail.com"
+;;       user-full-name  "Jimi Damon"
+;;       mu4e-compose-signature
+;;        (concat
+;;          "Jimi Damon\n"
+;;          "\n"))
 
    ;; (See the documentation for `mu4e-sent-messages-behavior' if you have
    ;; additional non-Gmail addresses and want assign them different
@@ -3129,7 +3006,7 @@ For exporting
    :END:
 
 #+begin_src emacs-lisp
-(require 'org-mu4e)
+;; (require 'org-mu4e)
 #+end_src
 ** Notmuch configuration
 * Misc
@@ -3176,14 +3053,13 @@ For exporting
                ))
 
 (add-to-list 'org-agenda-custom-commands
-             '("R" "Recurring TODOs" alltodo ""
+             '("R" "Recurring and Blocked TODOs" alltodo ""
                ((org-agenda-skip-function '(org-agenda-skip-if-not-blocked))
                 (org-enforce-todo-checkbox-dependencies nil))
                 ))
 
 
 #+end_src
-
 
 * Global revert
   :PROPERTIES:
@@ -3194,4 +3070,294 @@ For exporting
 #+end_src
 
 
+
+
+
+* Extra
+#+begin_src emacs-lisp
+;; (use-package counsel
+;;   :demand t
+;;   :diminish ivy-mode
+;;   :bind
+;;   (("C-c C-r" . ivy-resume)
+;;    ("M-x" . counsel-M-x)
+;;    ("C-c i" . counsel-imenu)
+;;    ("C-x b" . ivy-switch-buffer)
+;;    ("C-x B" . ivy-switch-buffer-other-window)
+;;    ("C-x k" . kill-buffer)
+;;    ("C-x C-f" . counsel-find-file)
+;;    ("C-x l" . counsel-locate)
+;;    ("C-c j" . counsel-git)
+;;    ("C-c s" . counsel-rg)
+;;    ("M-y" . counsel-yank-pop)
+;;    :map help-map
+;;    ("f" . counsel-describe-function)
+;;    ("v" . counsel-describe-variable)
+;;    ("l" . counsel-info-lookup-symbol)
+;;    :map ivy-minibuffer-map
+;;    ("C-o" . ivy-occur)
+;;    ("<return>" . ivy-alt-done)
+;;    ("M-<return>" . ivy-immediate-done)
+;;    :map read-expression-map
+;;    ("C-r" . counsel-minibuffer-history))
+;;   :custom
+;;   (ivy-use-virtual-buffers t)
+;;   (enable-recursive-minibuffers t)
+;;   (ivy-display-style 'fancy)
+;;   (ivy-use-selectable-prompt t)
+;;   (ivy-re-builders-alist
+;;    '((t . ivy--regex-plus)))
+;;   :config
+;;   (ivy-mode +1))
+
+;; (use-package ivy-rich
+;;   :init
+;;   (setq ivy-rich-display-transformers-list ; max column width sum = (ivy-poframe-width - 1)
+;; 	      '(ivy-switch-buffer
+;;           (:columns
+;;            ((ivy-rich-candidate (:width 30))  ; return the candidate itself
+;;             (ivy-rich-switch-buffer-size (:width 7))  ; return the buffer size
+;;             (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right)); return the buffer indicators
+;;             (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))          ; return the major mode info
+;;             (ivy-rich-switch-buffer-project (:width 15 :face success))             ; return project name using `projectile'
+;;             (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))  ; return file path relative to project root or `default-directory' if project is nil
+;;            :predicate
+;;            (lambda (cand) (get-buffer cand)))
+;;           counsel-M-x
+;; 	        (:columns
+;; 	         ((counsel-M-x-transformer (:width 35))
+;; 	          (ivy-rich-counsel-function-docstring (:width 34 :face font-lock-doc-face))))
+;; 	        counsel-describe-function
+;; 	        (:columns
+;; 	         ((counsel-describe-function-transformer (:width 35))
+;; 	          (ivy-rich-counsel-function-docstring (:width 34 :face font-lock-doc-face))))
+;; 	        counsel-describe-variable
+;; 	        (:columns
+;; 	         ((counsel-describe-variable-transformer (:width 35))
+;; 	          (ivy-rich-counsel-variable-docstring (:width 34 :face font-lock-doc-face))))))
+;;   :config
+;;   (ivy-rich-mode +1)
+;;   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+#+end_src
+
+
+* Extraagain
+Magit
+#+begin_src emacs-lisp
+(use-package magit
+  ;; :straight (magit :type git
+  ;;                  :files ("lisp/magit*.el" "lisp/git*.el"
+  ;;                          "Documentation/magit.texi" "Documentation/AUTHORS.md"
+  ;;                          "COPYING" (:exclude "lisp/magit-popup.el"))
+                   ;; :host github :repo "magit/magit")
+  :bind (("s-g" . magit-status)
+         ("C-c g" . magit-status)
+         ("s-G" . magit-blame-addition)
+         ("C-c G" . magit-blame-addition))
+  :hook
+  (magit-mode . hl-line-mode)
+  :custom
+  (magit-auto-revert-mode nil)
+  (magit-log-arguments '("-n100" "--graph" "--decorate"))
+  :config
+  (transient-append-suffix 'magit-log "a"
+    '("w" "Wip" magit-wip-log-current))
+  (magit-define-popup-switch 'magit-log-popup
+                             ?m "Omit merge commits" "--no-merges")
+  (transient-append-suffix 'magit-log "-A"
+    '("-m" "Omit merge commits" "--no-merges")))
+
+#+end_src
+
+
+** Git link
+#+begin_src emacs-lisp
+(use-package git-link
+  :commands
+  (git-link git-link-commit git-link-homepage)
+  :custom
+  (git-link-use-commit t))
+#+end_src
+
+#+begin_src emacs-lisp
+;; (use-package company-org-roam
+;;   :after org-roam company org
+;;   :config
+;;   (company-org-roam-init))
+#+end_src
+
+
+** Math pix
+#+begin_src emacs-lisp
+;; (use-package mathpix.el
+;;   ;; :straight (:host github :repo "jethrokuan/mathpix.el")
+;;   :custom ((mathpix-app-id "app-id")
+;;            (mathpix-app-key "app-key"))
+;;   :bind
+;;   ("C-x m" . mathpix-screenshot))
+#+end_src
+
+** Getting rid of secondary selection
+#+begin_src emacs-lisp
+(global-unset-key [M-mouse-1])
+(global-unset-key [M-drag-mouse-1])
+(global-unset-key [M-down-mouse-1])
+(global-unset-key [M-mouse-3])
+(global-unset-key [M-mouse-2])
+#+end_src
+
+
+
+** References  / Bibliography setup
+#+begin_src emacs-lisp
+(customize-set-value 'org-latex-hyperref-template "
+\\hypersetup{
+ pdfauthor={%a},
+ pdftitle={%t},
+ pdfkeywords={%k},
+ pdfsubject={%d},
+ pdfcreator={%c}, 
+ pdflang={%L},
+ linkcolor={red!50!black},citecolor={blue!50!black},urlcolor={blue!80!black}
+}
+")
+;\\addbibresource{~/Dropbox/org/Zettelkasten/Zettelkasten.bib}
+#+end_src
+
+* Not much mail
+
+* Org Refiling
+#+begin_src emacs-lisp
+(setq org-refile-files
+      '("~/Dropbox/org/gtd.org" "~/Dropbox/org/someday.org" "~/Dropbox/org/tickler.org" "~/Dropbox/org/reckoning.org" 
+        "~/Dropbox/org/knowledge.org"))
+
+(setq org-refile-targets
+      '((nil :maxlevel . 3)
+        (org-refile-files :maxlevel . 3)))
+#+end_src
+
+
+* Org Edna
+#+begin_src emacs-lisp
+;; (use-package org-edna 
+;;   :init
+;;   (org-edna-mode)
+;;   (add-hook 'org-mode 'org-edna-mode)
+;;   )
+
+#+end_src
+
+* Org contrib 
+#+begin_src emacs-lisp
+;; (use-package org-contrib 
+;;   :ensure t )
+;; (require 'org-depend )
+
+
+#+end_src
+* Crazy yank
+#+begin_src emacs-lisp
+(defun crazy-yank ()
+  (interactive)
+  (delete-char (length (current-kill 0)))
+  (yank))
+
+(global-set-key (kbd "C-M-y") 'crazy-yank)
+#+end_src
+
+* Adding notes and Agenda at current file
+
+- https://emacs.stackexchange.com/questions/30595/how-to-org-capture-at-current-location
+- Example
+#+begin_src emacs-lisp
+(defun org-capture-at-point ()
+  "Insert an org capture template at point."
+  (interactive)
+  (org-capture 0))
+
+(global-set-key (kbd "C-c C-c") #'org-capture-at-point)
+#+end_src
+
+
+** Showing the current file's list of notes
+
+- https://emacs.stackexchange.com/questions/59998/restrict-agenda-to-current-buffer-with-few-keystrokes
+#+begin_src emacs-lisp
+ (defun my/org-agenda-list-current-buffer ()
+  (interactive)
+  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
+      (call-interactively #'org-agenda)))
+#+end_src
+
+
+
+* Org disabling
+#+begin_src emacs-lisp
+(setq org-agenda-inhibit-startup t)
+#+end_src
+* PDF-Tools
+#+begin_src emacs-lisp
+
+(use-package pdf-tools
+  :ensure t
+  :config
+  ;; Uncomment one of the following based on your preference:
+  ;; (pdf-tools-install)  ; Standard activation
+  (pdf-loader-install)   ; On-demand loading for faster startup
+  :mode ("\\.pdf\\'" . pdf-view-mode))
+
+;; (use-package pdf-tools
+;;   :ensure t
+;;   :config
+;;   (pdf-tools-install)  ; Standard activation, or use pdf-loader-install for on-demand loading
+;;   :mode ("\\.pdf\\'" . pdf-view-mode))
+#+end_src
+
+#+RESULTS:
+: ((\.pdf\' . pdf-view-mode) (\.[pP][dD][fF]\' . pdf-view-mode) (\.odc\' . archive-mode) (\.odf\' . archive-mode) (\.odi\' . archive-mode) (\.otp\' . archive-mode) (\.odp\' . archive-mode) (\.otg\' . archive-mode) (\.odg\' . archive-mode) (\.ots\' . archive-mode) (\.ods\' . archive-mode) (\.odm\' . archive-mode) (\.ott\' . archive-mode) (\.odt\' . archive-mode) (\.scs$ . spectre-mode) (\.inp$ . spectre-mode) (\Vagrantfile.local$ . ruby-mode) (\Vagrantfile$ . ruby-mode) (\Rakefile$ . ruby-mode) (\Guardfile$ . ruby-mode) (\.gemspec$ . ruby-mode) (\.rake$ . ruby-mode) (\Gemfile$ . ruby-mode) (\.launch$ . xml-mode) (test\/.*\.test$ . xml-mode) (\.ma[cx] . maxima-mode) (\.ly$ . LilyPond-mode) (\.at\' . autotest-mode) (\.asy$ . asy-mode) (\.hva\' . latex-mode) (\.cmake\' . cmake-mode) (CMakeLists\.txt\' . cmake-mode) (\.ledger\' . ledger-mode) (/git-rebase-todo\' . git-rebase-mode) (\.gpg\(~\|\.~[0-9]+~\)?\' nil epa-file) (\.elc\' . elisp-byte-code-mode) (\.zst\' nil jka-compr) (\.dz\' nil jka-compr) (\.xz\' nil jka-compr) (\.lzma\' nil jka-compr) (\.lz\' nil jka-compr) (\.g?z\' nil jka-compr) (\.bz2\' nil jka-compr) (\.Z\' nil jka-compr) (\.vr[hi]?\' . vera-mode) (\(?:\.\(?:rbw?\|ru\|rake\|thor\|jbuilder\|rabl\|gemspec\|podspec\)\|/\(?:Gem\|Rake\|Cap\|Thor\|Puppet\|Berks\|Brew\|Vagrant\|Guard\|Pod\)file\)\' . ruby-mode) (\.re?st\' . rst-mode) (\.py[iw]?\' . python-mode) (\.m\' . octave-maybe-mode) (\.less\' . less-css-mode) (\.scss\' . scss-mode) (\.cs\' . csharp-mode) (\.awk\' . awk-mode) (\.\(u?lpc\|pike\|pmod\(\.in\)?\)\' . pike-mode) (\.idl\' . idl-mode) (\.java\' . java-mode) (\.m\' . objc-mode) (\.ii\' . c++-mode) (\.i\' . c-mode) (\.lex\' . c-mode) (\.y\(acc\)?\' . c-mode) (\.h\' . c-or-c++-mode) (\.c\' . c-mode) (\.\(CC?\|HH?\)\' . c++-mode) (\.[ch]\(pp\|xx\|\+\+\)\' . c++-mode) (\.\(cc\|hh\)\' . c++-mode) (\.\(bat\|cmd\)\' . bat-mode) (\.[sx]?html?\(\.[a-zA-Z_]+\)?\' . mhtml-mode) (\.svgz?\' . image-mode) (\.svgz?\' . xml-mode) (\.x[bp]m\' . image-mode) (\.x[bp]m\' . c-mode) (\.p[bpgn]m\' . image-mode) (\.tiff?\' . image-mode) (\.gif\' . image-mode) (\.png\' . image-mode) (\.jpe?g\' . image-mode) (\.webp\' . image-mode) (\.te?xt\' . text-mode) (\.[tT]e[xX]\' . tex-mode) (\.ins\' . tex-mode) (\.ltx\' . latex-mode) (\.dtx\' . doctex-mode) (\.org\' . org-mode) (\.dir-locals\(?:-2\)?\.el\' . lisp-data-mode) (\.eld\' . lisp-data-mode) (eww-bookmarks\' . lisp-data-mode) (tramp\' . lisp-data-mode) (/archive-contents\' . lisp-data-mode) (places\' . lisp-data-mode) (\.emacs-places\' . lisp-data-mode) (\.el\' . emacs-lisp-mode) (Project\.ede\' . emacs-lisp-mode) (\.\(scm\|sls\|sld\|stk\|ss\|sch\)\' . scheme-mode) (\.l\' . lisp-mode) (\.li?sp\' . lisp-mode) (\.[fF]\' . fortran-mode) (\.for\' . fortran-mode) (\.p\' . pascal-mode) (\.pas\' . pascal-mode) (\.\(dpr\|DPR\)\' . delphi-mode) (\.\([pP]\([Llm]\|erl\|od\)\|al\)\' . perl-mode) (Imakefile\' . makefile-imake-mode) (Makeppfile\(?:\.mk\)?\' . makefile-makepp-mode) (\.makepp\' . makefile-makepp-mode) (\.mk\' . makefile-gmake-mode) (\.make\' . makefile-gmake-mode) ([Mm]akefile\' . makefile-gmake-mode) (\.am\' . makefile-automake-mode) (\.texinfo\' . texinfo-mode) (\.te?xi\' . texinfo-mode) (\.[sS]\' . asm-mode) (\.asm\' . asm-mode) (\.css\' . css-mode) (\.mixal\' . mixal-mode) (\.gcov\' . compilation-mode) (/\.[a-z0-9-]*gdbinit . gdb-script-mode) (-gdb\.gdb . gdb-script-mode) ([cC]hange\.?[lL]og?\' . change-log-mode) ([cC]hange[lL]og[-.][0-9]+\' . change-log-mode) (\$CHANGE_LOG\$\.TXT . change-log-mode) (\.scm\.[0-9]*\' . scheme-mode) (\.[ckz]?sh\'\|\.shar\'\|/\.z?profile\' . sh-mode) (\.bash\' . sh-mode) (/PKGBUILD\' . sh-mode) (\(/\|\`\)\.\(bash_\(profile\|history\|log\(in\|out\)\)\|z?log\(in\|out\)\)\' . sh-mode) (\(/\|\`\)\.\(shrc\|zshrc\|m?kshrc\|bashrc\|t?cshrc\|esrc\)\' . sh-mode) (\(/\|\`\)\.\([kz]shenv\|xinitrc\|startxrc\|xsession\)\' . sh-mode) (\.m?spec\' . sh-mode) (\.m[mes]\' . nroff-mode) (\.man\' . nroff-mode) (\.sty\' . latex-mode) (\.cl[so]\' . latex-mode) (\.bbl\' . latex-mode) (\.bib\' . bibtex-mode) (\.bst\' . bibtex-style-mode) (\.sql\' . sql-mode) (\(acinclude\|aclocal\|acsite\)\.m4\' . autoconf-mode) (\.m[4c]\' . m4-mode) (\.mf\' . metafont-mode) (\.mp\' . metapost-mode) (\.vhdl?\' . vhdl-mode) (\.article\' . text-mode) (\.letter\' . text-mode) (\.i?tcl\' . tcl-mode) (\.exp\' . tcl-mode) (\.itk\' . tcl-mode) (\.icn\' . icon-mode) (\.sim\' . simula-mode) (\.mss\' . scribe-mode) (\.f9[05]\' . f90-mode) (\.f0[38]\' . f90-mode) (\.indent\.pro\' . fundamental-mode) (\.\(pro\|PRO\)\' . idlwave-mode) (\.srt\' . srecode-template-mode) (\.prolog\' . prolog-mode) (\.tar\' . tar-mode) (\.\(arc\|zip\|lzh\|lha\|zoo\|[jew]ar\|xpi\|rar\|cbr\|7z\|squashfs\|ARC\|ZIP\|LZH\|LHA\|ZOO\|[JEW]AR\|XPI\|RAR\|CBR\|7Z\|SQUASHFS\)\' . archive-mode) (\.oxt\' . archive-mode) (\.\(deb\|[oi]pk\)\' . archive-mode) (\`/tmp/Re . text-mode) (/Message[0-9]*\' . text-mode) (\`/tmp/fol/ . text-mode) (\.oak\' . scheme-mode) (\.sgml?\' . sgml-mode) (\.x[ms]l\' . xml-mode) (\.dbk\' . xml-mode) (\.dtd\' . sgml-mode) (\.ds\(ss\)?l\' . dsssl-mode) (\.js[mx]?\' . javascript-mode) (\.har\' . javascript-mode) (\.json\' . js-json-mode) (\.[ds]?va?h?\' . verilog-mode) (\.by\' . bovine-grammar-mode) (\.wy\' . wisent-grammar-mode) (\.erts\' . erts-mode) ([:/\]\..*\(emacs\|gnus\|viper\)\' . emacs-lisp-mode) (\`\..*emacs\' . emacs-lisp-mode) ([:/]_emacs\' . emacs-lisp-mode) (/crontab\.X*[0-9]+\' . shell-script-mode) (\.ml\' . lisp-mode) (\.ld[si]?\' . ld-script-mode) (ld\.?script\' . ld-script-mode) (\.xs\' . c-mode) (\.x[abdsru]?[cnw]?\' . ld-script-mode) (\.zone\' . dns-mode) (\.soa\' . dns-mode) (\.asd\' . lisp-mode) (\.\(asn\|mib\|smi\)\' . snmp-mode) (\.\(as\|mi\|sm\)2\' . snmpv2-mode) (\.\(diffs?\|patch\|rej\)\' . diff-mode) (\.\(dif\|pat\)\' . diff-mode) (\.[eE]?[pP][sS]\' . ps-mode) (\.\(?:PDF\|EPUB\|CBZ\|FB2\|O?XPS\|DVI\|OD[FGPST]\|DOCX\|XLSX?\|PPTX?\|pdf\|epub\|cbz\|fb2\|o?xps\|djvu\|dvi\|od[fgpst]\|docx\|xlsx?\|pptx?\)\' . doc-view-mode-maybe) (configure\.\(ac\|in\)\' . autoconf-mode) (\.s\(v\|iv\|ieve\)\' . sieve-mode) (BROWSE\' . ebrowse-tree-mode) (\.ebrowse\' . ebrowse-tree-mode) (#\*mail\* . mail-mode) (\.g\' . antlr-mode) (\.mod\' . m2-mode) (\.ses\' . ses-mode) (\.docbook\' . sgml-mode) (\.com\' . dcl-mode) (/config\.\(?:bat\|log\)\' . fundamental-mode) (/\.\(authinfo\|netrc\)\' . authinfo-mode) (\.\(?:[iI][nN][iI]\|[lL][sS][tT]\|[rR][eE][gG]\|[sS][yY][sS]\)\' . conf-mode) (\.la\' . conf-unix-mode) (\.ppd\' . conf-ppd-mode) (java.+\.conf\' . conf-javaprop-mode) (\.properties\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-javaprop-mode) (\.toml\' . conf-toml-mode) (\.desktop\' . conf-desktop-mode) (/\.redshift\.conf\' . conf-windows-mode) (\`/etc/\(?:DIR_COLORS\|ethers\|.?fstab\|.*hosts\|lesskey\|login\.?de\(?:fs\|vperm\)\|magic\|mtab\|pam\.d/.*\|permissions\(?:\.d/.+\)?\|protocols\|rpc\|services\)\' . conf-space-mode) (\`/etc/\(?:acpid?/.+\|aliases\(?:\.d/.+\)?\|default/.+\|group-?\|hosts\..+\|inittab\|ksysguarddrc\|opera6rc\|passwd-?\|shadow-?\|sysconfig/.+\)\' . conf-mode) ([cC]hange[lL]og[-.][-0-9a-z]+\' . change-log-mode) (/\.?\(?:gitconfig\|gnokiirc\|hgrc\|kde.*rc\|mime\.types\|wgetrc\)\' . conf-mode) (/\.mailmap\' . conf-unix-mode) (/\.\(?:asound\|enigma\|fetchmail\|gltron\|gtk\|hxplayer\|mairix\|mbsync\|msmtp\|net\|neverball\|nvidia-settings-\|offlineimap\|qt/.+\|realplayer\|reportbug\|rtorrent\.\|screen\|scummvm\|sversion\|sylpheed/.+\|xmp\)rc\' . conf-mode) (/\.\(?:gdbtkinit\|grip\|mpdconf\|notmuch-config\|orbital/.+txt\|rhosts\|tuxracer/options\)\' . conf-mode) (/\.?X\(?:default\|resource\|re\)s\> . conf-xdefaults-mode) (/X11.+app-defaults/\|\.ad\' . conf-xdefaults-mode) (/X11.+locale/.+/Compose\' . conf-colon-mode) (/X11.+locale/compose\.dir\' . conf-javaprop-mode) (\.~?[0-9]+\.[0-9][-.0-9]*~?\' nil t) (\.\(?:orig\|in\|[bB][aA][kK]\)\' nil t) ([/.]c\(?:on\)?f\(?:i?g\)?\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-mode-maybe) (\.[1-9]\' . nroff-mode) (\.art\' . image-mode) (\.avs\' . image-mode) (\.bmp\' . image-mode) (\.cmyk\' . image-mode) (\.cmyka\' . image-mode) (\.crw\' . image-mode) (\.dcr\' . image-mode) (\.dcx\' . image-mode) (\.dng\' . image-mode) (\.dpx\' . image-mode) (\.fax\' . image-mode) (\.heic\' . image-mode) (\.hrz\' . image-mode) (\.icb\' . image-mode) (\.icc\' . image-mode) (\.icm\' . image-mode) (\.ico\' . image-mode) (\.icon\' . image-mode) (\.jbg\' . image-mode) (\.jbig\' . image-mode) (\.jng\' . image-mode) (\.jnx\' . image-mode) (\.miff\' . image-mode) (\.mng\' . image-mode) (\.mvg\' . image-mode) (\.otb\' . image-mode) (\.p7\' . image-mode) (\.pcx\' . image-mode) (\.pdb\' . image-mode) (\.pfa\' . image-mode) (\.pfb\' . image-mode) (\.picon\' . image-mode) (\.pict\' . image-mode) (\.rgb\' . image-mode) (\.rgba\' . image-mode) (\.tga\' . image-mode) (\.wbmp\' . image-mode) (\.webp\' . image-mode) (\.wmf\' . image-mode) (\.wpg\' . image-mode) (\.xcf\' . image-mode) (\.xmp\' . image-mode) (\.xwd\' . image-mode) (\.yuv\' . image-mode) (\.tgz\' . tar-mode) (\.tbz2?\' . tar-mode) (\.txz\' . tar-mode) (\.tzst\' . tar-mode) (\.drv\' . latex-mode))
+
+* Org noter
+
+#+begin_src emacs-lisp
+(use-package org-noter
+  :after pdf-tools
+  :ensure t
+  :config
+  ;; Optional configuration for org-noter
+  (setq org-noter-auto-save-last-location t
+        org-noter-notes-search-path '("~/Dropbox/org/notes")))
+#+end_src
+
+#+RESULTS:
+: t
+
+
+* GCal
+
+#+begin_src emacs-lisp
+(use-package org-gcal
+  :ensure t
+  :config
+  (let ((secret-file (expand-file-name "~/.emacs.d/secrets.el")))
+    (when (file-exists-p secret-file)
+      (load secret-file)))
+  (setq org-gcal-client-id my-google-client-id
+        org-gcal-client-secret my-google-client-secret
+        org-gcal-file-alist '(("jdamon@gmail.com" .  "~/Dropbox/org/gcal.org"))))
+#+end_src
+
+#+RESULTS:
+: t
+
+
+* Reverting 
+#+begin_src emacs-lisp
+;; Automatically reload files that change on disk
+(global-auto-revert-mode t)
+
+;; Suppress messages in the minibuffer about auto-reverting
+(setq auto-revert-verbose nil)
+
+#+end_src
 

@@ -14,9 +14,9 @@
  '(cua-normal-cursor-color "#657b83")
  '(cua-overwrite-cursor-color "#b58900")
  '(cua-read-only-cursor-color "#859900")
- '(custom-enabled-themes '(sanityinc-tomorrow-bright))
+ '(custom-enabled-themes '(sanityinc-tomorrow-blue))
  '(custom-safe-themes
-   '("82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" default))
+   '("1bd567cb5e458af8b83370c2d56119ad9b134ce69450df28a6124cc97847374e" "2e73ff29e0c8cafa854837c04e0de50ccc17ea5e5db0767cd2b5ee7707322b05" "4df435d012a155e2f22e75b15b9f70bdf559f0305f3d7d9ea2297a89cf90e4b0" "b15bf9cabdd891f0c163d1b914e901d0d9f8f74ad4075b2b8e68a8f35247f82b" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" default))
  '(epa-file-cache-passphrase-for-symmetric-encryption t t)
  '(fci-rule-color "#424242")
  '(flycheck-color-mode-line-face-to-color 'mode-line-buffer-id)
@@ -44,31 +44,30 @@
  '(nrepl-message-colors
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
  '(ob-ipython-command "ipython")
- '(org-agenda-files
-   '("~/Projects/org/personal.org" "~/Projects/org/archive.org" "~/Projects/org/todo.org" "~/Projects/org/work_projects.org" "~/Dropbox/inbox.org" "~/Projects/org/gtd.org" "~/Projects/org/journal.org"))
- '(org-agenda-todo-ignore-deadlines 'far)
- '(org-agenda-todo-ignore-scheduled 'all)
- '(org-agenda-todo-ignore-timestamp 'future)
- '(org-agenda-todo-list-sublevels nil)
- '(org-babel-python-command "python3")
- '(org-checkbox-hierarchical-statistics nil)
- '(org-format-latex-options
-   '(:foreground "Black" :background "White" :scale 2.0 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
-                 ("begin" "$1" "$" "$$" "\\(" "\\[")))
- '(org-id-link-to-org-use-id t)
- '(org-journal-date-format "%e %b %Y (%A)")
- '(org-journal-dir "~/Projects/org/journal/")
- '(org-journal-file-format "%Y%m%d")
- '(org-journal-time-format "")
- '(org-lowest-priority 68)
  '(org-modules
    '(org-habit org-bbdb org-bibtex org-ctags org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m org-learn))
+ '(org-noter-always-create-frame t)
+ '(org-noter-highlight-selected-text t)
+ '(org-priority-lowest 68)
  '(org-priority-start-cycle-with-default t)
  '(org-roam-completion-system 'ivy)
- '(org-roam-directory "~/Projects/org/Roam")
  '(org-tags-match-list-sublevels nil)
  '(package-selected-packages
-   '(org-chef ox-hugo ob-ess-julia ob-ipython clipboard-collector org-download org-gcal biblio-core org-roam-bibtex bitbake windresize org-caldav ox-gfm mu4e-alert ess ob-go ob-coffeescript yasnippet-snippets yasnippet highlight-doxygen all-the-icons flycheck-kotlin ledger-mode command-log-mode color-theme-sanityinc-tomorrow sanityinc-tomorrow-night solarized-theme deft ivy helm-org-rifle org-roam anki-editor spice-mode projectile evil-magit forge dumb-jump ag rspec-mode chruby moody org-plus-contrib gnu-elpa-keyring-update org-journal kotlin-mode ensime cedit cdlatex ledger-import flycheck-ledger org-babel-eval-in-repl graphviz-dot-mode dot-mode org-drill-table dash yaml-mode scala-mode polymode passthword org-bullets org neotree markdown-mode json-mode groovy-mode gradle-mode gitignore-mode color-theme-modern cmake-mode chess bind-key auto-complete auctex))
+   '(rust-mode git-auto-commit-mode org-icalendar org-anki org-noter pdf-tools org-noter-pdftools org-contrib oauth2 color-theme-sanityinc-tomorrow-blue color-theme-sanityinc-blue color-theme base16-theme theme-buffet citar-org-roam pdf-tools org-pomodoro org-roam-ui org-chef ox-hugo ob-ess-julia ob-ipython clipboard-collector org-download org-gcal biblio-core org-roam-bibtex bitbake windresize org-caldav ox-gfm mu4e-alert ess ob-go ob-coffeescript yasnippet-snippets yasnippet highlight-doxygen all-the-icons flycheck-kotlin ledger-mode command-log-mode color-theme-sanityinc-tomorrow sanityinc-tomorrow-night solarized-theme deft ivy helm-org-rifle org-roam spice-mode projectile evil-magit forge dumb-jump ag rspec-mode chruby moody org-plus-contrib gnu-elpa-keyring-update org-journal kotlin-mode ensime cedit cdlatex ledger-import flycheck-ledger org-babel-eval-in-repl graphviz-dot-mode dot-mode org-drill-table dash yaml-mode scala-mode polymode passthword org-bullets org neotree markdown-mode json-mode groovy-mode gradle-mode gitignore-mode color-theme-modern cmake-mode chess bind-key auto-complete auctex))
+ '(pdf-annot-default-annotation-properties
+   '((t
+      (label . "Jimi Damon"))
+     (text
+      (color . "#ff0000")
+      (icon . "Note"))
+     (highlight
+      (color . "chartreuse"))
+     (underline
+      (color . "blue"))
+     (squiggly
+      (color . "orange"))
+     (strike-out
+      (color . "red"))))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(send-mail-function 'smtpmail-send-it)

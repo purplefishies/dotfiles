@@ -1,9 +1,13 @@
- # If you come from bash you might have to change your $PATH.
+# If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
+
+[[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
 
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+
+export XDG_CONFIG_HOME=$HOME/.config
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -64,6 +68,9 @@ alias ztheme='(){ export ZSH_THEME="$@" && source $ZSH/oh-my-zsh.sh }'
 # "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 # or set a custom format using the strftime function format specifications,
 # see 'man strftime' for details.
+HISTSIZE=1000000000
+export SAVEHIST=$HISTSIZE
+setopt EXTENDED_HISTORY
 HIST_STAMPS="yyyy-mm-dd"
 HISTFILE=$HOME/.zsh_history
 setopt INC_APPEND_HISTORY
@@ -86,8 +93,9 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zshmarks git-prompt virtualenv)
-
+#plugins=(git zshmarks git-prompt virtualenv)
+plugins=(git zshmarks git-prompt virtualenv zsh-syntax-highlighting zsh-autosuggestions docker) 
+setopt correct
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -142,10 +150,16 @@ if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
 elif [[ -f "/usr/share/doc/cdargs/examples/cdargs-bash.sh" ]] ; then
     source "/usr/share/doc/cdargs/examples/cdargs-bash.sh"
 fi
-source $HOME/.bash_alias 
+
 if [[ -f /etc/profile.d/fzf.zsh ]] ; then
     source /etc/profile.d/fzf.zsh
 fi
+
+if [[ -f "$HOME/.functions" ]] ; then
+    source "$HOME/.functions"
+fi
+    
+
 if [[ -f /etc/profile.d/fzf-completion.zsh ]] ; then
     source /etc/profile.d/fzf-completion.zsh
 fi
@@ -159,8 +173,18 @@ NEWLINE=$'\n'
 #export PROMPT="%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}: %{$fg_bold[blue]%}%1d%{$reset_color%}$(git_prompt_info)${NEWLINE}%% "
 #export RPROMPT="%{%F{29}[%*]%}%{$reset_color%}"
 #export RPROMPT="%{$fg[green]%}%*%{$reset_color%}"
+
+function build_prompt_path {
+    local PWD_PATH="%~" # This will display the path in a shortened form (like ~/Private/...)
+    local URI_PATH=$(/home/jdamon/Scripts/uri $(pwd)) # Use your script to generate the URI for the current directory
+    local HYPERLINK="\e]8;;$URI_PATH\a$PWD_PATH\e]8;;\a" # Create hyperlink using the URI
+    echo -n "$HYPERLINK"
+}
+
+
 export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
-export PROMPT='%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}%{$reset_color%}%{%F{147}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(git_super_status)${NEWLINE}%F{241}%% %F{reset_color}'
+export PROMPT='%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}$(virtualenv_info)%{$reset_color%}%{%F{147}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%~%{$reset_color%} $(git_super_status)${NEWLINE}%F{241}%% %F{reset_color}'
+#export PROMPT='%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}$(virtualenv_info)%{$reset_color%}%{%F{147}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}$(build_prompt_path)%{$reset_color%} $(git_super_status)${NEWLINE}%F{241}%% %F{reset_color}'
 ZSH_THEME_GIT_PROMPT_PREFIX="("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")"
 ZSH_THEME_GIT_PROMPT_SEPARATOR="|"
@@ -177,22 +201,98 @@ ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{✔%G%}"
 ZSH_THEME_GIT_PROMPT_UPSTREAM_SEPARATOR="->"
 
 
-# autoload -U compinit promptinit
 
-autoload -U compinit && compinit
-zmodload -i zsh/complist
-zstyle ':completion:*' menu select
+function emacs {
+         EMACSRUNNING=$(ps -ef |grep emacs | grep -v -P "(emacsclient|grep)" | wc -l)
+         if [[ $EMACSRUNNING == 0 ]] ; then
+            /usr/bin/emacs "$@"
+         else
+            emacsclient "$@" >/dev/null 2>&1
+         fi       
+}
 
-# promptinit
-# prompt pure
-# compinit
-# zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
-# fpath=(/usr/local/share/zsh-completions $fpath)
+function emacsclient {
+    if [[ -S /tmp/emacs1000/server ]] ; then
+        export EMACS_SOCKET_NAME=/tmp/emacs1000/server
+    fi
+    /usr/bin/emacsclient "$@"
+}
 
-#source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+export LESSOPEN="|  /usr/share/source-highlight/src-hilite-lesspipe.sh %s"
+export LESS="-X -R"
+export LESSCHARSET=utf-8
 
-#source $HOME/.functions
-source $HOME/.functions.zsh
 
-#bind -m emacs-standard -x '"\C-H": hfzf'
-bindkey '^C' hfzf
+source /home/jdamon/completion.zsh
+source /home/jdamon/key-bindings.zsh
+
+bindkey '^W' kill-region
+
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Linux Path stuff
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+export PATH="$PATH:/sbin:/bin:/usr/bin:/usr/local/bin:/usr/sbin:"
+export PATH="$PATH:$HOME/Scripts"
+export PATH="$PATH:/usr/games"
+export PATH="$PATH:/usr/local/cuda/bin"
+export PATH="$PATH:/usr/lib/lapack"
+export PATH="$PATH:/opt/local/bin"
+export PATH="$PATH:$HOME/Tools/bin"
+
+# Android stuff
+export PATH=$PATH:$ANDROID_SDK/platform-tools
+export PATH=$PATH:$ANDROID_NDK_HOME
+export PATH=$PATH:$SDK_ROOT/tools/
+export PATH=$PATH:/opt/local/lib/mysql5/bin
+#export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+#export PATH="/home/jdamon/.cask/bin:$PATH"
+export PATH="${PATH}:$HOME/.jlenv/bin"
+export PATH=$PATH:$HOME/vcpkg
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin:$HOME/Tools/stockfish/16:"
+
+alias rm='trash'
+# Man
+export MANPATH=/usr/share/man:/usr/man:/usr/local/share/man
+
+
+# 
+export TOOLSDIR=$HOME/Tools
+export MODULEPATH=$HOME/Modules
+
+if [[ -f /usr/share/lmod/lmod/init/zsh ]] ; then
+    source /usr/share/lmod/lmod/init/zsh 
+fi
+
+if [[ -f $HOME/.alias ]] ; then
+    source $HOME/.alias
+fi
+
+
+if [ -n "$TMUX" ]; then
+    function refresh {
+        export $(tmux show-environment | grep "^SSH_AUTH_SOCK")  > /dev/null 2>&1
+        export $(tmux show-environment | grep "^DISPLAY")  > /dev/null 2>&1
+        export $(tmux show-environment | grep "^DBUS_SESSION_BUS_ADDRESS")  > /dev/null 2>&1
+        export $(tmux show-environment | grep "^GPG_AGENT_INFO" )  > /dev/null 2>&1
+        export $(tmux show-environment | grep "^GNOME_KEYRING_CONTROL" ) > /dev/null 2>&1
+    }
+else
+    function refresh { 
+        echo -ne ""
+    }
+    function set_tmux_environment {
+        for i in SSH_AUTH_SOCK DISPLAY DBUS_SESSION_BUS_ADDRESS GNOME_KEYRING_CONTROL GPG_AGENT_INFO ; 
+        do
+            cmd="tmux set-environment $i \$${i}"
+            eval $cmd
+        done
+    }
+
+fi
+
+export TEXINPUTS="$HOME/Latex://;"
+
+[ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
