@@ -32,3 +32,35 @@ function save {
     fi
     # /bin/cp -f -p "$2" ${dir}
 }
+
+function adirs {
+    __adirs "$@" | xargs -0 -r /bin/ls -d --color=always 
+}
+
+function __files {
+    __afiles "$@" | grep -z -v -E "^((\./)?[[:alpha:][:blank:]]+/\.|\.[[:alpha:]]+)" 
+}
+
+function afiles {
+    __afiles "$@" | xargs -0 -r /bin/ls -d --color=always
+}
+
+function files {
+    __files "$@" | xargs -0 -r /bin/ls  --color=always
+}
+
+function rfiles {
+    __files "$@" | xargs -0 -r /bin/ls -d
+}
+
+function lfiles {
+    __files "$@" | xargs -0 -r /bin/ls -d  -1
+}
+
+function llfiles { 
+    __files "$@" | xargs -0 -r /bin/ls -l --color=auto 
+}
+
+function allfiles { 
+    __afiles "$@" | xargs -0 -r /bin/ls -l --color=auto 
+}
