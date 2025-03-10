@@ -925,10 +925,53 @@ elif [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
-function mdfind() {
-    ( recollq -c $HOME/.recoll "$@"; recollq -c $HOME/Projects/recoll_nas "$@" )
+if [[ $(uname) == *CYGWIN* ]] ;then
+mdfind() {
+  if [[ $(uname) == *CYGWIN* ]]; then
+    recollq -c "$HOME/.recoll" "$@"
+    recollq -c "$HOME/Projects/recoll_nas" "$@"
+  elif [[ $(uname) == *Linux* ]]; then
+    recollq -c "$HOME/.recoll" "$@"
+    recollq -c "$HOME/Projects/recoll_nas" "$@"
+  else
+    command mdfind "$@"
+  fi
 }
 
+
+fi
+
 function orr() {
-    ruby -e 'print "Passwd: ";p=STDIN.gets.chomp;b=File.read(ARGV[0]).bytes.map.with_index{|c,i|c^p.bytes[i%p.size]}.pack("C*");File.write(ARGV[0]+".xx",b)' "$@"
+    ruby -e 'p=(ENV["PASSWD"].nil? ? STDIN.gets.chomp : p=ENV["PASSWD"] );b=File.read(ARGV[0]).bytes.map.with_index{|c,i|c^p.bytes[i%p.size]}.pack("C*");File.write(ARGV[0]+".xx",b)' "$@"
+}
+
+
+function generator() { 
+  local values=("A" "B" "C" "D" "E")
+  i=1
+
+  while true; do
+    echo "${values[i]}"
+    ((i = (i % ${#values[@]}) + 1))  # Loop around
+  done
+}
+
+function generator2() { 
+  local values=("1234" "4536" "4544" "4656" "9933")
+  i=1
+
+  while true; do
+    echo "${values[i]}"
+    ((i = (i % ${#values[@]}) + 1))  # Loop around
+  done
+}
+
+function generatorxx() { 
+  local values=("xaa" "xab" "xac" "xad" "xae" "xaf" "xag" "xah" "xai" "xaj" "xal" "xak" "xam" "xan" "xao" "xap" "xaq" "xar" "xas" "xat" "xau" "xaw" "xav" "xax" "xay" "xaz" "xba" "xbb" "xbc" "xbd" "xbe" "xbf" "xbg" "xbh" "xbi" "xbj" "xbk" "xbl" "xbm" "xbn" "xbo" "xbp" "xbq" "xbr" "xbs" "xbu" "xbt" "xbv" "xbw" "xbx" "xby" "xbz" "xca" "xcb" "xcc" "xcd" "xce" "xcf" "xcg" "xch" "xci" "xcj" "xck" "xcl" "xcm" "xcn" "xco" "xcp" "xcq" "xcr" "xcs" "xct" "xcu" "xcv" "xcw" "xcx" "xcy" "xcz" "xda" "xdb" "xdc" "xdd" "xde" "xdf" "xdg" "xdh" "xdi" "xdj" "xdk" "xdl" "xdm" "xdn" "xdo" "xdp" "xdq" "xdr" "xds" "xdt" "xdu" "xdv" "xdw" "xdx" "xdy" "xdz" "xea" "xeb" "xec" "xed" "xee" "xef" "xeg" "xeh" "xei" "xej" "xek" "xel" "xem" "xen" "xeo" "xep" "xeq" "xer" "xes" "xet" "xeu" "xev" "xew" "xex" "xey" "xez" "xfa" "xfb" "xfc" "xfd" "xfe" "xff" "xfg" "xfh" "xfi" "xfj" "xfk" "xfl" "xfm" "xfn" "xfo" "xfp" "xfq" "xfr" "xfs" "xft" "xfu" "xfv" "xfw" "xfx" "xfy" "xfz" "xga" "xgb" "xgc" "xgd" "xge" "xgf" "xgg" "xgh" "xgi" "xgj" "xgk" "xgl" "xgm" "xgn" "xgo" "xgp" "xgq" "xgr" "xgs" "xgt" "xgu" "xgv" "xgw" "xgx" "xgy" "xgz" "xha" "xhb" "xhc" "xhd" "xhe" "xhf" "xhg" "xhh" "xhi" "xhj" "xhk" "xhl" "xhm" "xhn" "xho" "xhp" "xhq" "xhr" "xhs" "xht" "xhu" "xhv" "xhw" "xhx" "xhy" "xhz" "xia" "xib" "xic" "xid" "xie" "xif" "xig" "xih" "xii" "xij" "xik" "xil" "xim" "xin" "xio" "xip" "xiq" "xir" "xis" "xit" "xiu" "xiv" "xiw" "xix" "xiy" "xiz" "xja" "xjb" "xjc" "xjd" "xje" "xjf" "xjg" "xjh" "xji" "xjj" "xjk" "xjl" "xjm" "xjn" "xjo" "xjp" "xjq" "xjr" "xjs" "xjt" "xju" "xjv" "xjw" "xjx" "xjy" "xjz" "xka" "xkb" "xkc" "xkd" "xke" "xkf" "xkg" "xkh" "xki" "xkj" "xkk" "xkl" "xkm" "xkn" "xko" "xkp" "xkq")
+  jj=1
+
+  while true; do
+    echo "${values[jj]}"
+    ((jj = (jj % ${#values[@]}) + 1))  # Loop around
+  done
 }
