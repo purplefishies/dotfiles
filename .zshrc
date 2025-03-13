@@ -2,11 +2,12 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 [[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
-
-
+export ZSH_DISABLE_COMPFIX=true
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-
+if [[ -f $HOME/.oh-my-zsh/zsh/git-prompt.zsh/git-prompt.zsh  ]] ; then
+    source $HOME/.oh-my-zsh/zsh/git-prompt.zsh/git-prompt.zsh                                                                            
+fi
 export XDG_CONFIG_HOME=$HOME/.config
 
 # Set name of the theme to load --- if set to "random", it will
@@ -172,13 +173,20 @@ else
         fi
         DOCKERPROMPT="%{$reset_color%}%{%F{23}%}🐳:${DOCKER_CONTAINER_NAME} %F{reset_color}"
         unsetopt HIST_SAVE_BY_COPY
+        if [[ -n $PROMPT_DOCKER_COLOR  ]] ; then
+            export PROMPT_COLOR=$PROMPT_DOCKER_COLOR
+        else
+            export PROMPT_COLOR=228
+        fi
+
     else
         nodocker=1
         DOCKERPROMPT=""
     fi
     export TERM=xterm-256color
     export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
-    export PROMPT='%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}${DOCKERPROMPT}$(virtualenv_prompt_info)%{$reset_color%}%{%F{147}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(gitprompt)${NEWLINE}%F{241}%% %F{reset_color}'
+    export PROMPT_COLOR=${PROMPT_COLOR:-147}
+    export PROMPT='%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}${DOCKERPROMPT}$(virtualenv_prompt_info)%{$reset_color%}%{%F{'"${PROMPT_COLOR}"'}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(gitprompt)${NEWLINE}%F{241}%% %F{reset_color}'
     export ZSH_GIT_PROMPT_SHOW_STASH=1
     export ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$fg[blue]%}✚"
 fi
