@@ -5,9 +5,7 @@
 export ZSH_DISABLE_COMPFIX=true
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-if [[ -f $HOME/.oh-my-zsh/zsh/git-prompt.zsh/git-prompt.zsh  ]] ; then
-    source $HOME/.oh-my-zsh/zsh/git-prompt.zsh/git-prompt.zsh                                                                            
-fi
+source $HOME/.oh-my-zsh/zsh/git-prompt.zsh/git-prompt.zsh                                                                            
 export XDG_CONFIG_HOME=$HOME/.config
 
 # Set name of the theme to load --- if set to "random", it will
@@ -130,16 +128,17 @@ fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-
 bindkey '^G' emacs-forward-word
 bindkey '^F' emacs-backward-word
 bindkey '^B' backward-kill-word
 bindkey '^N' kill-word
+
 if [[ -f "$HOME/.emacs.d/key-bindings.el" ]] ; then
     EXTRA=" --eval '(load-file  (concat (getenv \"HOME\") \"/.emacs.d/bash-edit.el\"))' "
 else 
     EXTRA=""
 fi
+
 if [ "$DISPLAY" ] ; then
     export EDITOR="$(which emacs) ${EXTRA} -q -nw "
     export ALTERNATE_EDITOR="emacs -q "      
@@ -149,7 +148,13 @@ else
     export EDITOR="$(which emacs) ${EXTRA} -q -nw "
     export VISUAL="$(which emacs) ${EXTRA} -q -nw "
 fi
+
 export TEXINPUTS="$HOME/Latex://;"
+export LABRAT='//bomazi/LabRatCentral'
+export MOTION='${LABRAT}/2-MotionTests'
+export BENCH='${LABRAT}/1-BenchTests'
+
+
 if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
     source $HOME/.bash_stuff/cdargs/cdargs-bash.sh
 elif [[ -f "/usr/share/doc/cdargs/examples/cdargs-bash.sh" ]] ; then
@@ -159,7 +164,7 @@ if [[ -f $HOME/.bash_alias  ]] ; then
     source $HOME/.bash_alias
 fi
 
-NEWLINE=$'\n'
+#NEWLINE=${NEWLINE:-'\n'}
 
 if [[ "${GIT_PROMPT_MODE}" == "OLD" ]] ; then
     export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
@@ -167,18 +172,15 @@ if [[ "${GIT_PROMPT_MODE}" == "OLD" ]] ; then
 
 else
     docker_command_name="docker"
+
     if ! docker_loc="$(type -p "$docker_command_name")" || [[ -z $docker_loc ]]; then
         if [[ -z $DOCKER_CONTAINER_NAME ]] ; then
             export DOCKER_CONTAINER_NAME="docker"
         fi
-        DOCKERPROMPT="%{$reset_color%}%{%F{23}%}🐳:${DOCKER_CONTAINER_NAME} %F{reset_color}"
-        unsetopt HIST_SAVE_BY_COPY
-        if [[ -n $PROMPT_DOCKER_COLOR  ]] ; then
-            export PROMPT_COLOR=$PROMPT_DOCKER_COLOR
-        else
-            export PROMPT_COLOR=228
-        fi
 
+        DOCKERPROMPT="%{$reset_color%}%{%F{23}%}🐳 :${DOCKER_CONTAINER_NAME} %F{reset_color}"
+        unsetopt HIST_SAVE_BY_COPY
+        export PROMPT_COLOR=${PROMPT_COLOR:-228}
     else
         nodocker=1
         DOCKERPROMPT=""
