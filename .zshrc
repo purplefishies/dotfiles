@@ -128,6 +128,7 @@ fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+
 bindkey '^G' emacs-forward-word
 bindkey '^F' emacs-backward-word
 bindkey '^B' backward-kill-word
@@ -150,11 +151,6 @@ else
 fi
 
 export TEXINPUTS="$HOME/Latex://;"
-export LABRAT='//bomazi/LabRatCentral'
-export MOTION='${LABRAT}/2-MotionTests'
-export BENCH='${LABRAT}/1-BenchTests'
-
-
 if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
     source $HOME/.bash_stuff/cdargs/cdargs-bash.sh
 elif [[ -f "/usr/share/doc/cdargs/examples/cdargs-bash.sh" ]] ; then
