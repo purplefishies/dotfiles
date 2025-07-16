@@ -78,6 +78,7 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_IGNORE_SPACE
 setopt HIST_NO_FUNCTIONS 
+setopt nonomatch
 export HISTFILESIZE=1000000000
 export HISTCONTROL=ignorespace
 export HISTSIZE=1000000000
@@ -128,7 +129,6 @@ fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-
 bindkey '^G' emacs-forward-word
 bindkey '^F' emacs-backward-word
 bindkey '^B' backward-kill-word
@@ -151,6 +151,11 @@ else
 fi
 
 export TEXINPUTS="$HOME/Latex://;"
+export LABRAT='//bomazi/LabRatCentral'
+export MOTION='${LABRAT}/2-MotionTests'
+export BENCH='${LABRAT}/1-BenchTests'
+
+
 if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
     source $HOME/.bash_stuff/cdargs/cdargs-bash.sh
 elif [[ -f "/usr/share/doc/cdargs/examples/cdargs-bash.sh" ]] ; then
@@ -162,18 +167,34 @@ fi
 
 #NEWLINE=${NEWLINE:-'\n'}
 
+is_inside_docker() {
+    # Real container marker
+    if [[ -f /.dockerenv ]]; then
+        return 0
+    fi
+
+    # Only check cgroup if not in WSL
+    if grep -qEi 'microsoft|wsl' /proc/version &>/dev/null; then
+        return 1
+    fi
+
+    # Check container-like cgroups
+    if [[ -r /proc/1/cgroup ]]; then
+        if grep -qE 'docker|kubepods|containerd|/lxc/' /proc/1/cgroup 2>/dev/null; then
+            return 0
+        fi
+    fi
+
+    return 1
+}
+
+
 if [[ "${GIT_PROMPT_MODE}" == "OLD" ]] ; then
     export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
     export PROMPT='%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}$(virtualenv_prompt_info)%{$reset_color%}%{%F{147}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(git_super_status)${NEWLINE}%F{241}%% %F{reset_color}'
 
 else
-    docker_command_name="docker"
-
-    if ! docker_loc="$(type -p "$docker_command_name")" || [[ -z $docker_loc ]]; then
-        if [[ -z $DOCKER_CONTAINER_NAME ]] ; then
-            export DOCKER_CONTAINER_NAME="docker"
-        fi
-
+    if is_inside_docker ;  then
         DOCKERPROMPT="%{$reset_color%}%{%F{23}%}🐳 :${DOCKER_CONTAINER_NAME} %F{reset_color}"
         unsetopt HIST_SAVE_BY_COPY
         export PROMPT_COLOR=${PROMPT_COLOR:-228}
@@ -184,7 +205,10 @@ else
     export TERM=xterm-256color
     export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
     export PROMPT_COLOR=${PROMPT_COLOR:-147}
-    export PROMPT='%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}${DOCKERPROMPT}$(virtualenv_prompt_info)%{$reset_color%}%{%F{'"${PROMPT_COLOR}"'}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(gitprompt)${NEWLINE}%F{241}%% %F{reset_color}'
+    if [[ -z "${PROMPT_STRING}" ]] ; then
+        export PROMPT_STRING="%m"
+    fi
+    export PROMPT='%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}${DOCKERPROMPT}$(virtualenv_prompt_info)%{$reset_color%}%{%F{'"${PROMPT_COLOR}"'}%}${PROMPT_STRING}%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(gitprompt)${NEWLINE}%F{241}%% %F{reset_color}'
     export ZSH_GIT_PROMPT_SHOW_STASH=1
     export ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$fg[blue]%}✚"
 fi
@@ -213,6 +237,7 @@ ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[yellow]%}%{⚑%G%}"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{✔%G%}"
 ZSH_THEME_GIT_PROMPT_UPSTREAM_SEPARATOR="->"
 
+
 #source $HOME/completion.zsh
 #source $HOME/key-bindings.zsh
 #bindkey '^[[A' fzf-history-widget
@@ -220,6 +245,10 @@ ZSH_THEME_GIT_PROMPT_UPSTREAM_SEPARATOR="->"
 #bindkey "^[A" accept-and-hold
 #bindkey "^[OA" up-line-or-beginning-search
 #bindkey "^[[1;2A" up-line-or-history
+if [[ -f $HOME/.secrets ]] ; then
+    source $HOME/.secrets
+fi
+
 bindkey '^W' kill-region
 
 export XDG_CONFIG_HOME=$HOME/.config
