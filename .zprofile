@@ -55,7 +55,7 @@ elif [[ $(uname) == *CYGWIN* ]] ; then
     export PATH="$PATH:/cygdrive/c/Program Files/Recoll"
     export PATH="$PATH:/cygdrive/c/Program Files/Recoll"
     export PATH="$PATH:$HOME/vcpkg";
-    export PATH="$PATH:$HOME/.cargo/bin";
+    export PATH="$HOME/.cargo/bin:$PATH"
     export PATH="$PATH:$HOME/.local/bin";
     export PATH="$PATH:$HOME/perl5/bin";
     export PATH="/home/JDamon/Tools/clang+llvm-18.1.8-x86_64-pc-windows-msvc/bin:$PATH"
