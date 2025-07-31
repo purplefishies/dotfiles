@@ -55,9 +55,9 @@ elif [[ $(uname) == *CYGWIN* ]] ; then
     export PATH="$PATH:/cygdrive/c/Program Files/Recoll"
     export PATH="$PATH:/cygdrive/c/Program Files/Recoll"
     export PATH="$PATH:$HOME/vcpkg";
-    export PATH="$HOME/.cargo/bin:$PATH"
     export PATH="$PATH:$HOME/.local/bin";
     export PATH="$PATH:$HOME/perl5/bin";
+    export PATH="$HOME/.cargo/bin:$PATH"
     export PATH="/home/JDamon/Tools/clang+llvm-18.1.8-x86_64-pc-windows-msvc/bin:$PATH"
     export PATH="$HOME/.local/bin:$PATH"                # Needed for pygmentize
     export PYGMENTIZE_STYLE=native
