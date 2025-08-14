@@ -23,12 +23,6 @@ fi
 
 
 function emacs {
-    # local file_to_open="$1"
-    # if pgrep -x "emacs" >/dev/null; then
-    #     emacsclient -n "$file_to_open"
-    # else
-    #     emacs "$file_to_open"
-    # fi
     emacsclient --alternate-editor="" $@ 
 }
 
@@ -671,15 +665,6 @@ function open {
   fi
 }	 
 
-function search {
-  tracker-search "$@"
-}
-
-function mdfind {
-  tracker-search "$@"
-}
-
-
 function mydo {
    flags=$@
    local IFS
@@ -928,8 +913,7 @@ fi
 if [[ $(uname) == *CYGWIN* ]] ;then
 mdfind() {
   if [[ $(uname) == *CYGWIN* ]]; then
-    recollq -c "$HOME/.recoll" "$@"
-    recollq -c "$HOME/Projects/recoll_nas" "$@"
+    recollq -c $(cygpath -w "/cygdrive/c/Users/jdamon/AppData/Local/Recoll") "$@"
   elif [[ $(uname) == *Linux* ]]; then
     recollq -c "$HOME/.recoll" "$@"
     recollq -c "$HOME/Projects/recoll_nas" "$@"
@@ -937,14 +921,120 @@ mdfind() {
     command mdfind "$@"
   fi
 }
-
-
 fi
 
 function orr() {
     ruby -e 'p=(ENV["PASSWD"].nil? ? STDIN.gets.chomp : p=ENV["PASSWD"] );b=File.read(ARGV[0]).bytes.map.with_index{|c,i|c^p.bytes[i%p.size]}.pack("C*");File.write(ARGV[0]+".xx",b)' "$@"
 }
 
+function eza() {
+    # Require GNU getopt (not the old util-linux one on some systems)
+    local opts=""
+    local opts_r=""
+    local opts_sort=0
+    local parsed
+    short_opts='1GFRTxlfarADdghimMnOStuU@Zvw:I:T:s:t:L:'
+    long_opts='
+    oneline,
+    grid,
+    long,
+    recurse,
+    tree,
+    across,
+    classify:,
+    color::,colour::,
+    color-scale:,colour-scale:,
+    color-scale-mode:,colour-scale-mode:,
+    icons::,
+    no-icons,
+    hyperlink,
+    width:,
+    all,
+    almost-all,
+    list-dirs,
+    level:,
+    reverse,
+    sort:,
+    ignore-glob:,
+    git-ignore,
+    group-directories-first,
+    group-directories-last,
+    only-dirs,
+    only-files,
+    show-symlinks,
+    no-symlinks,
+    binary,
+    bytes,
+    changed,
+    group,
+    smart-group,
+    header,
+    links,
+    inode,
+    modified,
+    mounts,
+    numeric,
+    flags,
+    blocksize,
+    time:,
+    time-style:,
+    accessed,
+    created,
+    no-permissions,
+    octal-permissions,
+    no-filesize,
+    no-user,
+    no-time,
+    stdin,
+    extended,
+    context,
+    git,
+    git-repos,
+    git-repos-no-status,
+    no-git,
+    help,
+    version'
+
+    parsed=$(getopt -o ${short_opts} -l ${long_opts} -n eza -- "$@") || return 1
+    eval set -- "$parsed"
+
+    while true; do
+        case "$1" in
+            -l)
+                opts+=" -l "
+                shift
+                ;;
+            -t)
+                opts+=" -s modified "
+                opts_sort=1
+                shift
+                ;;
+            -r)
+                opts_r=" -r "
+                shift
+                ;;
+            --)
+                shift
+                break
+                ;;
+            *)
+                opts+=" $1 "
+                shift
+                ;;
+        esac
+    done
+    if [[ "${opts_sort}" != "" ]] ; then
+        if [[ "${opts_r}" != "" ]] ; then
+            opts_r=""
+        else
+            opts_r="-r "
+        fi
+    fi
+    cmd="command eza --hyperlink --color=always ${opts_r} ${opts} $@"
+    eval ${cmd}
+}
+
+alias ez=eza
 
 function generator() { 
   local values=("A" "B" "C" "D" "E")
