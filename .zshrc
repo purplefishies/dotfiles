@@ -23,6 +23,8 @@ ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" "candy" "dst" )
 
 alias ztheme='(){ export ZSH_THEME="$@" && source $ZSH/oh-my-zsh.sh }'
 
+export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc 
+
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
