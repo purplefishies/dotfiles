@@ -1,0 +1,13 @@
+--max-columns=150
+
+--hyperlink-format=vscode 
+
+--color=always
+--hidden
+--glob=!.git/*
+--smart-case
+
+# --type-add 'foo:*.foo*'
+#--type-add='web:*.{html,css,js}'
+
+#--type-add='foo:*.foo' --type-add='foo:.*foo.*' 
