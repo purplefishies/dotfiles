@@ -1,6 +1,7 @@
 --max-columns=150
 
---hyperlink-format=vscode 
+#--hyperlink-format=vscode 
+--hyperlink-format=emacs://{path}:{line}:{column}
 
 --color=always
 --hidden
