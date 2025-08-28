@@ -1,3 +1,4 @@
+export MODULEPATH=$HOME/Modules
 
 if [[ -n "${DOCKER_CONTAINER_NAME}" ]] ; then
     case "$DOCKER_CONTAINER_NAME" in
@@ -68,10 +69,17 @@ elif [[ $(uname) == *Linux* ]] ; then
     if [[ -f /etc/os-release ]]; then
         . /etc/os-release
         case "$VERSION_ID" in
+            24.04*)
+                export DISTRO_NAME="ubuntu24"
+                export PROMPT_COLOR=117
+                export PROMPT_STRING="%m"
+                export PATH="$HOME/.local/bin:$PATH"                # Needed for pygmentize
+		;;
             22.04*) 
                 export DISTRO_NAME="ubuntu22" 
                 export PROMPT_COLOR=29
                 export PYGMENTIZE_TERMINAL=terminal16m
+                export PROMPT_STRING="ros-dev-%m"
                 ;;
             20.04*) 
                 export DISTRO_NAME="ubuntu20" 

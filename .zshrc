@@ -23,8 +23,6 @@ ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" "candy" "dst" )
 
 alias ztheme='(){ export ZSH_THEME="$@" && source $ZSH/oh-my-zsh.sh }'
 
-export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc 
-
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
@@ -90,6 +88,9 @@ export MODULEPATH=$HOME/Modules
 
 if [[ -f  $HOME/Tools/Modules/init/zsh ]] ; then
     source $HOME/Tools/Modules/init/zsh
+elif [[ -f /usr/share/modules/init/zsh ]] ; then
+    source /usr/share/modules/init/zsh
+else
 fi
 
 if [[ -f $HOME/.alias ]] ; then
@@ -157,6 +158,7 @@ export LABRAT='//bomazi/LabRatCentral'
 export MOTION='${LABRAT}/2-MotionTests'
 export BENCH='${LABRAT}/1-BenchTests'
 
+export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
 
 if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
     source $HOME/.bash_stuff/cdargs/cdargs-bash.sh
@@ -193,7 +195,7 @@ is_inside_docker() {
 
 if [[ "${GIT_PROMPT_MODE}" == "OLD" ]] ; then
     export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
-    export PROMPT='%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}$(virtualenv_prompt_info)%{$reset_color%}%{%F{147}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(git_super_status)${NEWLINE}%F{241}%% %F{reset_color}'
+    export PROMPT='%(?,,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}$(virtualenv_prompt_info)%{$reset_color%}%{%F{147}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(git_super_status)${NEWLINE}%F{241}%% %F{reset_color}'
 
 else
     if is_inside_docker ;  then
@@ -210,7 +212,7 @@ else
     if [[ -z "${PROMPT_STRING}" ]] ; then
         export PROMPT_STRING="%m"
     fi
-    export PROMPT='%(?, ,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}${DOCKERPROMPT}$(virtualenv_prompt_info)%{$reset_color%}%{%F{'"${PROMPT_COLOR}"'}%}${PROMPT_STRING}%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(gitprompt)${NEWLINE}%F{241}%% %F{reset_color}'
+    export PROMPT='%(?,,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}${DOCKERPROMPT}$(virtualenv_prompt_info)%{$reset_color%}%{%F{'"${PROMPT_COLOR}"'}%}${PROMPT_STRING}%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(gitprompt)${NEWLINE}%F{241}%% %F{reset_color}'
     export ZSH_GIT_PROMPT_SHOW_STASH=1
     export ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$fg[blue]%}✚"
 fi
@@ -238,7 +240,6 @@ ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}%{…%G%}"
 ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[yellow]%}%{⚑%G%}"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{✔%G%}"
 ZSH_THEME_GIT_PROMPT_UPSTREAM_SEPARATOR="->"
-
 
 #source $HOME/completion.zsh
 #source $HOME/key-bindings.zsh

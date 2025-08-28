@@ -54,10 +54,7 @@
         br = branch
         co = checkout
         df = diff
-        #trash = "!git status --porcelain -z | perl -ne 's/^([\\A\\0\\s]*M\s+[^\\0]+\\0)//g;s/(\\A|\\0)\\?\\?\\s/\\0/g;print;' | perl -pne 's/^\\0//g' | xargs -0 --verbose -I{} trash {}"
-        #trash = "!git status --porcelain -z | perl -ne 's/(\\A|\\0)\\?\\?\\s/\\0/g;print;' | perl -pne 's/^\\0//g' | xargs -0 --verbose -I{} trash {}"
-        trash = "!git status --porcelain -z | perl -ne 's/([\\A\\0\\s]*M\\s+[^\\0]+\\0)//g;s/(\\A|\\0)\\?\\?\\s/\\0/g;print;' | perl -pne 's/^\\0//g' | xargs -0 --verbose -I{} trash {}"
-
+        trash = "!git status --porcelain -z | perl -ne 's/(\\A|\\0)\\?\\?\\s/\\0/g;print;' | perl -pne 's/^\\0//g' | xargs -0 --verbose -I{} trash {}"
         lg = log -p
         glg = log --graph --oneline --decorate
         week = log --after=\"one week ago\"  --pretty=format=\"The author of %Cred%h%Creset was %Cgreen%an%Creset, %ar%n%s%n\"
@@ -83,30 +80,18 @@
         bsort = "!git for-each-ref --sort='-committerdate' --format='%(refname)%09%(committerdate)' refs/heads | sed -e 's-refs/heads/--'"
         rtags = ls-remote --tags
         rbranchsort="!f() { for i in foo bar;  do ; echo \"$i\"; done; }; f"
-#        logbranch = "for-each-ref --sort=-committerdate refs/heads/ --format=\"%1B[0;38;5;114m%(objectname:short) %1B[0;38;5;125m%(align:32)%(refname:short)%(end) %(color:110 bold)%(align:30,left)%(authoremail:trim)%(end) %1B[0;38;5;141m %(creatordate) %1B[m%(align:40,left)%(subject)%(end)' \""
-        logbranches = "for-each-ref --color=always --format='%(color:114)%(objectname:short) %(align:44,left)%(color:125)%(refname:strip=2)%(end) %(color:110 bold)%(align:30)%(authoremail:trim)%(end)   %(color:reset)%(subject)'  --sort=-committerdate refs/heads "
+
+        logbranches = "for-each-ref --color=always  --format='%(color:114)%(objectname:short) %(color:90)%(committerdate:short) %(align:44,left)%(color:125)%(refname:strip=2)%(end) %(color:110 bold)%(align:30)%(authoremail:trim)%(end)   %(color:reset)%(subject)'  --sort=-committerdate refs/heads "
+        labbrevbranches = "for-each-ref --color=always  --format='%(color:114)%(objectname:short) %(color:90)%(committerdate:short) %(color:125)%(align:width=20,position=left)%(refname:strip=2)%(end) %(color:110 bold)%(align:30)%(authoremail:trim)%(end)   %(color:reset)'  --sort=-committerdate refs/heads "
         rlogbranches = "for-each-ref --color=always --format='%(color:114)%(objectname:short) %(align:40,left)%(color:125)%(refname:strip=3)%(end) %(color:110 bold)%(align:30)%(authoremail:trim)%(end)   %(color:141 bold)%(authordate:format:%c) %(color:reset)%(subject)'  --sort=-committerdate refs/remotes "
         mytest = "for-each-ref --shell --format=\"a=blah%0aref=%(refname)\" refs/heads | while read entry ; do eval '$entry'; printf \"%s\t\t%s\n\" \"$a\" \"$ref\" ; done"
         reattr = !sh -c "\"git stash save; rm .git/index; git checkout HEAD -- \\\"$(git rev-parse --show-toplevel)\\\"; git stash pop\""
-
+        findfile = "!f() { git log --all -- $1 }; f $1"
 
 
         stashcheckout = checkout stash@{0} --theirs . 
 
 
-# mytest = "for-each-ref --count=1 --sort='-*authordate' \
-# --format='%(*refname)|%(*authorname)|%(*authoremail)|%(*subject)|%(*authordate)' 'refs/tags' --shell  \
-# while IFS='|' read refname authorname authoremail subject authordate \
-# do  \
-#     echo   \"Ref      : $refname\" \
-#     echo  \"From     : $authorname $authoremail\n\" \
-#     printf \"Subject  : FOO%.30s\\n\" \"$subject\" \
-#     echo   \"Date     : $authordate\" \
-# done"
-#%(authordate:format:%Y/%m/%d %I:%M %p)
-#38;5;29m
-#refname:short
-#git co \"${i}\" 2>/dev/null | grep -v -P \"(Your|git pull)\"; git phulog --decorate -n 1; done}; f"
 
 
 [credential]
