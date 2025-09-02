@@ -209,7 +209,7 @@ else
     export TERM=xterm-256color
     export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
     export PROMPT_COLOR=${PROMPT_COLOR:-147}
-    if [[ -z "${PROMPT_STRING}" ]] ; then
+    if ! [[ -v PROMPT_STRING ]] ; then
         export PROMPT_STRING="%m"
     fi
     export PROMPT='%(?,,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}${DOCKERPROMPT}$(virtualenv_prompt_info)%{$reset_color%}%{%F{'"${PROMPT_COLOR}"'}%}${PROMPT_STRING}%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(gitprompt)${NEWLINE}%F{241}%% %F{reset_color}'
