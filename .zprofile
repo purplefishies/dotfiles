@@ -36,7 +36,6 @@ if [[ -n "${DOCKER_CONTAINER_NAME}" ]] ; then
             export PYGMENTIZE_TERMINAL=terminal16m
             export PROMPT_STRING="ros-dev-%m"
             export PROMPT_COLOR=117
-
         *)
             # Default Docker config
             ;;
