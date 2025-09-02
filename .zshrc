@@ -195,7 +195,7 @@ is_inside_docker() {
 
 if [[ "${GIT_PROMPT_MODE}" == "OLD" ]] ; then
     export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
-    export PROMPT='%(?,,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}$(virtualenv_prompt_info)%{$reset_color%}%{%F{147}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(git_super_status)${NEWLINE}%F{241}%%%{ %F{reset_color}'
+    export PROMPT='%(?,,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}$(virtualenv_prompt_info)%{$reset_color%}%{%F{147}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(git_super_status)${NEWLINE}%F{241}%%%{ %F{$reset_color}'
 
     
 
