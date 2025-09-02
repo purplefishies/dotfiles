@@ -82,7 +82,6 @@ elif [[ $(uname) == *Linux* ]] ; then
 		;;
             22.04*) 
                 export DISTRO_NAME="ubuntu22" 
-
                 export PYGMENTIZE_TERMINAL=terminal16m
                 if [[ $DOCKER_CONTAINER_NAME == *nvidia-builder* ]] ; then
 
