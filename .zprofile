@@ -34,7 +34,7 @@ if [[ -n "${DOCKER_CONTAINER_NAME}" ]] ; then
             ;;
         "nvidia-builder")
             export PYGMENTIZE_TERMINAL=terminal16m
-            export PROMPT_STRING="nvidi-ros-dev-%m "
+            export PROMPT_STRING=" %m "
             export PROMPT_COLOR=117
             ;;
         *)
