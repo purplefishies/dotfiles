@@ -1,9 +1,8 @@
 
-
-
-
 export MODULEPATH=$HOME/Modules
-
+# 
+# Docker sections
+#
 if [[ -n "${DOCKER_CONTAINER_NAME}" ]] ; then
     case "$DOCKER_CONTAINER_NAME" in
         "ryo")
