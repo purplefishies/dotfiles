@@ -195,9 +195,7 @@ is_inside_docker() {
 
 if [[ "${GIT_PROMPT_MODE}" == "OLD" ]] ; then
     export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
-    export PROMPT='%(?,,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}$(virtualenv_prompt_info)%{$reset_color%}%{%F{147}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(git_super_status)${NEWLINE}%F{241}%%%{ %F{$reset_color}'
-
-    
+    export PROMPT='%(?,,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}$(virtualenv_prompt_info)%{$reset_color%}%{%F{147}%}%m%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(git_super_status)${NEWLINE}%F{241}%% %F{reset_color}'
 
 else
     if is_inside_docker ;  then
@@ -209,14 +207,12 @@ else
         DOCKERPROMPT=""
     fi
     export TERM=xterm-256color
-    export RPROMPT='%{%F{167}%}%*%{%f%}'
+    export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
     export PROMPT_COLOR=${PROMPT_COLOR:-147}
-    if ! [[ -v PROMPT_STRING ]] ; then
+    if [[ -z "${PROMPT_STRING}" ]] ; then
         export PROMPT_STRING="%m"
     fi
-    export PROMPT='%(?,,%{$fg[red]%}FAIL%{%f%}${NEWLINE})${NEWLINE}%{%F{197}%}${DOCKERPROMPT}$(virtualenv_prompt_info)%{%f%}%{%F{'"${PROMPT_COLOR}"'}%}${PROMPT_STRING}%{%f%}%{%f%} %{%F{255}%}%1d%{%f%} $(gitprompt)${NEWLINE}%F{241}%% %F{%f%}'
-
-
+    export PROMPT='%(?,,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}${DOCKERPROMPT}$(virtualenv_prompt_info)%{$reset_color%}%{%F{'"${PROMPT_COLOR}"'}%}${PROMPT_STRING}%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(gitprompt)${NEWLINE}%F{241}%% %F{reset_color}'
     export ZSH_GIT_PROMPT_SHOW_STASH=1
     export ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$fg[blue]%}✚"
 fi
@@ -229,6 +225,7 @@ if [[ -f $HOME/.bash_work ]]
 then
     source $HOME/.bash_work
 fi
+
 
 ZSH_THEME_GIT_PROMPT_PREFIX="("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")"
