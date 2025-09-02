@@ -199,7 +199,7 @@ if [[ "${GIT_PROMPT_MODE}" == "OLD" ]] ; then
 
 else
     if is_inside_docker ;  then
-        DOCKERPROMPT="%{$reset_color%}%{%F{23}%}🐳 :${DOCKER_CONTAINER_NAME} %F{reset_color}"
+        DOCKERPROMPT="%{$reset_color%}%{%F{23}%}🐳 : ${DOCKER_CONTAINER_NAME} %F{reset_color}"
         unsetopt HIST_SAVE_BY_COPY
         export PROMPT_COLOR=${PROMPT_COLOR:-228}
     else
