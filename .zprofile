@@ -83,11 +83,13 @@ elif [[ $(uname) == *Linux* ]] ; then
             22.04*) 
                 export DISTRO_NAME="ubuntu22" 
                 export PYGMENTIZE_TERMINAL=terminal16m
+                export PROMPT_STRING="ros-dev-%m"
                 if [[ $DOCKER_CONTAINER_NAME == *nvidia-builder* ]] ; then
-
+                    export PROMPT_COLOR=117
+                    
                 else
 
-                    export PROMPT_STRING="ros-dev-%m"
+
                     export PROMPT_COLOR=29
                 fi
                 ;;
