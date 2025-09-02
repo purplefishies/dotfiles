@@ -32,6 +32,11 @@ if [[ -n "${DOCKER_CONTAINER_NAME}" ]] ; then
             export PATH="$PATH:/bin"
             export PATH="$PATH:/usr/local/bin"
             ;;
+        "nvidia-builder")
+            export PYGMENTIZE_TERMINAL=terminal16m
+            export PROMPT_STRING="ros-dev-%m"
+            export PROMPT_COLOR=117
+
         *)
             # Default Docker config
             ;;
