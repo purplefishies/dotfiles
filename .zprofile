@@ -78,12 +78,19 @@ elif [[ $(uname) == *Linux* ]] ; then
                 export PROMPT_COLOR=117
                 export PROMPT_STRING="%m"
                 export PATH="$HOME/.local/bin:$PATH"                # Needed for pygmentize
+		export GPG_TTY=`tty`
 		;;
             22.04*) 
                 export DISTRO_NAME="ubuntu22" 
-                export PROMPT_COLOR=29
+
                 export PYGMENTIZE_TERMINAL=terminal16m
-                export PROMPT_STRING="ros-dev-%m"
+                if [[ $DOCKER_CONTAINER_NAME == *nvidia-builder* ]] ; then
+
+                else
+
+                    export PROMPT_STRING="ros-dev-%m"
+                    export PROMPT_COLOR=29
+                fi
                 ;;
             20.04*) 
                 export DISTRO_NAME="ubuntu20" 
