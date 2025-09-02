@@ -86,10 +86,7 @@ elif [[ $(uname) == *Linux* ]] ; then
                 export PROMPT_STRING="ros-dev-%m"
                 if [[ $DOCKER_CONTAINER_NAME == *nvidia-builder* ]] ; then
                     export PROMPT_COLOR=117
-                    
                 else
-
-
                     export PROMPT_COLOR=29
                 fi
                 ;;
