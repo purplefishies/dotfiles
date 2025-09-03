@@ -97,6 +97,8 @@ elif [[ $(uname) == *Linux* ]] ; then
                 case "$(uname -m)" in
                     aarch64|arm64)
                         export PROMPT_COLOR=147
+                        export PROMPT_STRING="%m"
+                
                         ;;
                     *)
                         echo "unknown arch: $(uname -m)"
