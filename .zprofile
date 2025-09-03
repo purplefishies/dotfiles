@@ -94,6 +94,18 @@ elif [[ $(uname) == *Linux* ]] ; then
                 else
                     export PROMPT_COLOR=29
                 fi
+                case "$(uname -m)" in
+                    x86_64)
+                        echo "amd64"
+                        ;;
+                    aarch64|arm64)
+                        export PROMPT_COLOR=147
+                        ;;
+                    *)
+                        echo "unknown arch: $(uname -m)"
+                        ;;
+                esac
+                
                 ;;
             20.04*) 
                 export DISTRO_NAME="ubuntu20" 
