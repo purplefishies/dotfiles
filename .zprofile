@@ -109,7 +109,7 @@ elif [[ $(uname) == *Linux* ]] ; then
     export PATH="$PATH:/mnt/c/Users/jdamon/AppData/Local/Programs/Microsoft VS Code/bin"
     export PATH="$PATH:$HOME/vcpkg";
     export PATH="$PATH:$HOME/Scripts"
-    export PATH="$PATH:$HOME/.cargo/bin";
+    export PATH="$HOME/.cargo/bin:$PATH";
     export PATH="$PATH:$HOME/.local/bin";
     export PATH="$PATH:$HOME/perl5/bin";
     export PATH="$PATH:/usr/local/go/bin";
