@@ -95,9 +95,6 @@ elif [[ $(uname) == *Linux* ]] ; then
                     export PROMPT_COLOR=29
                 fi
                 case "$(uname -m)" in
-                    x86_64)
-
-                        ;;
                     aarch64|arm64)
                         export PROMPT_COLOR=147
                         ;;
