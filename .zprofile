@@ -36,7 +36,7 @@ if [[ -n "${DOCKER_CONTAINER_NAME}" ]] ; then
             export PYGMENTIZE_TERMINAL=terminal16m
             export PROMPT_COLOR=117
             export PROMPT_STRING=""
-            export PATH="$HOME/.cargo/bin:$PATH:/opt/local/bin"
+            export PATH="$HOME/.cargo/bin:$PATH"
             ;;
         *)
             # Default Docker config
