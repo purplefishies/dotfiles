@@ -96,7 +96,7 @@ elif [[ $(uname) == *Linux* ]] ; then
                 fi
                 case "$(uname -m)" in
                     x86_64)
-                        echo "amd64"
+
                         ;;
                     aarch64|arm64)
                         export PROMPT_COLOR=147
