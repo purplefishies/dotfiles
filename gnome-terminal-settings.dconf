@@ -1,0 +1,30 @@
+[legacy]
+theme-variant='dark'
+
+[legacy/keybindings]
+next-tab='<Primary><Shift>Right'
+prev-tab='<Primary><Shift>Left'
+
+[legacy/profiles:]
+default=''
+list=['b1dcc9dd-5262-4d8d-a863-c897e6d979b9', '4e3d5838-5546-4fc8-8284-f5830d478e0d']
+
+[legacy/profiles:/:4e3d5838-5546-4fc8-8284-f5830d478e0d]
+background-color='rgb(255,255,255)'
+foreground-color='rgb(0,0,0)'
+use-theme-colors=false
+visible-name='White'
+
+[legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+audible-bell=false
+background-color='rgb(0,0,0)'
+background-transparency-percent=10
+bold-is-bright=true
+font='DejaVuSansM Nerd Font Mono 12'
+foreground-color='rgb(255,255,255)'
+scrollback-lines=1000
+use-system-font=false
+use-theme-colors=false
+use-theme-transparency=false
+use-transparent-background=true
+visible-name='MyDefault'
