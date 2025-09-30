@@ -1,4 +1,7 @@
 export MODULEPATH=$HOME/Modules
+DIRECTORY_COLOR="%F{default}"
+DOTFILES=$HOME/Projects/dotfiles
+
 
 if [[ -n "${DOCKER_CONTAINER_NAME}" ]] ; then
     case "$DOCKER_CONTAINER_NAME" in
@@ -73,6 +76,16 @@ elif [[ $(uname) == *Linux* ]] ; then
                 export DISTRO_NAME="ubuntu24"
                 export PROMPT_COLOR=117
                 export PROMPT_STRING="%m"
+                case "$TERM_PROFILE" in 
+                    *White*Testing*)
+                        DIRECTORY_COLOR="%F{131}"
+                        export LS_COLOR_FILE=$DOTFILES/dircolors.light
+                    ;;
+                    *)
+                    # 
+                    ;;
+                esac
+                
                 export PATH="$HOME/.local/bin:$PATH"                # Needed for pygmentize
 		;;
             22.04*) 

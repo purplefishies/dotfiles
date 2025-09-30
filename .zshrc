@@ -101,7 +101,11 @@ fi
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-eval $(dircolors -b $HOME/.ls_colors )
+if [[ -f ${LS_COLOR_FILE} ]] ; then
+    eval $(dircolors -b $LS_COLOR_FILE)
+else 
+    eval $(dircolors -b $HOME/.ls_colors )
+fi
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 #export GIT_PROMPT_MODE="OLD"
@@ -212,7 +216,8 @@ else
     if [[ -z "${PROMPT_STRING}" ]] ; then
         export PROMPT_STRING="%m"
     fi
-    export PROMPT='%(?,,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}${DOCKERPROMPT}$(virtualenv_prompt_info)%{$reset_color%}%{%F{'"${PROMPT_COLOR}"'}%}${PROMPT_STRING}%{$reset_color%}%{$reset_color%} %{%F{255}%}%1d%{$reset_color%} $(gitprompt)${NEWLINE}%F{241}%% %F{reset_color}'
+
+    export PROMPT='%(?,,%{$fg[red]%}FAIL%{$reset_color%}${NEWLINE})${NEWLINE}%{%F{197}%}${DOCKERPROMPT}$(virtualenv_prompt_info)%{$reset_color%}%{%F{'"${PROMPT_COLOR}"'}%}${PROMPT_STRING}%{$reset_color%}%{$reset_color%} %m %{$DIRECTORY_COLOR%}%1d%{$reset_color%} $(gitprompt)${NEWLINE}%F{241}%% %F{reset_color}'
     export ZSH_GIT_PROMPT_SHOW_STASH=1
     export ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$fg[blue]%}✚"
 fi
@@ -260,3 +265,5 @@ if [[ -f $HOME/.functions ]]
 then
     source $HOME/.functions
 fi
+
+fpath+=~/.zfunc; autoload -Uz compinit; compinit
