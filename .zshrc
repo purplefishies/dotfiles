@@ -5,7 +5,7 @@
 export ZSH_DISABLE_COMPFIX=true
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-source $HOME/.oh-my-zsh/zsh/git-prompt.zsh/git-prompt.zsh                                                                            
+source $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh 
 export XDG_CONFIG_HOME=$HOME/.config
 
 # Set name of the theme to load --- if set to "random", it will
