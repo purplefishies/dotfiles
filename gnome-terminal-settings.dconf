@@ -7,20 +7,32 @@ prev-tab='<Primary><Shift>Left'
 
 [legacy/profiles:]
 default=''
-list=['b1dcc9dd-5262-4d8d-a863-c897e6d979b9', '4e3d5838-5546-4fc8-8284-f5830d478e0d']
+list=['b1dcc9dd-5262-4d8d-a863-c897e6d979b9', '5c094c43-c7d6-4c61-a351-6d422e37c2f2']
 
-[legacy/profiles:/:4e3d5838-5546-4fc8-8284-f5830d478e0d]
-background-color='rgb(255,255,255)'
-foreground-color='rgb(0,0,0)'
+[legacy/profiles:/:5c094c43-c7d6-4c61-a351-6d422e37c2f2]
+audible-bell=false
+background-color='rgb(253,246,227)'
+background-transparency-percent=0
+bold-is-bright=true
+default-size-columns=140
+default-size-rows=37
+font='DejaVuSansM Nerd Font Mono 14'
+foreground-color='rgb(101,123,131)'
+scrollback-lines=1000
+use-system-font=false
 use-theme-colors=false
-visible-name='White'
+use-theme-transparency=false
+use-transparent-background=true
+visible-name='WhiteTesting'
 
 [legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
 audible-bell=false
 background-color='rgb(0,0,0)'
 background-transparency-percent=10
 bold-is-bright=true
-font='DejaVuSansM Nerd Font Mono 12'
+default-size-columns=140
+default-size-rows=37
+font='DejaVuSansM Nerd Font Mono 14'
 foreground-color='rgb(255,255,255)'
 scrollback-lines=1000
 use-system-font=false
