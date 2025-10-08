@@ -1,20 +1,33 @@
-#  Generic Alias commands for both TCSH and BASH...
-#
-lock="xscreensaver-command -lock"
-ll='ls -l '
-lla='ls -al --color=always'
-cd..='cd ..'
-l='ll'
-lh='ll --si -r'           # For displaying Nice labels
-ls='ls --color=auto'
-c='clear'
-..='cd ..'
-ipy='ipython'
-grake="rake -I$HOME/.rake "
-rake="rake -I$HOME/.rake "
-d="diary.pl"
-emacs='emacsclient'
-tree='tree -C'
-pbcopy='xsel --clipboard --input'
-pbpaste='xsel --clipboard --output'
-cp='cp -n'
+alias lock="xscreensaver-command -lock"
+alias ls="\ls --color=auto"
+alias ll='ls -l --color=auto'
+alias cd..='cd ..'
+alias lt='\ls -altr'
+alias l='ll' #
+alias lh='ll --si -r' # For displaying Nice labels
+alias c='clear'
+alias ..='cd ..'
+alias ipy='ipython'
+alias grake="rake -I$HOME/.rake "
+alias rake="rake -I$HOME/.rake "
+alias d="diary.pl"
+alias grep='grep --color=auto -d skip'
+alias tree='tree -C'
+alias cp='cp -i --backup=numbered'
+alias mv='mv -i --backup=numbered'
+alias lless='LESS="-R" less'
+alias ttree='tree --timefmt "${DARKGREY}%b %d %H:%M:%S${RESET}" '
+alias hist="ls $HISTDIRECTORY | tac"
+alias ggrep='grep --color=always -d skip'
+alias ack='ack --color'
+alias ltn='function _ltn(){ if [ "$#" -eq 1 ]; then ls -ltr | tail -n "$1"; else ls -ltr "$2" | tail -n "$1"; fi; }; _ltn'    
+
+if [[ $(uname) =~ [Cc][Yy][Gg][Ww][Ii][Nn] ]]; then
+    alias open='cygstart'
+    alias pbcopy=putclip
+    alias pbpaste=getclip
+elif [[ $(uname) =~ Linux ]]; then
+    alias open='gio open'
+    alias pbcopy='xclip -i -selection clipboard'
+    alias pbpaste='xclip -selection clipboard -o'
+fi
