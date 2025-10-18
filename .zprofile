@@ -85,7 +85,17 @@ elif [[ $(uname) == *Linux* ]] ; then
                     # 
                     ;;
                 esac
-                
+                case $HOST in
+                    nice)
+                        export PGN_GAMES=/media/jdamon/NAS/Chess/PGNGames
+                        ;;
+                    mrroboto)
+                        export PGN_GAMES=$HOME/Projects/Chess/PGNGames
+                        ;;
+                    *)
+                        echo "Unknown host: $HOST"
+                        ;;
+                esac
                 export PATH="$HOME/.local/bin:$PATH"                # Needed for pygmentize
 		;;
             22.04*) 
@@ -106,12 +116,13 @@ elif [[ $(uname) == *Linux* ]] ; then
     fi
     export PATH="/usr/bin:/usr/sbin:/usr/local/bin:/opt/local/bin:/usr/local/cuda/bin:/usr/games"
     export PATH="$PATH:/mnt/c/Users/jdamon/AppData/Local/Programs/Microsoft VS Code/bin"
-    export PATH="$PATH:$HOME/vcpkg";
+    export PATH="$PATH:$HOME/vcpkg"
     export PATH="$PATH:$HOME/Scripts"
-    export PATH="$PATH:$HOME/.cargo/bin";
-    export PATH="$PATH:$HOME/.local/bin";
-    export PATH="$PATH:$HOME/perl5/bin";
-    export PATH="$PATH:/usr/local/go/bin";
+    export PATH="$PATH:$HOME/.cargo/bin"
+    export PATH="$PATH:$HOME/.local/bin"
+    export PATH="$PATH:$HOME/perl5/bin"
+    export PATH="$PATH:/usr/local/go/bin"
+    export PATH="$PATH:$HOME/.local/bin"
 
     export PYGMENTIZE_STYLE=native
     export LESSOPEN="|$HOME/Scripts/lesspipe_pygmentize.sh %s 2>/dev/null"
