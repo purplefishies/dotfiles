@@ -1,7 +1,7 @@
 function save { 
     # echo "Number $#"
     if [[  $# -lt  2 ]] ; then
-        echo "Usage save TYPE FILE|DIRECTORY"
+        echo "Usage: save TYPE FILE|DIRECTORY"
     else
         for i in {2..$#..1}
         do
@@ -17,7 +17,7 @@ function save {
             
             dir=$(grep -P "^$1" $HOME/.cdargs | perl -ne 's/^\S+\s+(\S.*)$/$1/g;print;' 2>/dev/null)
             if [[ -z $dir || $dir == "" ]] ; then
-                echo "Can't determing SAVEDIR from '$1'"
+                echo "Can't determine SAVEDIR from '$1'"
             else
                 if [[ -d "$fname" ]] ; then
                     /bin/cp -vf -p -r "$fname" "${dir}/${nname}_$(uniq_dir_name "$fname")"

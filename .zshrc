@@ -5,7 +5,9 @@
 export ZSH_DISABLE_COMPFIX=true
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-source $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh 
+if [[ -f $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh   ]] ; then
+	source $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh                         
+fi
 export XDG_CONFIG_HOME=$HOME/.config
 
 # Set name of the theme to load --- if set to "random", it will
@@ -78,7 +80,6 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_IGNORE_SPACE
 setopt HIST_NO_FUNCTIONS 
-setopt nonomatch
 export HISTFILESIZE=1000000000
 export HISTCONTROL=ignorespace
 export HISTSIZE=1000000000
@@ -158,9 +159,7 @@ else
 fi
 
 export TEXINPUTS="$HOME/Latex://;"
-export LABRAT='//bomazi/LabRatCentral'
-export MOTION='${LABRAT}/2-MotionTests'
-export BENCH='${LABRAT}/1-BenchTests'
+
 
 export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
 
