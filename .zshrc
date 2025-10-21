@@ -269,3 +269,5 @@ then
 fi
 
 fpath+=~/.zfunc; autoload -Uz compinit; compinit
+
+
