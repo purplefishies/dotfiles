@@ -80,6 +80,9 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_IGNORE_SPACE
 setopt HIST_NO_FUNCTIONS 
+setopt nonomatch
+setopt no_hist_verify
+
 export HISTFILESIZE=1000000000
 export HISTCONTROL=ignorespace
 export HISTSIZE=1000000000
