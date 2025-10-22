@@ -159,23 +159,28 @@ window on top of a cool european city backdrop. I like the Sanityinc tomorrow th
 I'm still not sure why this can't be loaded through use-package
 
 #+BEGIN_SRC emacs-lisp
-  ;(use-package color-theme-sanityinc-tomorrow)
-  ;(require 'color-theme-sanityinc-tomorrow)
-  ;(use-package color-theme-sanityinc-tomorrow-blue)
+    ;(use-package color-theme-sanityinc-tomorrow)
+    ;(require 'color-theme-sanityinc-tomorrow)
+    ;(use-package color-theme-sanityinc-tomorrow-blue)
 
 
-  (defun transparency (value)
-    "Sets the transparency of the frame window. 0=transparent/100=opaque."
-    (interactive "nTransparency Value 0 - 100 opaque:")
-    (set-frame-parameter (selected-frame) 'alpha value))
+    (defun transparency (value)
+      "Sets the transparency of the frame window. 0=transparent/100=opaque."
+      (interactive "nTransparency Value 0 - 100 opaque:")
+      (set-frame-parameter (selected-frame) 'alpha value))
 
-  (defun jmd/apply-theme ()
-    "Apply the `solarized-light' theme and make frames just slightly transparent."
-    (interactive)
-    ;(color-theme-sanityinc-tomorrow-bright)
-    (color-theme-sanityinc-tomorrow-blue)
-    ;; (load-theme 'solarized-light t)
-    (transparency 96))
+  (use-package color-theme-sanityinc-tomorrow
+    :ensure t
+    :config
+    (load-theme 'sanityinc-tomorrow-blue t))
+
+    (defun jmd/apply-theme ()
+      "Apply the `solarized-light' theme and make frames just slightly transparent."
+      (interactive)
+      ;(color-theme-sanityinc-tomorrow-bright)
+      (color-theme-sanityinc-tomorrow-blue)
+      ;; (load-theme 'solarized-light t)
+      (transparency 96))
 #+END_SRC
 
 If this code is being evaluated by =emacs --daemon=, ensure that each subsequent
@@ -262,7 +267,7 @@ as point goes.
    :END:
 
 #+BEGIN_SRC emacs-lisp
-(set-frame-font "Monaco-12")
+  ;; (set-frame-font "Monaco-12")
 #+END_SRC
 
 ** Display / Color
@@ -482,19 +487,30 @@ Do this after `q` in Debugger buffer."
    :END:
 #+begin_src emacs-lisp
 (defun my-org-screenshot ()
-  "Take a screenshot into a time stamped unique-named file in the
-same directory as the org-buffer and insert a link to this file."
+  "Take a screenshot into a timestamped unique-named file in a
+YEAR/Month subdirectory based on the org file name, and insert a link."
   (interactive)
-  (setq filename
-        (concat
-         (make-temp-name
-          (concat (file-name-nondirectory (buffer-file-name))
-                  "_"
-                  (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
-  (call-process "import" nil nil nil filename)
-  (insert (concat "[[./" (file-name-nondirectory filename) "]]"))
-  (org-display-inline-images))
+  (let* ((base-name (file-name-base (buffer-file-name))) ;; e.g. "work"
+         (year (format-time-string "%Y"))               ;; "2025"
+         (month (format-time-string "%b"))              ;; "Oct"
+         (dir (expand-file-name (format "%s/%s/%s" base-name year month)
+                                (file-name-directory (buffer-file-name))))
+         ;; filename like "20251017_111214_<rand>.png"
+         (file (concat (make-temp-name
+                        (format "%s/%s/%s/%s" base-name year month
+                                (format-time-string "%Y%m%d_%H%M%S_")))
+                       ".png")))
+    ;; ensure dir exists
+    (make-directory dir t)
+    ;; take screenshot
+    (call-process "import" nil nil nil (expand-file-name file (file-name-directory (buffer-file-name))))
+    ;; insert relative link
+    (insert (concat "[[./" file "]]"))
+    (org-display-inline-images)))
+
 #+end_src
+
+
 
 * Project management
 
@@ -2125,6 +2141,7 @@ Hiding leading stars
                                 (concat dropbox-directory "gtd.org")
                                 (concat dropbox-directory "archive.org")
                                 (concat dropbox-directory "gcal.org")
+                                (concat dropbox-directory "knowledge.org")
                                 (concat dropbox-directory "inbox.org")
                                 (concat dropbox-directory "reckoning.org")
                                 (concat dropbox-directory "work.org")
@@ -2204,10 +2221,9 @@ Hiding leading stars
                           ;;        :deadline nil
                           ;;        :and (:todo "NEXT"))
                           (:discard (:todo "TODO"))
-                          (:discard (:category "tickler"))
+                          ;; (:discard (:category "tickler"))
                           (:discard (:tag "call"))
                           (:auto-category t :order 9)
-
                           (:name "Next Steps"
                                  :and (:todo "NEXT"))
 
@@ -3230,7 +3246,7 @@ Magit
 #+begin_src emacs-lisp
 (setq org-refile-files
       '("~/Dropbox/org/gtd.org" "~/Dropbox/org/someday.org" "~/Dropbox/org/tickler.org" "~/Dropbox/org/reckoning.org" 
-        "~/Dropbox/org/knowledge.org"))
+        "~/Dropbox/org/knowledge.org" "~/Dropbox/org/work.org"  ))
 
 (setq org-refile-targets
       '((nil :maxlevel . 3)
@@ -3361,3 +3377,50 @@ Magit
 
 #+end_src
 
+
+
+* Magit delta
+
+#+begin_src emacs-lisp
+;; MELPA required
+(use-package magit-delta
+  :ensure t
+  :hook (magit-mode . magit-delta-mode)
+  ;; optional: pass delta flags
+  :custom
+  (magit-delta-delta-args '("--navigate" "--line-numbers")))
+#+end_src
+
+
+
+* Auto commit org (and shell)
+#+begin_src emacs-lisp
+
+(defun my-auto-commit ()
+  "Auto commit Org or shell-script files to git on save."
+  (when (and buffer-file-name
+             (or (string-match "\\.org\\'" buffer-file-name)
+                 (derived-mode-p 'sh-mode)))
+    (let* ((default-directory (locate-dominating-file buffer-file-name ".git"))
+           (msg (format "Auto-commit: %s" (file-name-nondirectory buffer-file-name))))
+      (when default-directory
+        (shell-command (format "git add %s" (shell-quote-argument buffer-file-name)))
+        (shell-command (format "git commit -m %s" (shell-quote-argument msg)))))))
+
+(remove-hook 'after-save-hook #'my-org-auto-commit) ;; remove old one
+(add-hook 'after-save-hook #'my-auto-commit)
+
+
+#+end_src
+
+
+* Notes
+#+begin_src emacs-lisp
+(setq org-agenda-log-mode-items '(closed clock state))
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-repeat 'note)                  ;; ask note on repeats
+(setq org-log-into-drawer t)                 ;; keep log notes tidy
+#+end_src
+
+#+RESULTS:
+: t
