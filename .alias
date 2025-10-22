@@ -1,10 +1,11 @@
 alias lock="xscreensaver-command -lock"
-alias ls="\ls --color=auto"
-alias ll='ls -l --color=auto'
+alias ls="\ls --color=auto --hyperlink=auto "
+alias ll='ls -l --color=auto --hyperlink=auto '
 alias cd..='cd ..'
 alias lt='\ls -altr'
 alias l='ll' #
 alias lh='ll --si -r' # For displaying Nice labels
+alias icat='kitty +kitten icat'
 alias c='clear'
 alias ..='cd ..'
 alias ipy='ipython'
