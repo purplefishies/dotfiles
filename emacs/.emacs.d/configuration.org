@@ -2,6 +2,8 @@
 #+AUTHOR: Jimi Damon
 #+EMAIL: jdamon@gmail.com
 #+OPTIONS: toc:nil num:nil
+#+TODO: TODO(t) NEXT(n) WAITING(w) HOLD(h) POSTPONED(p) |  DONE(d) 
+
 
 
 * Configure =use-package=
@@ -3161,11 +3163,6 @@ For exporting
 Magit
 #+begin_src emacs-lisp
 (use-package magit
-  ;; :straight (magit :type git
-  ;;                  :files ("lisp/magit*.el" "lisp/git*.el"
-  ;;                          "Documentation/magit.texi" "Documentation/AUTHORS.md"
-  ;;                          "COPYING" (:exclude "lisp/magit-popup.el"))
-                   ;; :host github :repo "magit/magit")
   :bind (("s-g" . magit-status)
          ("C-c g" . magit-status)
          ("s-G" . magit-blame-addition)
@@ -3176,12 +3173,38 @@ Magit
   (magit-auto-revert-mode nil)
   (magit-log-arguments '("-n100" "--graph" "--decorate"))
   :config
+  ;; Add "Wip" entry under "a"
   (transient-append-suffix 'magit-log "a"
     '("w" "Wip" magit-wip-log-current))
-  (magit-define-popup-switch 'magit-log-popup
-                             ?m "Omit merge commits" "--no-merges")
+
+  ;; Add `--no-merges` switch with key `-m`
   (transient-append-suffix 'magit-log "-A"
     '("-m" "Omit merge commits" "--no-merges")))
+
+
+
+;; (use-package magit
+;;   ;; :straight (magit :type git
+;;   ;;                  :files ("lisp/magit*.el" "lisp/git*.el"
+;;   ;;                          "Documentation/magit.texi" "Documentation/AUTHORS.md"
+;;   ;;                          "COPYING" (:exclude "lisp/magit-popup.el"))
+;;                    ;; :host github :repo "magit/magit")
+;;   :bind (("s-g" . magit-status)
+;;          ("C-c g" . magit-status)
+;;          ("s-G" . magit-blame-addition)
+;;          ("C-c G" . magit-blame-addition))
+;;   :hook
+;;   (magit-mode . hl-line-mode)
+;;   :custom
+;;   (magit-auto-revert-mode nil)
+;;   (magit-log-arguments '("-n100" "--graph" "--decorate"))
+;;   :config
+;;   (transient-append-suffix 'magit-log "a"
+;;     '("w" "Wip" magit-wip-log-current))
+;;   (magit-define-popup-switch 'magit-log-popup
+;;                              ?m "Omit merge commits" "--no-merges")
+;;   (transient-append-suffix 'magit-log "-A"
+;;     '("-m" "Omit merge commits" "--no-merges")))
 
 #+end_src
 
@@ -3424,3 +3447,32 @@ Magit
 
 #+RESULTS:
 : t
+
+
+
+* Helm 
+#+begin_src emacs-lisp
+(use-package helm
+  :ensure t
+  :config
+  (helm-mode 1)
+
+  ;; don’t wrap around with arrow keys
+  (setq helm-move-to-line-cycle-in-source nil))
+
+(use-package helm-org
+  :ensure t
+  :after helm
+  :bind (("C-c h" . helm-org-agenda-files-headings)))
+#+end_src
+
+
+* DONE Todos
+CLOSED: [2025-10-24 Fri 11:38]
+#+begin_src emacs-lisp
+(setq org-todo-keywords
+      '((sequence
+         "TODO(t)" "NEXT(n)" "WAITING(w)" "POSTPONED(p)" "HOLD(h)" "|"
+         "DONE(d)")))
+#+end_src
+
