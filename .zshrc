@@ -142,10 +142,11 @@ if [[ -f /.dockerenv ]] ; then
    export PATH="$PATH:/usr/share/cmake-3.28.0-rc1-linux-aarch64/bin"
 fi
 
+alias | grep ls 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-alias | grep ls 
+
 
 bindkey '^G' emacs-forward-word
 bindkey '^F' emacs-backward-word
