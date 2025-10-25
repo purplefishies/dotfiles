@@ -102,6 +102,8 @@ if [[ -f $HOME/.alias ]] ; then
     source $HOME/.alias
 fi
 
+alias | grep ls 
+
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -222,7 +224,7 @@ else
     export ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$fg[blue]%}✚"
 fi
 
-alias | grep ls 
+
 
 if [[ -f $HOME/.bash_work ]]
 then
