@@ -222,6 +222,8 @@ else
     export ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$fg[blue]%}✚"
 fi
 
+alias | grep ls 
+
 if [[ -f $HOME/.bash_work ]]
 then
     source $HOME/.bash_work
