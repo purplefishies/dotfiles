@@ -130,6 +130,8 @@ else
     fi
 fi
 
+alias | grep ls 
+
 setopt correct
 source $ZSH/oh-my-zsh.sh
 PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; 
