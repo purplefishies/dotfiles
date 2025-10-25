@@ -137,7 +137,7 @@ setopt correct
 source $ZSH/oh-my-zsh.sh
 
 
-#alias | grep ls 
+alias | grep ls 
 
 PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; 
 export PERL5LIB;
