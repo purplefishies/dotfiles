@@ -130,7 +130,7 @@ else
     fi
 fi
 
-alias | grep ls 
+#alias | grep ls 
 
 setopt correct
 source $ZSH/oh-my-zsh.sh
@@ -144,6 +144,8 @@ fi
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+alias | grep ls 
 
 bindkey '^G' emacs-forward-word
 bindkey '^F' emacs-backward-word
