@@ -222,10 +222,6 @@ else
     export ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$fg[blue]%}✚"
 fi
 
-if [[ -f $HOME/.bash_cygwin ]] ; then
-    source $HOME/.bash_cygwin
-fi
-
 if [[ -f $HOME/.bash_work ]]
 then
     source $HOME/.bash_work
