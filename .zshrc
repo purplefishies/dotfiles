@@ -130,6 +130,7 @@ else
     fi
 fi
 
+alias | grep ls 
 #alias | grep ls 
 
 setopt correct
@@ -142,7 +143,7 @@ if [[ -f /.dockerenv ]] ; then
    export PATH="$PATH:/usr/share/cmake-3.28.0-rc1-linux-aarch64/bin"
 fi
 
-alias | grep ls 
+
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
