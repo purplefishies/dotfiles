@@ -125,9 +125,6 @@ else
     fi
 fi
 
-alias | grep ls w
-
-
 setopt correct
 source $ZSH/oh-my-zsh.sh
 
