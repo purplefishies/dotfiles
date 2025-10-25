@@ -98,6 +98,7 @@ else
 fi
 
 if [[ -f $HOME/.alias ]] ; then
+    echo "FOO"
     source $HOME/.alias
 fi
 
