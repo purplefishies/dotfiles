@@ -97,12 +97,7 @@ elif [[ -f /usr/share/modules/init/zsh ]] ; then
 else
 fi
 
-if [[ -f $HOME/.alias ]] ; then
-    echo "FOO"
-    source $HOME/.alias
-fi
 
-alias | grep ls 
 
 
 # Would you like to use another custom folder than $ZSH/custom?
@@ -137,7 +132,6 @@ setopt correct
 source $ZSH/oh-my-zsh.sh
 
 
-alias | grep ls 
 
 PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; 
 export PERL5LIB;
@@ -275,6 +269,11 @@ if [[ -f $HOME/.functions ]]
 then
     source $HOME/.functions
 fi
+
+if [[ -f $HOME/.alias ]] ; then
+    source $HOME/.alias
+fi
+
 
 fpath+=~/.zfunc; autoload -Uz compinit; compinit
 
