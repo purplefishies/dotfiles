@@ -171,9 +171,6 @@ if [[ -f "$HOME/.bash_stuff/cdargs/cdargs-bash.sh" ]] ; then
 elif [[ -f "/usr/share/doc/cdargs/examples/cdargs-bash.sh" ]] ; then
     source "/usr/share/doc/cdargs/examples/cdargs-bash.sh"
 fi
-if [[ -f $HOME/.bash_alias  ]] ; then
-    source $HOME/.bash_alias
-fi
 
 #NEWLINE=${NEWLINE:-'\n'}
 
