@@ -2399,16 +2399,30 @@ Hiding leading stars
     
     (with-eval-after-load 'org
       (defun my/org-roam--backlinks-list (file)
-        (if (org-roam--org-roam-file-p file)
-            (--reduce-from
-             (concat acc (format "- [[file:%s][%s]]\n"
-                                 (file-relative-name (car it) org-roam-directory)
-                                 (org-roam--get-title-or-slug (car it))))
-             "" (org-roam-sql [:select [file-from]
-                                       :from file-links
-                                       :where (= file-to $s1)
-                                       :and file-from :not :like $s2] file "%private%"))
-          ""))
+        (let* ((nodes (org-roam-db-query
+                       [:select [source]
+                                :from links
+                                :where (= dest $s1)]
+                       file)))
+          (mapconcat
+           (lambda (row)
+             (format "- [[file:%s][%s]]"
+                     (file-relative-name (car row) org-roam-directory)
+                     (org-roam-node-title (org-roam-node-from-id (car row)))))
+           nodes
+           "\n")))
+
+      ;; (defun my/org-roam--backlinks-list (file) ;
+      ;;   (if (org-roam--org-roam-file-p file)
+      ;;       (--reduce-from
+      ;;        (concat acc (format "- [[file:%s][%s]]\n"
+      ;;                            (file-relative-name (car it) org-roam-directory)
+      ;;                            (org-roam--get-title-or-slug (car it))))
+      ;;        "" (org-roam-sql [:select [file-from]
+      ;;                                  :from file-links
+      ;;                                  :where (= file-to $s1)
+      ;;                                  :and file-from :not :like $s2] file "%private%"))
+      ;;     ""))
       (defun my/org-export-preprocessor (_backend)
       (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
         (unless (string= links "")
@@ -2421,8 +2435,8 @@ Hiding leading stars
            ;(file+head "path/to/file" "head content")
       ;; (file+head "path/to/file" "head content")
            :target (file+head "${slug}.org" "#+SETUPFILE:./hugo_setup.org
-#+HUGO_SECTION: zettels
-#+TITLE: ${title}\n" )
+,#+HUGO_SECTION: zettels
+,#+TITLE: ${title}\n" )
 ;; :head "#+SETUPFILE:./hugo_setup.org
 ;; #+HUGO_SECTION: zettels
 ;; #+HUGO_SLUG: ${slug}
