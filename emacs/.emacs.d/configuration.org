@@ -2418,7 +2418,7 @@ Hiding leading stars
             (insert "\n* Backlinks\n" links))))
 
       (add-hook 'org-export-before-processing-hook #'my/org-export-preprocessor)
-      
+      )  
       ;; (defun my/org-roam--backlinks-list (file) ;
       ;;   (if (org-roam--org-roam-file-p file)
       ;;       (--reduce-from
