@@ -3502,5 +3502,10 @@ CLOSED: [2025-10-24 Fri 11:38]
       '((auto-mode . emacs)
         ("\\.pdf\\'" . "evince %s")))
 
+(setq org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+
 #+end_src
 
