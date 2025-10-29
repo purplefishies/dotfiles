@@ -2411,9 +2411,12 @@ Hiding leading stars
                      (org-roam-node-title (org-roam-node-from-id (car row)))))
            nodes
            "\n")))
-
-
-
+      (defun my/org-export-preprocessor (_backend)
+        (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
+          (unless (string-empty-p links)
+            (goto-char (point-max))
+            (insert "\n* Backlinks\n" links))))
+      
       ;; (defun my/org-roam--backlinks-list (file) ;
       ;;   (if (org-roam--org-roam-file-p file)
       ;;       (--reduce-from
