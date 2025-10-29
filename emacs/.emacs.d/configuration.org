@@ -2436,8 +2436,7 @@ Hiding leading stars
       ;;     (save-excursion
       ;;       (goto-char (point-max))
       ;;       (insert (concat "\n* Backlinks\n" links))))))
-
-      (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
+      ;; (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
     (setq org-roam-capture-templates
         '(("d" "default" plain "%?"
            ;(file+head "path/to/file" "head content")
