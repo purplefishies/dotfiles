@@ -3514,7 +3514,6 @@ CLOSED: [2025-10-24 Fri 11:38]
              '("\\.html?\\'" . browse-url-chrome))
 
 
-
 (defun my/org-export-and-open ()
   (interactive)
   (let ((file (org-html-export-to-html)))
