@@ -3534,4 +3534,8 @@ CLOSED: [2025-10-24 Fri 11:38]
 ** Go back to where you were 
 #+begin_src text
 C-c &  ( org-mark-ring-goto )
+
+or 
+
+M-, Pop to previous location
 #+end_src
