@@ -3497,4 +3497,10 @@ CLOSED: [2025-10-24 Fri 11:38]
 (add-to-list 'org-latex-packages-alist '("" "minted"))
 
 (setq org-latex-listings 'minted)
+
+(setq org-file-apps
+      '((auto-mode . emacs)
+        ("\\.pdf\\'" . "evince %s")))
+
 #+end_src
+
