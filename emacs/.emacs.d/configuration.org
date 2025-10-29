@@ -3507,11 +3507,18 @@ CLOSED: [2025-10-24 Fri 11:38]
         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 
+(defun my/org-export-and-open ()
+  (interactive)
+  (let ((file (org-html-export-to-html)))
+    (browse-url-of-file file)))  ;; this ensures a browser, not Emacs
+
 (defun my/org-open-exported-html-in-browser (plist filename backend)
   (when (eq backend 'html)
     (browse-url filename)))
 
 (add-hook 'org-export-after-save-hook #'my/org-open-exported-html-in-browser)
+
+
 
 
 #+end_src
