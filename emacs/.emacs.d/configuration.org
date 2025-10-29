@@ -3476,3 +3476,25 @@ CLOSED: [2025-10-24 Fri 11:38]
          "DONE(d)")))
 #+end_src
 
+
+
+* Org file opening
+
+#+begin_src emacs-lisp
+(defun my/org-refresh-after-open (&rest _)
+  (when (derived-mode-p 'org-mode)
+    (org-mode-restart)))  ;; re-initializes indentation, font-lock, etc.
+
+(advice-add 'org-open-file :after #'my/org-refresh-after-open)
+
+
+(defun my/org-reindent-buffer ()
+  (when (derived-mode-p 'org-mode)
+    (org-set-startup-visibility)
+    (org-indent-mode 1)
+    (font-lock-fontify-buffer)))
+
+;(advice-add 'org-open-file :after #'my/org-reindent-buffer)
+
+#+end_src
+
