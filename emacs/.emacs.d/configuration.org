@@ -3490,3 +3490,11 @@ CLOSED: [2025-10-24 Fri 11:38]
 
 #+end_src
 
+
+
+* Minted output
+#+begin_src emacs-lisp
+(add-to-list 'org-latex-packages-alist '("" "minted"))
+
+(setq org-latex-listings 'minted)
+#+end_src
