@@ -2412,6 +2412,8 @@ Hiding leading stars
            nodes
            "\n")))
 
+
+
       ;; (defun my/org-roam--backlinks-list (file) ;
       ;;   (if (org-roam--org-roam-file-p file)
       ;;       (--reduce-from
@@ -2423,12 +2425,13 @@ Hiding leading stars
       ;;                                  :where (= file-to $s1)
       ;;                                  :and file-from :not :like $s2] file "%private%"))
       ;;     ""))
-      (defun my/org-export-preprocessor (_backend)
-      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
-        (unless (string= links "")
-          (save-excursion
-            (goto-char (point-max))
-            (insert (concat "\n* Backlinks\n" links))))))
+      ;; (defun my/org-export-preprocessor (_backend)
+      ;; (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
+      ;;   (unless (string= links "")
+      ;;     (save-excursion
+      ;;       (goto-char (point-max))
+      ;;       (insert (concat "\n* Backlinks\n" links))))))
+
       (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
     (setq org-roam-capture-templates
         '(("d" "default" plain "%?"
