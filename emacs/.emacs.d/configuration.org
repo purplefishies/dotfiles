@@ -3551,11 +3551,9 @@ M-, Pop to previous location
 ** Emcs colors
 #+begin_src emacs-lisp
 
-(setq org-html-htmlize-output-type 'css)          ;; no inline styles
-(setq org-html-head-include-default-style nil)    ;; no default Org CSS
-(setq org-html-head-include-scripts nil)          ;; optional (cleaner HTML)
-
-
+;; (setq org-html-htmlize-output-type 'css)          ;; no inline styles
+;; (setq org-html-head-include-default-style nil)    ;; no default Org CSS
+;; (setq org-html-head-include-scripts nil)          ;; optional (cleaner HTML)
 
 ;; Make strings forest-green only during HTML export
 ;; (defun my/htmlize-custom-string-face (_backend)
