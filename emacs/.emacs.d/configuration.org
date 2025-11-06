@@ -3550,7 +3550,11 @@ M-, Pop to previous location
 
 ** Emcs colors
 #+begin_src emacs-lisp
-(setq org-html-htmlize-output-type 'css)
+
+(setq org-html-htmlize-output-type 'css)          ;; no inline styles
+(setq org-html-head-include-default-style nil)    ;; no default Org CSS
+(setq org-html-head-include-scripts nil)          ;; optional (cleaner HTML)
+
 
 
 ;; Make strings forest-green only during HTML export
@@ -3559,4 +3563,3 @@ M-, Pop to previous location
 ;;   (set-face-attribute 'font-lock-string-face nil :foreground "#228B22"))
 ;; (add-hook 'org-export-before-processing-hook #'my/htmlize-custom-string-face)
 #+end_src
-
