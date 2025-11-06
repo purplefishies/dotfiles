@@ -3554,7 +3554,6 @@ M-, Pop to previous location
 ;; (defun my/htmlize-custom-string-face (_backend)
 ;;   ;; Change string color just for the HTML export
 ;;   (set-face-attribute 'font-lock-string-face nil :foreground "#228B22"))
-
 ;; (add-hook 'org-export-before-processing-hook #'my/htmlize-custom-string-face)
 #+end_src
 
