@@ -3551,10 +3551,10 @@ M-, Pop to previous location
 ** Emcs colors
 #+begin_src emacs-lisp
 ;; Make strings forest-green only during HTML export
-(defun my/htmlize-custom-string-face (_backend)
-  ;; Change string color just for the HTML export
-  (set-face-attribute 'font-lock-string-face nil :foreground "#228B22"))
+;; (defun my/htmlize-custom-string-face (_backend)
+;;   ;; Change string color just for the HTML export
+;;   (set-face-attribute 'font-lock-string-face nil :foreground "#228B22"))
 
-(add-hook 'org-export-before-processing-hook #'my/htmlize-custom-string-face)
+;; (add-hook 'org-export-before-processing-hook #'my/htmlize-custom-string-face)
 #+end_src
 
