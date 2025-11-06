@@ -3539,3 +3539,11 @@ or
 
 M-, Pop to previous location
 #+end_src
+
+** Emacs Org tag fix
+#+begin_src emacs-lisp
+;;; work-around  for org-ctags obnoxious behavior
+(with-eval-after-load 'org-ctags (setq org-open-link-functions nil))
+#+end_src
+
+#+RESULTS:
