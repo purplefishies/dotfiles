@@ -3550,6 +3550,9 @@ M-, Pop to previous location
 
 ** Emcs colors
 #+begin_src emacs-lisp
+(setq org-html-htmlize-output-type 'css)
+
+
 ;; Make strings forest-green only during HTML export
 ;; (defun my/htmlize-custom-string-face (_backend)
 ;;   ;; Change string color just for the HTML export
