@@ -510,40 +510,46 @@ YEAR/Month subdirectory based on the org file name, and insert a link."
     (insert (concat "[[./" file "]]"))
     (org-display-inline-images)))
 
-
 (defun my-org-insert-image ()
-  "Prompt for an image, copy it to <basename>/<YEAR>/<Mon>/, insert link, display inline."
+  "Prompt for an image, copy it to <basename>/<YEAR>/<Mon>/, insert link, show inline, and git add it."
   (interactive)
   (unless (buffer-file-name)
     (error "Current buffer is not visiting a file"))
 
-  ;; choose file interactively
   (let* ((src (read-file-name "Select image file: "))
-         (base (file-name-base (buffer-file-name)))   ;; e.g., inbox
+         (base (file-name-base (buffer-file-name)))   ;; inbox from inbox.org
          (year  (format-time-string "%Y"))
          (month (format-time-string "%b"))            ;; Jan/Feb/Mar...
          (root  (file-name-directory (buffer-file-name)))
 
-         ;; destination dir and filename
+         ;; create target directory structure inbox/2026/Feb/
          (dest-dir (expand-file-name (format "%s/%s/%s" base year month) root))
+
+         ;; keep original filename
          (dest-file (expand-file-name (file-name-nondirectory src) dest-dir))
 
-         ;; relative path used in org link
+         ;; link relative to the .org file location
          (rel-path (file-relative-name dest-file root)))
 
-    ;; Ensure the folder exists
+    ;; ensure dir exists
     (make-directory dest-dir t)
 
-    ;; Copy file
+    ;; copy file into the org-document's tree
     (copy-file src dest-file t)
 
-    ;; Insert org link
+    ;; insert org link
     (insert (format "[[./%s]]" rel-path))
-
-    ;; Refresh inline images
     (org-display-inline-images)
 
-    (message "Image copied to: %s" dest-file)))
+    ;; git add: use magit when available, fallback to git CLI
+    (message "Staging file: %s" rel-path)
+    (if (and (fboundp 'magit-call-git)
+             ;; ensure we’re really inside a git repo
+             (= (call-process "git" nil nil nil "rev-parse" "--is-inside-work-tree") 0))
+        (magit-call-git "add" dest-file)
+      (call-process "git" nil nil nil "add" dest-file))
+
+    (message "Image copied, linked, and staged: %s" rel-path)))
 
 #+end_src
 
