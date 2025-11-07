@@ -3605,39 +3605,34 @@ M-, Pop to previous location
 
 
 #+begin_src emacs-lisp
-
-
-;; (defun my-org-inline-css-hook (exporter)
-;;   "Insert custom inline css"
-;;   (when (eq exporter 'html)
-;;     (let ((my-pre-bg (face-background 'default)))
-;;       (setq org-html-head-include-default-style nil)
-;;       (setq org-html-head
-;;             (format "<style type=\"text/css\">\n pre.src { background-color: %s;}</style>\n" my-pre-bg)))))
-
-;; (add-hook 'org-export-before-processing-hook 'my-org-inline-css-hook)
-
 (setq org-html-head-include-default-style nil)
 
 (setq org-html-head
 "<style>
-/* Base styling for all src blocks */
+/* ---- CODE BLOCK CONTAINER (makes width consistent & centered) ---- */
+div.org-src-container {
+  max-width: 800px;        /* ✅ set your desired code block width */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---- CODE BLOCK ---- */
 pre.src {
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 14px 16px;
-  margin: 1.3em 0;
-  background: #ffffff;     /* ✅ white background */
+  background: #ffffff;
   color: #000000;
-  width: 100%;
-  box-sizing: border-box;
-  position: relative;      /* needed for button positioning */
+  width: 100%;              /* ✅ fill the container */
+  box-sizing: border-box;   /* ✅ include padding/border in width */
+  position: relative;
   overflow-x: auto;
   font-size: 0.9rem;
   line-height: 1.45;
+  white-space: pre;         /* ✅ prevents weird wrapping / shifting */
 }
 
-/* Language label for bash blocks */
+/* ---- BASH LABEL ---- */
 pre.src-bash:before {
   content: \"shell%\";
   position: absolute;
@@ -3650,7 +3645,7 @@ pre.src-bash:before {
   color: #666;
 }
 
-/* ChatGPT-style Copy button */
+/* ---- COPY BUTTON ---- */
 .copy-code-btn {
   position: absolute;
   top: 6px;
@@ -3665,14 +3660,11 @@ pre.src-bash:before {
   color: #333;
   transition: background 0.15s ease;
 }
-
-.copy-code-btn:hover {
-  background: #e5e5e5;
-}
+.copy-code-btn:hover { background: #e5e5e5; }
 </style>
 
 <script>
-// Add a persistent \"Copy code\" button to each code block
+// Add ChatGPT-style \"Copy code\" buttons
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('pre.src').forEach(function(pre) {
 
@@ -3681,20 +3673,10 @@ document.addEventListener('DOMContentLoaded', function () {
     btn.className = 'copy-code-btn';
 
     btn.addEventListener('click', () => {
-
-      // ✅ Clone the node so we can strip UI elements before copying
       const clone = pre.cloneNode(true);
-
-      // Remove the button inside the clone
       const buttonInClone = clone.querySelector('.copy-code-btn');
       if (buttonInClone) buttonInClone.remove();
-
-      // Extract only the code content
-      const text = clone.textContent;
-
-      // Copy to clipboard
-      navigator.clipboard.writeText(text);
-
+      navigator.clipboard.writeText(clone.textContent);
       btn.innerText = 'Copied!';
       setTimeout(() => btn.innerText = 'Copy code', 1500);
     });
@@ -3704,6 +3686,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 ")
+
+
 #+end_src
 
 
