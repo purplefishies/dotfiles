@@ -3605,47 +3605,51 @@ M-, Pop to previous location
 
 
 #+begin_src emacs-lisp
+
 (setq org-html-head-include-default-style nil)
 
 (setq org-html-head
 "<style>
-/* ---- CODE BLOCK CONTAINER (makes width consistent & centered) ---- */
+
+/* ---- BEST PRACTICE ----
+   Layout belongs to:  div.org-src-container
+   Visual styling belongs to: pre.src
+   ------------------------------------------------------------ */
+
+/* Controls alignment and layout of code blocks */
 div.org-src-container {
-  max-width: 800px;        /* ✅ set your desired code block width */
-  margin-left: auto;
-  margin-right: auto;
+  margin: 1.2em auto;      /* center within content flow */
 }
 
-/* ---- CODE BLOCK ---- */
+/* Controls appearance inside the block */
 pre.src {
+  background: #ffffff;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 14px 16px;
-  background: #ffffff;
   color: #000000;
-  width: 100%;              /* ✅ fill the container */
-  box-sizing: border-box;   /* ✅ include padding/border in width */
-  position: relative;
-  overflow-x: auto;
+  width: 100%;             /* fill the container's width */
+  box-sizing: border-box;  /* padding + border do not widen it */
+  position: relative;      /* needed for copy button */
+  overflow-x: auto;        /* horizontal scroll if long lines */
   font-size: 0.9rem;
   line-height: 1.45;
-  white-space: pre;         /* ✅ prevents weird wrapping / shifting */
 }
 
-/* ---- BASH LABEL ---- */
+/* Show language marker: Only Bash */
 pre.src-bash:before {
   content: \"shell%\";
-  position: absolute;
-  top: -0.8rem;
-  left: 12px;
-  background: white;
-  padding: 0 6px;
   font-size: 0.70rem;
   font-weight: bold;
   color: #666;
+  position: absolute;
+  top: -0.8rem;
+  left: 10px;
+  padding: 0 4px;
+  background: white;
 }
 
-/* ---- COPY BUTTON ---- */
+/* Copy button (ChatGPT-style, always visible) */
 .copy-code-btn {
   position: absolute;
   top: 6px;
@@ -3661,10 +3665,11 @@ pre.src-bash:before {
   transition: background 0.15s ease;
 }
 .copy-code-btn:hover { background: #e5e5e5; }
+
 </style>
 
 <script>
-// Add ChatGPT-style \"Copy code\" buttons
+// Insert ChatGPT-style \"Copy code\" buttons
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('pre.src').forEach(function(pre) {
 
@@ -3674,8 +3679,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     btn.addEventListener('click', () => {
       const clone = pre.cloneNode(true);
-      const buttonInClone = clone.querySelector('.copy-code-btn');
-      if (buttonInClone) buttonInClone.remove();
+      const btnClone = clone.querySelector('.copy-code-btn');
+      if (btnClone) btnClone.remove();
       navigator.clipboard.writeText(clone.textContent);
       btn.innerText = 'Copied!';
       setTimeout(() => btn.innerText = 'Copy code', 1500);
@@ -3686,6 +3691,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 ")
+
+
 
 
 #+end_src
