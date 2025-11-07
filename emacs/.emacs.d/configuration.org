@@ -3708,6 +3708,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 ** Auto save python
 #+begin_src emacs-lisp
+
+(defun jmd/git-auto-commit-python  ()
+  "Auto commit Org or shell-script files to git on save."
+  (when (and buffer-file-name
+             (or (string-match "\\.py\\'" buffer-file-name)
+                 (derived-mode-p 'sh-mode)))
+    (let* ((default-directory (locate-dominating-file buffer-file-name ".git"))
+           (msg (format "Auto-commit: %s" (file-name-nondirectory buffer-file-name))))
+      (when default-directory
+        (shell-command (format "git add %s" (shell-quote-argument buffer-file-name)))
+        (shell-command (format "git commit -m %s" (shell-quote-argument msg)))))))
+
+(remove-hook 'after-save-hook #'my-org-auto-commit) ;; remove old one
+(add-hook 'after-save-hook #'my-auto-commit)
+
+
 (defun jmd/git-auto-commit-python ()
   "Auto-commit python files on save, only if inside a git repo."
   (when (and buffer-file-name
