@@ -3458,7 +3458,7 @@ Magit
              (or (string-match "\\.org\\'" buffer-file-name)
                  (derived-mode-p 'sh-mode)))
     (let* ((default-directory (locate-dominating-file buffer-file-name ".git"))
-           (msg (format "Auto-commit: %s" (file-name-nondirectory buffer-file-name))))
+           (msg (format ":robot: Auto-commit: %s" (file-name-nondirectory buffer-file-name))))
       (when default-directory
         (shell-command (format "git add %s" (shell-quote-argument buffer-file-name)))
         (shell-command (format "git commit -m %s" (shell-quote-argument msg)))))))
