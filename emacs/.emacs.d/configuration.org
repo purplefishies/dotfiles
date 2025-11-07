@@ -3619,70 +3619,75 @@ M-, Pop to previous location
 
 (setq org-html-head-include-default-style nil)
 
+(setq org-html-head-include-default-style nil)
+
 (setq org-html-head
 "<style>
-/* --- SRC BLOCK BASE STYLE --- */
+/* Base src block styling */
 pre.src {
-  border: 2px solid #ccc;
-  border-radius: 6px;
-  padding: 12px;
-  margin-top: 1.2em;
-  margin-bottom: 1.2em;
-
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 1.3em 0;
+  background: #ffffff;     /* ✅ white background */
+  color: #000000;
   width: 100%;
   box-sizing: border-box;
-
-  background: #ffffff;   /* ✅ white background */
-  color: #000000;        /* readable text */
-
-  position: relative;    /* needed for copy button */
+  position: relative;      /* for button positioning */
   overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.45;
 }
 
-/* --- LANGUAGE LABEL (BASH ONLY) --- */
+/* Bash label */
 pre.src-bash:before {
   content: \"shell>\";
-  font-size: 0.75em;
-  font-weight: bold;
-  color: #444;
   position: absolute;
-  top: -0.9em;
-  left: 10px;
+  top: -0.8rem;
+  left: 12px;
   background: white;
-  padding: 0px 4px;
+  padding: 0 6px;
+  font-size: 0.70rem;
+  font-weight: bold;
+  color: #666;
 }
 
-/* --- COPY BUTTON --- */
-pre.src:hover .copy-btn {
-  opacity: 1;   /* show on hover */
-}
-
-.copy-btn {
-  opacity: 0;   /* hidden unless hovering */
-  transition: opacity .15s ease-in-out;
+/* ChatGPT-style copy button */
+.copy-code-btn {
   position: absolute;
   top: 6px;
-  right: 8px;
+  right: 6px;
+  background: #f3f3f3;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 0.70rem;
   cursor: pointer;
-  border: 1px solid #aaa;
-  background: #eee;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.75em;
+  user-select: none;
+  color: #333;
+  transition: background 0.15s ease;
+}
+
+.copy-code-btn:hover {
+  background: #e5e5e5;
 }
 </style>
 
 <script>
+// Add a persistent \"Copy code\" button to each code block
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('pre.src').forEach(function(pre) {
-    var btn = document.createElement('button');
-    btn.innerText = 'Copy';
-    btn.className = 'copy-btn';
 
-    btn.addEventListener('click', function() {
-      navigator.clipboard.writeText(pre.innerText);
+    const btn = document.createElement('button');
+    btn.innerText = 'Copy code';
+    btn.className = 'copy-code-btn';
+
+    btn.addEventListener('click', () => {
+      const text = pre.innerText.replace(/^shell> /gm, '');  // optional: ignore prompts
+      navigator.clipboard.writeText(text);
+
       btn.innerText = 'Copied!';
-      setTimeout(() => btn.innerText = 'Copy', 1500);
+      setTimeout(() => btn.innerText = 'Copy code', 1500);
     });
 
     pre.appendChild(btn);
@@ -3690,6 +3695,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 ")
+
 #+end_src
 
 
