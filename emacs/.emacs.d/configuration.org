@@ -3617,17 +3617,80 @@ M-, Pop to previous location
 
 ;; (add-hook 'org-export-before-processing-hook 'my-org-inline-css-hook)
 
+(setq org-html-head-include-default-style nil)
+
 (setq org-html-head
-      "<style>
-      pre.src {
-        border: 2px solid #444;
-        border-radius: 6px;
-        padding: 10px;
-        margin-top: 1em;
-        margin-bottom: 1em;
-      }
-      </style>")
+"<style>
+/* Shared styling for all src blocks */
+pre.src {
+  border: 2px solid #444;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 1.2em 0;
+
+  /* force equal width */
+  width: 100%;
+  box-sizing: border-box;  /* include padding and border in width */
+  
+  /* visually pleasing monospace formatting */
+  font-family: monospace;
+  font-size: 0.95em;
+
+  /* optional subtle background to make blocks stand out */
+  background-color: #1e1e1e;
+  color: #e5e5e5;
+  overflow-x: auto;        /* allow scroll if lines are long */
+}
+
+/* Optional: label the language (example: Bash) */
+pre.src-bash:before {
+  content: \"shell> \";
+}
+</style>")
+
+
+;; (setq org-html-head
+;;       "<style>
+;;       pre.src {
+;;         border: 2px solid #444;
+;;         border-radius: 6px;
+;;         padding: 10px;
+;;         margin-top: 1em;
+;;         margin-bottom: 1em;
+;;       }
+;;       </style>")
 
 #+end_src
+
+#+RESULTS:
+#+begin_example
+<style>
+/* Shared styling for all src blocks */
+pre.src {
+  border: 2px solid #444;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 1.2em 0;
+
+  /* force equal width */
+  width: 100%;
+  box-sizing: border-box;  /* include padding and border in width */
+  
+  /* visually pleasing monospace formatting */
+  font-family: monospace;
+  font-size: 0.95em;
+
+  /* optional subtle background to make blocks stand out */
+  background-color: #1e1e1e;
+  color: #e5e5e5;
+  overflow-x: auto;        /* allow scroll if lines are long */
+}
+
+/* Optional: label the language (example: Bash) */
+pre.src-bash:before {
+  content: "bash";
+}
+</style>
+#+end_example
 
 
