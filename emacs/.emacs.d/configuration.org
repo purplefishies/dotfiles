@@ -3701,8 +3701,28 @@ document.addEventListener('DOMContentLoaded', function () {
 (setq org-latex-image-inline-data nil)
 
 
+
+
+
 #+end_src
 
+** Auto save python
+#+begin_src emacs-lisp
+(defun jmd/git-auto-commit-python ()
+  "Auto-commit python files on save, only if inside a git repo."
+  (when (and buffer-file-name
+             (string= (file-name-extension buffer-file-name) "py")
+             (locate-dominating-file default-directory ".git"))
+    (let* ((file (file-relative-name buffer-file-name
+                                     (locate-dominating-file default-directory ".git")))
+           (msg (format "autosave %s" file)))
+      (start-process "git-auto-commit" "*git-auto-commit*"
+                     "bash" "-c"
+                     (format "git add '%s' && git commit -m '%s' && git push"
+                             file msg)))))
+
+(add-hook 'after-save-hook #'jmd/git-auto-commit-python)
+#+end_src
 
 
 
