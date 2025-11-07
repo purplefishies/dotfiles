@@ -3619,13 +3619,11 @@ M-, Pop to previous location
 
 (setq org-html-head-include-default-style nil)
 
-(setq org-html-head-include-default-style nil)
-
 (setq org-html-head
 "<style>
-/* Base src block styling */
+/* Base styling for all src blocks */
 pre.src {
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 8px;
   padding: 14px 16px;
   margin: 1.3em 0;
@@ -3633,15 +3631,15 @@ pre.src {
   color: #000000;
   width: 100%;
   box-sizing: border-box;
-  position: relative;      /* for button positioning */
+  position: relative;      /* needed for button positioning */
   overflow-x: auto;
   font-size: 0.9rem;
   line-height: 1.45;
 }
 
-/* Bash label */
+/* Language label for bash blocks */
 pre.src-bash:before {
-  content: \"shell>\";
+  content: \"shell%\";
   position: absolute;
   top: -0.8rem;
   left: 12px;
@@ -3652,7 +3650,7 @@ pre.src-bash:before {
   color: #666;
 }
 
-/* ChatGPT-style copy button */
+/* ChatGPT-style Copy button */
 .copy-code-btn {
   position: absolute;
   top: 6px;
@@ -3683,7 +3681,18 @@ document.addEventListener('DOMContentLoaded', function () {
     btn.className = 'copy-code-btn';
 
     btn.addEventListener('click', () => {
-      const text = pre.innerText.replace(/^shell> /gm, '');  // optional: ignore prompts
+
+      // ✅ Clone the node so we can strip UI elements before copying
+      const clone = pre.cloneNode(true);
+
+      // Remove the button inside the clone
+      const buttonInClone = clone.querySelector('.copy-code-btn');
+      if (buttonInClone) buttonInClone.remove();
+
+      // Extract only the code content
+      const text = clone.textContent;
+
+      // Copy to clipboard
       navigator.clipboard.writeText(text);
 
       btn.innerText = 'Copied!';
@@ -3695,7 +3704,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 ")
-
 #+end_src
 
 
