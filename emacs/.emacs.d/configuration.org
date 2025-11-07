@@ -3726,6 +3726,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 #+end_src
 
+#+RESULTS:
+| jmd/git-auto-commit-python | my-auto-commit |
+
 
 
 
