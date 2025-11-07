@@ -3694,6 +3694,15 @@ document.addEventListener('DOMContentLoaded', function () {
 #+end_src
 
 
+#+begin_src emacs-lisp
+
+(setq org-export-with-broken-links t)
+(setq org-html-image-inline-data t)
+(setq org-latex-image-inline-data nil)
+
+
+#+end_src
+
 
 
 
