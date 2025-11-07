@@ -118,10 +118,10 @@ if [[ "${GIT_PROMPT_MODE}" == "OLD" ]] ; then
 else 
     if [[ -n $(command -v fzf) ]] ; then
         echo "fzf found, loading oh-my-zsh fzf plugin"
-        plugins=(git virtualenv fzf zshmarks zsh-autosuggestions docker)
+        plugins=(git virtualenv fzf zshmarks zsh-autosuggestions docker ssh)
     else
         echo "no fzf was found in the path"
-        plugins=(git virtualenv zshmarks zsh-autosuggestions docker)
+        plugins=(git virtualenv zshmarks zsh-autosuggestions docker ssh)
     fi
 fi
 
