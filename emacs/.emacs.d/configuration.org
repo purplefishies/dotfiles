@@ -3605,8 +3605,8 @@ M-, Pop to previous location
 
 
 #+begin_src emacs-lisp
-(set-foreground-color "white")
-(set-background-color "black")
+;; (set-foreground-color "white")
+;; (set-background-color "black")
 
 (defun my-org-inline-css-hook (exporter)
   "Insert custom inline css"
