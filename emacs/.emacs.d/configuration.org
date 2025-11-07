@@ -3688,7 +3688,7 @@ pre.src {
 
 /* Optional: label the language (example: Bash) */
 pre.src-bash:before {
-  content: "bash";
+  content: "shell> ";
 }
 </style>
 #+end_example
