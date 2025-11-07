@@ -3715,7 +3715,7 @@ document.addEventListener('DOMContentLoaded', function () {
              (or (string-match "\\.py\\'" buffer-file-name)
                  (derived-mode-p 'sh-mode)))
     (let* ((default-directory (locate-dominating-file buffer-file-name ".git"))
-           (msg (format "Auto-commit: %s" (file-name-nondirectory buffer-file-name))))
+           (msg (format ":robot: auto-commit: %s" (file-name-nondirectory buffer-file-name))))
       (when default-directory
         (shell-command (format "git add %s" (shell-quote-argument buffer-file-name)))
         (shell-command (format "git commit -m %s" (shell-quote-argument msg)))))))
