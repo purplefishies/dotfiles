@@ -3602,3 +3602,20 @@ M-, Pop to previous location
 ;;   (set-face-attribute 'font-lock-string-face nil :foreground "#228B22"))
 ;; (add-hook 'org-export-before-processing-hook #'my/htmlize-custom-string-face)
 #+end_src
+
+
+#+begin_src emacs-lisp
+(set-foreground-color "white")
+(set-background-color "black")
+
+(defun my-org-inline-css-hook (exporter)
+  "Insert custom inline css"
+  (when (eq exporter 'html)
+    (let ((my-pre-bg (face-background 'default)))
+      (setq org-html-head-include-default-style nil)
+      (setq org-html-head
+            (format "<style type=\"text/css\">\n pre.src { background-color: %s;}</style>\n" my-pre-bg)))))
+
+(add-hook 'org-export-before-processing-hook 'my-org-inline-css-hook)
+#+end_src
+
