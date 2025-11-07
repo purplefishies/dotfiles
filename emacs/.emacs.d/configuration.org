@@ -3621,33 +3621,75 @@ M-, Pop to previous location
 
 (setq org-html-head
 "<style>
-/* Shared styling for all src blocks */
+/* --- SRC BLOCK BASE STYLE --- */
 pre.src {
-  border: 2px solid #444;
+  border: 2px solid #ccc;
   border-radius: 6px;
   padding: 12px;
-  margin: 1.2em 0;
+  margin-top: 1.2em;
+  margin-bottom: 1.2em;
 
-  /* force equal width */
   width: 100%;
-  box-sizing: border-box;  /* include padding and border in width */
-  
-  /* visually pleasing monospace formatting */
-  font-family: monospace;
-  font-size: 0.95em;
+  box-sizing: border-box;
 
-  /* optional subtle background to make blocks stand out */
-  background-color: #1e1e1e;
-  color: #e5e5e5;
-  overflow-x: auto;        /* allow scroll if lines are long */
+  background: #ffffff;   /* ✅ white background */
+  color: #000000;        /* readable text */
+
+  position: relative;    /* needed for copy button */
+  overflow-x: auto;
 }
 
-/* Optional: label the language (example: Bash) */
+/* --- LANGUAGE LABEL (BASH ONLY) --- */
 pre.src-bash:before {
-  content: \"shell> \";
+  content: \"shell>\";
+  font-size: 0.75em;
+  font-weight: bold;
+  color: #444;
+  position: absolute;
+  top: -0.9em;
+  left: 10px;
+  background: white;
+  padding: 0px 4px;
 }
-</style>")
 
+/* --- COPY BUTTON --- */
+pre.src:hover .copy-btn {
+  opacity: 1;   /* show on hover */
+}
+
+.copy-btn {
+  opacity: 0;   /* hidden unless hovering */
+  transition: opacity .15s ease-in-out;
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  cursor: pointer;
+  border: 1px solid #aaa;
+  background: #eee;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75em;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('pre.src').forEach(function(pre) {
+    var btn = document.createElement('button');
+    btn.innerText = 'Copy';
+    btn.className = 'copy-btn';
+
+    btn.addEventListener('click', function() {
+      navigator.clipboard.writeText(pre.innerText);
+      btn.innerText = 'Copied!';
+      setTimeout(() => btn.innerText = 'Copy', 1500);
+    });
+
+    pre.appendChild(btn);
+  });
+});
+</script>
+")
 
 ;; (setq org-html-head
 ;;       "<style>
