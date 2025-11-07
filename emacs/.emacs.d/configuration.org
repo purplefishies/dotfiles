@@ -3720,24 +3720,24 @@ document.addEventListener('DOMContentLoaded', function () {
         (shell-command (format "git add %s" (shell-quote-argument buffer-file-name)))
         (shell-command (format "git commit -m %s" (shell-quote-argument msg)))))))
 
-(remove-hook 'after-save-hook #'my-org-auto-commit) ;; remove old one
-(add-hook 'after-save-hook #'my-auto-commit)
-
-
-(defun jmd/git-auto-commit-python ()
-  "Auto-commit python files on save, only if inside a git repo."
-  (when (and buffer-file-name
-             (string= (file-name-extension buffer-file-name) "py")
-             (locate-dominating-file default-directory ".git"))
-    (let* ((file (file-relative-name buffer-file-name
-                                     (locate-dominating-file default-directory ".git")))
-           (msg (format "autosave %s" file)))
-      (start-process "git-auto-commit" "*git-auto-commit*"
-                     "bash" "-c"
-                     (format "git add '%s' && git commit -m '%s' && git push"
-                             file msg)))))
-
+(remove-hook 'after-save-hook #'jmd/git-auto-commit-python) ;; remove old one
 (add-hook 'after-save-hook #'jmd/git-auto-commit-python)
+
+
+;; (defun jmd/git-auto-commit-python ()
+;;   "Auto-commit python files on save, only if inside a git repo."
+;;   (when (and buffer-file-name
+;;              (string= (file-name-extension buffer-file-name) "py")
+;;              (locate-dominating-file default-directory ".git"))
+;;     (let* ((file (file-relative-name buffer-file-name
+;;                                      (locate-dominating-file default-directory ".git")))
+;;            (msg (format "autosave %s" file)))
+;;       (start-process "git-auto-commit" "*git-auto-commit*"
+;;                      "bash" "-c"
+;;                      (format "git add '%s' && git commit -m '%s' && git push"
+;;                              file msg)))))
+
+;; (add-hook 'after-save-hook #'jmd/git-auto-commit-python)
 #+end_src
 
 
