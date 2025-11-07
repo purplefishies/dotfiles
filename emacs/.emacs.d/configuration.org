@@ -489,38 +489,61 @@ Do this after `q` in Debugger buffer."
    :END:
 #+begin_src emacs-lisp
 (defun my-org-screenshot ()
-  "Take a screenshot into YEAR/Month subdirectory based on the Org file name,
-insert a link, and git add the image."
+  "Take a screenshot into a timestamped unique-named file in a
+YEAR/Month subdirectory based on the org file name, and insert a link."
+  (interactive)
+  (let* ((base-name (file-name-base (buffer-file-name))) ;; e.g. "work"
+         (year (format-time-string "%Y"))               ;; "2025"
+         (month (format-time-string "%b"))              ;; "Oct"
+         (dir (expand-file-name (format "%s/%s/%s" base-name year month)
+                                (file-name-directory (buffer-file-name))))
+         ;; filename like "20251017_111214_<rand>.png"
+         (file (concat (make-temp-name
+                        (format "%s/%s/%s/%s" base-name year month
+                                (format-time-string "%Y%m%d_%H%M%S_")))
+                       ".png")))
+    ;; ensure dir exists
+    (make-directory dir t)
+    ;; take screenshot
+    (call-process "import" nil nil nil (expand-file-name file (file-name-directory (buffer-file-name))))
+    ;; insert relative link
+    (insert (concat "[[./" file "]]"))
+    (org-display-inline-images)))
+
+
+(defun my-org-insert-image ()
+  "Prompt for an image, copy it to <basename>/<YEAR>/<Mon>/, insert link, display inline."
   (interactive)
   (unless (buffer-file-name)
-    (error "This buffer is not visiting a file"))
+    (error "Current buffer is not visiting a file"))
 
-  (let* ((base-name (file-name-base (buffer-file-name)))  ;; e.g., 'work'
-         (year      (format-time-string "%Y"))            ;; "2025"
-         (month     (format-time-string "%b"))            ;; "Nov"
-         (root-dir  (file-name-directory (buffer-file-name)))
-         (dir       (expand-file-name (format "%s/%s/%s" base-name year month) root-dir))
-         (filename  (format "%s_%s.png"
-                            (format-time-string "%Y%m%d_%H%M%S")
-                            (file-name-nondirectory (make-temp-name ""))))
-         (file-rel  (format "%s/%s/%s/%s" base-name year month filename))
-         (file-abs  (expand-file-name file-rel root-dir)))
+  ;; choose file interactively
+  (let* ((src (read-file-name "Select image file: "))
+         (base (file-name-base (buffer-file-name)))   ;; e.g., inbox
+         (year  (format-time-string "%Y"))
+         (month (format-time-string "%b"))            ;; Jan/Feb/Mar...
+         (root  (file-name-directory (buffer-file-name)))
 
-    ;; ensure directory exists
-    (make-directory dir t)
+         ;; destination dir and filename
+         (dest-dir (expand-file-name (format "%s/%s/%s" base year month) root))
+         (dest-file (expand-file-name (file-name-nondirectory src) dest-dir))
 
-    ;; screenshot (ImageMagick `import` tool)
-    (call-process "import" nil nil nil file-abs)
+         ;; relative path used in org link
+         (rel-path (file-relative-name dest-file root)))
 
-    ;; insert link
-    (insert (concat "[[./" file-rel "]]"))
+    ;; Ensure the folder exists
+    (make-directory dest-dir t)
+
+    ;; Copy file
+    (copy-file src dest-file t)
+
+    ;; Insert org link
+    (insert (format "[[./%s]]" rel-path))
+
+    ;; Refresh inline images
     (org-display-inline-images)
 
-    ;; git add the image (repo already exists)
-    (message "git add %s" file-rel)
-    (call-process "git" nil nil nil "add" file-abs)
-
-    (message "Screenshot saved + linked + staged: %s" file-rel)))
+    (message "Image copied to: %s" dest-file)))
 
 #+end_src
 
