@@ -2623,6 +2623,11 @@ Hiding leading stars
 ;;          :target (file+head "%<%Y-%m-%d>.org"
 ;;                             "#+title: %<%Y-%m-%d>\n"))))
 #+end_src
+** Org Roam ignore regular links
+#+begin_src emacs-lisp
+(setq org-roam-graph-exclude-matcher '("https?://"))
+#+end_src
+
 
 ** Org Chef
    :PROPERTIES:
