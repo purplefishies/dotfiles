@@ -2626,8 +2626,8 @@ Hiding leading stars
 ** Org Roam ignore regular links
 #+begin_src emacs-lisp
 (setq org-roam-graph-exclude-matcher '("https?://"))
+(setq org-roam-graph-ignore-missing-nodes t)
 #+end_src
-
 
 ** Org Chef
    :PROPERTIES:
