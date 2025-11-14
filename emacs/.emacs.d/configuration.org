@@ -3756,117 +3756,110 @@ document.addEventListener('DOMContentLoaded', function () {
 * Ansi Insert
 #+begin_src emacs-lisp
 (defun insert-ansi-org (txtfile)
-  "Convert ANSI TXTFILE to HTML and insert an Org INCLUDE block for it.
-Uses python ansi2html, strips full HTML headers, and keeps ONLY <pre> content.
-Produces compact HTML for perfect wkhtmltopdf output."
+  "Convert ANSI TXTFILE to HTML and PDF and insert Org blocks for HTML + LaTeX export."
   (interactive "fANSI text file: ")
 
-  ;; Must be in an org buffer
   (unless (derived-mode-p 'org-mode)
     (error "Not in an Org buffer"))
 
-  ;; -----------------------------
-  ;; Compute paths
-  ;; -----------------------------
-  (let* ((orgfile (buffer-file-name))
-         (orgdir  (file-name-directory orgfile))
-         (basename (file-name-base orgfile))
-         (year   (format-time-string "%Y"))
-         (month  (format-time-string "%b"))
+  (let* ((orgfile   (buffer-file-name))
+         (orgdir    (file-name-directory orgfile))
+         (basename  (file-name-base orgfile))
+         (year      (format-time-string "%Y"))
+         (month     (format-time-string "%b"))
          (target-dir (expand-file-name (format "%s/%s/%s/" basename year month)
                                        orgdir))
-         (src (expand-file-name txtfile))
-         (unique (format "%s_%s.html"
-                         (file-name-base src)
-                         (format-time-string "%Y%m%d-%H%M%S")))
-         (dest (expand-file-name unique target-dir))
-         (logbuf  (get-buffer-create "*ansi2html-log*"))
-         (htmlbuf (get-buffer-create "*ansi2html-output*")))
+         (src       (expand-file-name txtfile))
+         (unique-base (format "%s_%s"
+                              (file-name-base src)
+                              (format-time-string "%Y%m%d-%H%M%S")))
+         (html-file (expand-file-name (concat unique-base ".html") target-dir))
+         (pdf-file  (expand-file-name (concat unique-base ".pdf")  target-dir))
+         (logbuf    (get-buffer-create "*ansi2html-log*")))
 
-    ;; Ensure directory exists
     (make-directory target-dir t)
 
-    ;; Check ansi2html
     (unless (executable-find "ansi2html")
-      (error "ansi2html not found. Install: pip install ansi2html"))
+      (error "ansi2html not found in PATH"))
+    (unless (executable-find "wkhtmltopdf")
+      (error "wkhtmltopdf not found in PATH"))
 
-    ;; Clear buffers
-    (with-current-buffer logbuf (erase-buffer))
-    (with-current-buffer htmlbuf (erase-buffer))
-
-    ;; Log start
     (with-current-buffer logbuf
-      (insert (format "Running ansi2html on %s\nOutput → %s\n\n" src dest)))
+      (erase-buffer)
+      (insert (format "ansi2html → %s\nwkhtmltopdf → %s\n\n"
+                      html-file pdf-file)))
 
-    ;; -----------------------------
-    ;; Run ansi2html → FULL HTML into htmlbuf
-    ;; -----------------------------
-    (let ((exit-code
-           (with-current-buffer htmlbuf
-             (call-process "ansi2html" src t nil))))
-      (unless (eq exit-code 0)
-        (with-current-buffer logbuf
-          (insert (format "ERROR: exit %s\n" exit-code)))
-        (display-buffer logbuf)
-        (error "ansi2html failed")))
+    ;; --- Run ansi2html and capture full HTML as string ---
+    (let* ((full-html
+            (with-temp-buffer
+              (let ((exit (call-process "ansi2html" src t nil)))
+                (unless (eq exit 0)
+                  (with-current-buffer logbuf
+                    (insert (format "ansi2html exit %s\n" exit)))
+                  (error "ansi2html failed"))
+                (buffer-string))))
+           ;; --- Extract <pre>…</pre> using your working pre-tag trick ---
+           (pre-start (string-match "<pre[^>]*>" full-html))
+           (pre-tag   (and pre-start (match-string 0 full-html)))
+           (pre-end   (and pre-start (string-match "</pre>" full-html)))
+           (inner
+            (if (and pre-start pre-end pre-tag)
+                (substring full-html
+                           (+ pre-start (length pre-tag))
+                           pre-end)
+              (error "Could not find <pre> block in ansi2html output"))))
 
-    ;; -----------------------------
-    ;; STRIP everything except the <pre> ... </pre>
-    ;; -----------------------------
-    (let* ((full-html (with-current-buffer htmlbuf (buffer-string)))
-       ;; First match <pre…> and capture the tag BEFORE running ANY other match
-       (pre-start (string-match "<pre[^>]*>" full-html))
-       (pre-tag   (match-string 0 full-html))   ; save now, before match-data gets overwritten
-       ;; Now this will NOT overwrite pre-tag
-       (pre-end   (string-match "</pre>" full-html))
-       (inner (if (and pre-start pre-end pre-tag)
-                  ;; correct: skip exactly the number of characters in the <pre> tag
-                  (substring full-html
-                             (+ pre-start (length pre-tag))
-                             pre-end)
-                (error "Could not find <pre> block in ansi2html output"))))
-
-      ;; -----------------------------
-      ;; Compute text width from RAW ANSI file
-      ;; -----------------------------
+      ;; --- Compute width from original ANSI file ---
       (let* ((raw (with-temp-buffer
                     (insert-file-contents src)
                     (buffer-string)))
-             (lines (split-string raw "\n"))
+             (lines     (split-string raw "\n"))
              (max-width (max 20 (apply #'max (mapcar #'length lines))))
-             (css-width (format "%dch" max-width)))
+             (css-width (format "%dch" max-width))
+             (final-html
+              (format
+               "<div class=\"ansi-output\" style=\"width:%s; display:inline-block; white-space:pre; padding:0.3em; background:#111; color:#eee; border-radius:4px;\">\n%s\n</div>\n"
+               css-width inner)))
 
-        ;; -----------------------------
-        ;; Create FINAL compact HTML
-        ;; -----------------------------
-        (with-current-buffer htmlbuf
-          (erase-buffer)
-          (insert
-           (format
-"<div class=\"ansi-output\" style=\"width:%s; display:inline-block; white-space:pre; padding:0.2em; background:#111; color:#eee; border-radius:4px;\">\n%s\n</div>\n"
-                   css-width inner)))))
+        ;; --- Write compact HTML snippet ---
+        (with-temp-buffer
+          (insert final-html)
+          (write-region (point-min) (point-max) html-file nil 'silent))))
 
+    ;; --- Run wkhtmltopdf to create PDF ---
+    (with-current-buffer logbuf
+      (insert (format "Running: wkhtmltopdf %s %s\n" html-file pdf-file)))
+    (let ((exit (call-process "wkhtmltopdf" nil logbuf nil html-file pdf-file)))
+      (unless (eq exit 0)
+        (with-current-buffer logbuf
+          (insert (format "wkhtmltopdf exit %s\n" exit)))
+        (error "wkhtmltopdf failed")))
 
-    ;; -----------------------------
-    ;; Write compact HTML to dest
-    ;; -----------------------------
-    (with-current-buffer htmlbuf
-      (write-region (point-min) (point-max) dest nil 'silent))
+    ;; --- Insert Org blocks (HTML-only + LaTeX-only) ---
+    (let ((rel-html (file-relative-name html-file orgdir))
+          (rel-pdf  (file-relative-name pdf-file  orgdir)))
+      (insert
+       (format
+"# HTML export
+#+HTML: <div class=\"ansi-output\">
+#+INCLUDE: \"%s\" export html
+#+HTML: </div>
 
-    ;; Insert Org block
-    (insert
-     (format "#+HTML: <div class=\"ansi-output\">\n#+INCLUDE: \"%s\" export html\n#+HTML: </div>\n\n"
-             (file-relative-name dest orgdir)))
+# LaTeX export (PDF)
+#+LATEX: \\begin{center}
+#+LATEX: \\includegraphics[width=0.95\\linewidth]{%s}
+#+LATEX: \\end{center}
 
-    ;; Log success
+"
+               rel-html rel-pdf)))
+
     (with-current-buffer logbuf
       (goto-char (point-max))
-      (insert (format "SUCCESS: wrote %s\n" dest)))
+      (insert "SUCCESS\n"))
     (display-buffer logbuf)
+    (message "insert-ansi-org: HTML+PDF → %s / %s" html-file pdf-file)))
 
-    (message "Inserted ANSI block: %s" dest)))
 #+end_src
 
-#+RESULTS:
-: insert-ansi-org
+
 
