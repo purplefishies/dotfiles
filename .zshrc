@@ -285,3 +285,4 @@ export NVM_DIR="$HOME/.config/nvm"
 if [[ -f $HOME/.zshrc_work ]] ; then
     source $HOME/.zshrc_work
 fi
+

@@ -3197,7 +3197,7 @@ For exporting
 #+end_src
 
 
-* Extraagain
+* Extra again
 Magit
 #+begin_src emacs-lisp
 (use-package magit
@@ -3452,27 +3452,40 @@ Magit
   (magit-delta-delta-args '("--navigate" "--line-numbers")))
 #+end_src
 
-
-
 * Auto commit org (and shell)
 #+begin_src emacs-lisp
 
+(defvar my-auto-commit-enabled t
+  "If non-nil, auto-commit on save is enabled.")
+
+(defun my-toggle-auto-commit ()
+  "Toggle automatic git commits on save."
+  (interactive)
+  (setq my-auto-commit-enabled (not my-auto-commit-enabled))
+  (message "Auto-commit is now %s"
+           (if my-auto-commit-enabled "ENABLED" "DISABLED")))
+
+
 (defun my-auto-commit ()
   "Auto commit Org or shell-script files to git on save."
-  (when (and buffer-file-name
+  (when (and my-auto-commit-enabled
+             buffer-file-name
              (or (string-match "\\.org\\'" buffer-file-name)
                  (derived-mode-p 'sh-mode)))
     (let* ((default-directory (locate-dominating-file buffer-file-name ".git"))
-           (msg (format ":robot: Auto-commit: %s" (file-name-nondirectory buffer-file-name))))
+           (msg (format ":robot: Auto-commit: %s"
+                        (file-name-nondirectory buffer-file-name))))
       (when default-directory
-        (shell-command (format "git add %s" (shell-quote-argument buffer-file-name)))
-        (shell-command (format "git commit -m %s" (shell-quote-argument msg)))))))
+        (shell-command (format "git add %s"
+                               (shell-quote-argument buffer-file-name)))
+        (shell-command (format "git commit -m %s"
+                               (shell-quote-argument msg)))))))
+
 
 (remove-hook 'after-save-hook #'my-org-auto-commit) ;; remove old one
 (add-hook 'after-save-hook #'my-auto-commit)
-
-
 #+end_src
+
 
 
 * Notes
@@ -3482,10 +3495,6 @@ Magit
 (setq org-log-repeat 'note)                  ;; ask note on repeats
 (setq org-log-into-drawer t)                 ;; keep log notes tidy
 #+end_src
-
-#+RESULTS:
-: t
-
 
 
 * Helm 
@@ -3714,26 +3723,150 @@ document.addEventListener('DOMContentLoaded', function () {
 ** Auto save python
 #+begin_src emacs-lisp
 
-(defun jmd/git-auto-commit-python  ()
-  "Auto commit Org or shell-script files to git on save."
-  (when (and buffer-file-name
-             (or (string-match "\\.py\\'" buffer-file-name)
-                 (derived-mode-p 'sh-mode)))
+(defvar jmd/git-auto-commit-python-enabled t
+  "If non-nil, auto-commit Python files on save is enabled.")
+
+(defun jmd/toggle-git-auto-commit-python ()
+  "Toggle automatic git commits for Python files on save."
+  (interactive)
+  (setq jmd/git-auto-commit-python-enabled
+        (not jmd/git-auto-commit-python-enabled))
+  (message "Python auto-commit is now %s"
+           (if jmd/git-auto-commit-python-enabled "ENABLED" "DISABLED")))
+
+(defun jmd/git-auto-commit-python ()
+  "Automatically commit Python files to git on save."
+  (when (and jmd/git-auto-commit-python-enabled
+             buffer-file-name
+             (string-match "\\.py\\'" buffer-file-name))
     (let* ((default-directory (locate-dominating-file buffer-file-name ".git"))
-           (msg (format ":robot: Auto-commit: %s" (file-name-nondirectory buffer-file-name))))
+           (msg (format ":robot: Auto-commit: %s"
+                        (file-name-nondirectory buffer-file-name))))
       (when default-directory
-        (shell-command (format "git add %s" (shell-quote-argument buffer-file-name)))
-        (shell-command (format "git commit -m %s" (shell-quote-argument msg)))))))
+        (shell-command (format "git add %s"
+                               (shell-quote-argument buffer-file-name)))
+        (shell-command (format "git commit -m %s"
+                               (shell-quote-argument msg)))))))
 
-(remove-hook 'after-save-hook #'jmd/git-auto-commit-python) ;; remove old one
+(remove-hook 'after-save-hook #'jmd/git-auto-commit-python)
 (add-hook 'after-save-hook #'jmd/git-auto-commit-python)
+#+end_src
 
 
+* Ansi Insert
+#+begin_src emacs-lisp
+(defun insert-ansi-org (txtfile)
+  "Convert ANSI TXTFILE to HTML and insert an Org INCLUDE block for it.
+Uses python ansi2html, strips full HTML headers, and keeps ONLY <pre> content.
+Produces compact HTML for perfect wkhtmltopdf output."
+  (interactive "fANSI text file: ")
+
+  ;; Must be in an org buffer
+  (unless (derived-mode-p 'org-mode)
+    (error "Not in an Org buffer"))
+
+  ;; -----------------------------
+  ;; Compute paths
+  ;; -----------------------------
+  (let* ((orgfile (buffer-file-name))
+         (orgdir  (file-name-directory orgfile))
+         (basename (file-name-base orgfile))
+         (year   (format-time-string "%Y"))
+         (month  (format-time-string "%b"))
+         (target-dir (expand-file-name (format "%s/%s/%s/" basename year month)
+                                       orgdir))
+         (src (expand-file-name txtfile))
+         (unique (format "%s_%s.html"
+                         (file-name-base src)
+                         (format-time-string "%Y%m%d-%H%M%S")))
+         (dest (expand-file-name unique target-dir))
+         (logbuf  (get-buffer-create "*ansi2html-log*"))
+         (htmlbuf (get-buffer-create "*ansi2html-output*")))
+
+    ;; Ensure directory exists
+    (make-directory target-dir t)
+
+    ;; Check ansi2html
+    (unless (executable-find "ansi2html")
+      (error "ansi2html not found. Install: pip install ansi2html"))
+
+    ;; Clear buffers
+    (with-current-buffer logbuf (erase-buffer))
+    (with-current-buffer htmlbuf (erase-buffer))
+
+    ;; Log start
+    (with-current-buffer logbuf
+      (insert (format "Running ansi2html on %s\nOutput → %s\n\n" src dest)))
+
+    ;; -----------------------------
+    ;; Run ansi2html → FULL HTML into htmlbuf
+    ;; -----------------------------
+    (let ((exit-code
+           (with-current-buffer htmlbuf
+             (call-process "ansi2html" src t nil))))
+      (unless (eq exit-code 0)
+        (with-current-buffer logbuf
+          (insert (format "ERROR: exit %s\n" exit-code)))
+        (display-buffer logbuf)
+        (error "ansi2html failed")))
+
+    ;; -----------------------------
+    ;; STRIP everything except the <pre> ... </pre>
+    ;; -----------------------------
+    (let* ((full-html (with-current-buffer htmlbuf (buffer-string)))
+       ;; First match <pre…> and capture the tag BEFORE running ANY other match
+       (pre-start (string-match "<pre[^>]*>" full-html))
+       (pre-tag   (match-string 0 full-html))   ; save now, before match-data gets overwritten
+       ;; Now this will NOT overwrite pre-tag
+       (pre-end   (string-match "</pre>" full-html))
+       (inner (if (and pre-start pre-end pre-tag)
+                  ;; correct: skip exactly the number of characters in the <pre> tag
+                  (substring full-html
+                             (+ pre-start (length pre-tag))
+                             pre-end)
+                (error "Could not find <pre> block in ansi2html output"))))
+
+      ;; -----------------------------
+      ;; Compute text width from RAW ANSI file
+      ;; -----------------------------
+      (let* ((raw (with-temp-buffer
+                    (insert-file-contents src)
+                    (buffer-string)))
+             (lines (split-string raw "\n"))
+             (max-width (max 20 (apply #'max (mapcar #'length lines))))
+             (css-width (format "%dch" max-width)))
+
+        ;; -----------------------------
+        ;; Create FINAL compact HTML
+        ;; -----------------------------
+        (with-current-buffer htmlbuf
+          (erase-buffer)
+          (insert
+           (format
+"<div class=\"ansi-output\" style=\"width:%s; display:inline-block; white-space:pre; padding:0.2em; background:#111; color:#eee; border-radius:4px;\">\n%s\n</div>\n"
+                   css-width inner)))))
+
+
+    ;; -----------------------------
+    ;; Write compact HTML to dest
+    ;; -----------------------------
+    (with-current-buffer htmlbuf
+      (write-region (point-min) (point-max) dest nil 'silent))
+
+    ;; Insert Org block
+    (insert
+     (format "#+HTML: <div class=\"ansi-output\">\n#+INCLUDE: \"%s\" export html\n#+HTML: </div>\n\n"
+             (file-relative-name dest orgdir)))
+
+    ;; Log success
+    (with-current-buffer logbuf
+      (goto-char (point-max))
+      (insert (format "SUCCESS: wrote %s\n" dest)))
+    (display-buffer logbuf)
+
+    (message "Inserted ANSI block: %s" dest)))
 #+end_src
 
 #+RESULTS:
-| jmd/git-auto-commit-python | my-auto-commit |
-
-
-
+: insert-ansi-org
 
