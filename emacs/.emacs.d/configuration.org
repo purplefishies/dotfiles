@@ -3722,6 +3722,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 ** Auto save python
 #+begin_src emacs-lisp
+
 (defvar jmd/git-auto-commit-python-enabled t
   "If non-nil, auto-commit Python files on save is enabled.")
 
@@ -3751,19 +3752,16 @@ document.addEventListener('DOMContentLoaded', function () {
 (add-hook 'after-save-hook #'jmd/git-auto-commit-python)
 #+end_src
 
-#+RESULTS:
-| jmd/git-auto-commit-python | my-auto-commit |
-
 
 * Ansi Insert
-
-
 #+begin_src emacs-lisp
 (defun insert-ansi-org (txtfile)
-  "Convert ANSI TXTFILE to HTML and PDF and insert conditional Org blocks
-for both HTML and LaTeX export."
+  "Convert ANSI TXTFILE to HTML and insert an Org INCLUDE block for it.
+Uses python ansi2html, strips full HTML headers, and keeps ONLY <pre> content.
+Produces compact HTML for perfect wkhtmltopdf output."
   (interactive "fANSI text file: ")
 
+  ;; Must be in an org buffer
   (unless (derived-mode-p 'org-mode)
     (error "Not in an Org buffer"))
 
@@ -3778,51 +3776,59 @@ for both HTML and LaTeX export."
          (target-dir (expand-file-name (format "%s/%s/%s/" basename year month)
                                        orgdir))
          (src (expand-file-name txtfile))
-         (unique-base (format "%s_%s"
-                              (file-name-base src)
-                              (format-time-string "%Y%m%d-%H%M%S")))
-         (html-file (expand-file-name (concat unique-base ".html") target-dir))
-         (pdf-file  (expand-file-name (concat unique-base ".pdf") target-dir))
+         (unique (format "%s_%s.html"
+                         (file-name-base src)
+                         (format-time-string "%Y%m%d-%H%M%S")))
+         (dest (expand-file-name unique target-dir))
          (logbuf  (get-buffer-create "*ansi2html-log*"))
          (htmlbuf (get-buffer-create "*ansi2html-output*")))
 
     ;; Ensure directory exists
     (make-directory target-dir t)
 
-    ;; Check tools
+    ;; Check ansi2html
     (unless (executable-find "ansi2html")
-      (error "ansi2html not found (pip install ansi2html)"))
-    (unless (executable-find "wkhtmltopdf")
-      (error "wkhtmltopdf not found"))
+      (error "ansi2html not found. Install: pip install ansi2html"))
 
     ;; Clear buffers
     (with-current-buffer logbuf (erase-buffer))
     (with-current-buffer htmlbuf (erase-buffer))
 
+    ;; Log start
     (with-current-buffer logbuf
-      (insert (format "Running ansi2html on %s\nOutput → %s\n" src html-file)))
+      (insert (format "Running ansi2html on %s\nOutput → %s\n\n" src dest)))
 
     ;; -----------------------------
-    ;; Run ansi2html
+    ;; Run ansi2html → FULL HTML into htmlbuf
     ;; -----------------------------
     (let ((exit-code
            (with-current-buffer htmlbuf
              (call-process "ansi2html" src t nil))))
       (unless (eq exit-code 0)
-        (error "ansi2html failed; see *ansi2html-log*")))
+        (with-current-buffer logbuf
+          (insert (format "ERROR: exit %s\n" exit-code)))
+        (display-buffer logbuf)
+        (error "ansi2html failed")))
 
     ;; -----------------------------
-    ;; Extract only <pre>…</pre>
+    ;; STRIP everything except the <pre> ... </pre>
     ;; -----------------------------
     (let* ((full-html (with-current-buffer htmlbuf (buffer-string)))
-           (pre-start (string-match "<pre[^>]*>" full-html))
-           (pre-tag   (match-string 0 full-html))  ;; must capture before second match
-           (pre-end   (string-match "</pre>" full-html))
-           (inner (substring full-html
+       ;; First match <pre…> and capture the tag BEFORE running ANY other match
+       (pre-start (string-match "<pre[^>]*>" full-html))
+       (pre-tag   (match-string 0 full-html))   ; save now, before match-data gets overwritten
+       ;; Now this will NOT overwrite pre-tag
+       (pre-end   (string-match "</pre>" full-html))
+       (inner (if (and pre-start pre-end pre-tag)
+                  ;; correct: skip exactly the number of characters in the <pre> tag
+                  (substring full-html
                              (+ pre-start (length pre-tag))
-                             pre-end)))
+                             pre-end)
+                (error "Could not find <pre> block in ansi2html output"))))
 
-      ;; Compute width
+      ;; -----------------------------
+      ;; Compute text width from RAW ANSI file
+      ;; -----------------------------
       (let* ((raw (with-temp-buffer
                     (insert-file-contents src)
                     (buffer-string)))
@@ -3830,53 +3836,37 @@ for both HTML and LaTeX export."
              (max-width (max 20 (apply #'max (mapcar #'length lines))))
              (css-width (format "%dch" max-width)))
 
-        ;; Write nice compact HTML
+        ;; -----------------------------
+        ;; Create FINAL compact HTML
+        ;; -----------------------------
         (with-current-buffer htmlbuf
           (erase-buffer)
           (insert
-           (format "<div class=\"ansi-output\" style=\"width:%s; display:inline-block; white-space:pre; padding:0.2em; background:#111; color:#eee; border-radius:4px;\">\n%s\n</div>\n"
-                   css-width inner))))))
+           (format
+"<div class=\"ansi-output\" style=\"width:%s; display:inline-block; white-space:pre; padding:0.2em; background:#111; color:#eee; border-radius:4px;\">\n%s\n</div>\n"
+                   css-width inner)))))
 
-    ;; Save HTML file
+
+    ;; -----------------------------
+    ;; Write compact HTML to dest
+    ;; -----------------------------
     (with-current-buffer htmlbuf
-      (write-region (point-min) (point-max) html-file nil 'silent))
+      (write-region (point-min) (point-max) dest nil 'silent))
 
-    ;; -----------------------------
-    ;; Create PDF with wkhtmltopdf
-    ;; -----------------------------
-    (with-current-buffer logbuf
-      (insert (format "\nRunning wkhtmltopdf → %s\n" pdf-file)))
-    (let ((exit-code
-           (call-process "wkhtmltopdf" nil logbuf nil html-file pdf-file)))
-      (unless (eq exit-code 0)
-        (error "wkhtmltopdf failed")))
-
-    ;; -----------------------------
-    ;; Insert Org markup for both exports
-    ;; -----------------------------
+    ;; Insert Org block
     (insert
-     (format
-"# ------------------------------------------------------------\n\
-# HTML export block\n\
-#+HTML: <div class=\"ansi-output\">\n\
-#+INCLUDE: \"%s\" export html\n\
-#+HTML: </div>\n\n\
-# ------------------------------------------------------------\n\
-# LaTeX export block (PDF)\n\
-#+LATEX: \\begin{center}\n\
-#+LATEX: \\includegraphics[width=0.9\\linewidth]{%s}\n\
-#+LATEX: \\end{center}\n\n"
-             (file-relative-name html-file orgdir)
-             (file-relative-name pdf-file orgdir)))
+     (format "#+HTML: <div class=\"ansi-output\">\n#+INCLUDE: \"%s\" export html\n#+HTML: </div>\n\n"
+             (file-relative-name dest orgdir)))
 
-    ;; Log + finish
+    ;; Log success
     (with-current-buffer logbuf
-      (insert "\nSUCCESS\n"))
+      (goto-char (point-max))
+      (insert (format "SUCCESS: wrote %s\n" dest)))
     (display-buffer logbuf)
 
-    (message "Inserted ANSI block for HTML + LaTeX: %s" unique-base)))
-
+    (message "Inserted ANSI block: %s" dest)))
 #+end_src
 
-
+#+RESULTS:
+: insert-ansi-org
 
