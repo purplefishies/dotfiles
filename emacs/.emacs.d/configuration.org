@@ -3558,8 +3558,8 @@ CLOSED: [2025-10-24 Fri 11:38]
         ("\\.pdf\\'" . "evince %s")))
 
 (setq org-latex-pdf-process
-      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+      '("lualatex --shell-escape -interaction nonstopmode -output-directory %o %f"
+        "lualatex --shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 
 ;; Always use Chrome for HTML files opened by Org
@@ -3601,9 +3601,8 @@ M-, Pop to previous location
 (with-eval-after-load 'org-ctags (setq org-open-link-functions nil))
 #+end_src
 
-#+RESULTS:
 
-** Emcs colors
+** Emacs colors
 #+begin_src emacs-lisp
 
 ;; (setq org-html-htmlize-output-type 'css)          ;; no inline styles
@@ -3863,3 +3862,190 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+* Org download 
+#+begin_src emacs-lisp
+(require 'org-download)
+
+(defun jmd/org-download-dir ()
+  "Return <stem>/<YEAR>/<Mon>/ relative to the Org file."
+  (let* ((buf (or (buffer-file-name)
+                  (user-error "Not visiting a file")))
+         (dir (file-name-directory buf))
+         (stem (file-name-sans-extension
+                (file-name-nondirectory buf)))
+         (year (format-time-string "%Y"))
+         (mon  (format-time-string "%b"))
+         (target (expand-file-name
+                  (format "%s/%s/%s/" stem year mon) dir)))
+    (unless (file-directory-p target)
+      (make-directory target t))
+    target))
+
+(defun jmd/org-download--target-file (suffix)
+  "Generate a complete target filename for image saving."
+  (let* ((dir  (jmd/org-download-dir))
+         (name (format "%s%s"
+                       (format-time-string "%Y-%m-%d_%H-%M-%S")
+                       suffix)))
+    (expand-file-name name dir)))
+
+(defun jmd/org-download-clipboard ()
+  "Paste clipboard image into year/month directory beside Org file."
+  (interactive)
+  (let* ((file (jmd/org-download--target-file ".png"))
+         (org-download-clipboard-file file)
+         (org-download-link-format "[[file:%s]]\n"))
+    (org-download-clipboard)))
+
+(defun jmd/org-download-screenshot ()
+  "Screenshot into year/month directory beside Org file."
+  (interactive)
+  (let* ((file (jmd/org-download--target-file "_screenshot.png"))
+         (org-download-screenshot-file file)
+         (org-download-link-format "[[file:%s]]\n"))
+    (org-download-screenshot)))
+
+;; Disable org-download default Pictures/ directory completely
+(setq org-download-image-dir nil)
+
+;; Keybindings
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c i c") #'jmd/org-download-clipboard)
+  (define-key org-mode-map (kbd "C-c i s") #'jmd/org-download-screenshot))
+
+#+end_src
+
+* Customized HTML output
+#+begin_src text
+Here’s the minimal, clean way to add a “copy” button like that to your Org → HTML publishing output in Emacs.
+
+Your snippet:
+
+<nav class="md-code__nav">
+  <button
+    class="md-code__button"
+    data-clipboard-target="#__code_2 > code"
+    data-md-type="copy"
+    title="Copy to clipboard">
+  </button>
+</nav>
+
+✅ How to inject this into exported Org-mode HTML
+
+Org already gives you org-html-head and org-html-head-extra hooks to inject HTML + JS.
+
+You want:
+
+A copy button placed next to every <pre><code> block
+
+A small JS snippet that wires it up to Clipboard API (or clipboard.js)
+
+Below is the cleanest working solution.
+
+✅ Add this to your publishing config:
+1. Add the JS + CSS buttons to <head>
+This:
+
+✔ Wraps every <pre> block in a container
+✔ Inserts a nav.md-code__nav > button.md-code__button
+✔ Makes the button copy the code
+✔ Gives a visual flash after copying
+
+Works perfectly with org-publish-project-alist.
+
+🟦 If you prefer, you can make it even closer to your sample markup
+
+Your sample uses:
+
+<button data-clipboard-target="#__code_2 > code" data-md-type="copy">
+
+To match that exactly, change the JS button generation to:
+
+btn.setAttribute("data-clipboard-target", "#codeblock_" + i + "> code");
+btn.setAttribute("data-md-type", "copy");
+
+and assign IDs to code blocks:
+
+block.id = "codeblock_" + i;
+
+Just tell me if you want the full version.
+
+✅ Result
+
+Your published Org HTML will now have:
+
++-------------------------------+
+| [copy button]   <code block> |
++-------------------------------+
+
+Exactly like MkDocs / Material-style copy buttons.
+
+Want it to work only for source blocks (not example blocks)?
+Want it themed (dark/light)?
+Want clipboard.js instead of browser API?
+
+Just tell me — I'll tailor it to your publication style.
+#+end_src
+
+#+begin_src emacs-lisp
+;; (setq org-html-head-extra
+;; "<style>
+;; .md-code__nav { position: absolute; right: 6px; top: 6px; }
+
+;; .md-code__button {
+;;   background: none;
+;;   border: none;
+;;   cursor: pointer;
+;;   width: 24px;
+;;   height: 24px;
+;;   background-size: 24px 24px;
+;;   background-repeat: no-repeat;
+;;   background-position: center;
+;;   /* Tabler 'copy' icon as inline SVG data URI */
+;;   background-image: url('data:image/svg+xml;utf8,
+;; <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"%23000\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\">
+;;   <rect x=\"8\" y=\"8\" width=\"12\" height=\"12\" rx=\"2\"/>
+;;   <path d=\"M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2\"/>
+;; </svg>');
+;; }
+
+;; .code-container { position: relative; }
+;; </style>
+
+;; <script>
+;; document.addEventListener('DOMContentLoaded', function () {
+;;   document.querySelectorAll('pre.src').forEach(function (block) {
+
+;;     const wrapper = document.createElement('div');
+;;     wrapper.className = 'code-container';
+;;     block.parentNode.insertBefore(wrapper, block);
+;;     wrapper.appendChild(block);
+
+;;     const nav = document.createElement('nav');
+;;     nav.className = 'md-code__nav';
+
+;;     const btn = document.createElement('button');
+;;     btn.className = 'md-code__button';
+;;     btn.title = 'Copy code';
+
+;;     btn.onclick = function () {
+;;       navigator.clipboard.writeText(block.innerText);
+;;       btn.style.filter = 'invert(40%)';
+;;       setTimeout(() => btn.style.filter = '', 600);
+;;     };
+
+;;     nav.appendChild(btn);
+;;     wrapper.appendChild(nav);
+;;   });
+;; });
+;; </script>")
+#+end_src
+
+
+
+
+* Latex stuff
+#+begin_src emacs-lisp
+(setq TeX-engine 'luatex)
+(setq TeX-command-extra-options "--shell-escape")
+#+end_src
