@@ -3988,57 +3988,57 @@ Just tell me — I'll tailor it to your publication style.
 #+end_src
 
 #+begin_src emacs-lisp
-;; (setq org-html-head-extra
-;; "<style>
-;; .md-code__nav { position: absolute; right: 6px; top: 6px; }
+(setq org-html-head-extra
+"<style>
+.md-code__nav { position: absolute; right: 6px; top: 6px; }
 
-;; .md-code__button {
-;;   background: none;
-;;   border: none;
-;;   cursor: pointer;
-;;   width: 24px;
-;;   height: 24px;
-;;   background-size: 24px 24px;
-;;   background-repeat: no-repeat;
-;;   background-position: center;
-;;   /* Tabler 'copy' icon as inline SVG data URI */
-;;   background-image: url('data:image/svg+xml;utf8,
-;; <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"%23000\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\">
-;;   <rect x=\"8\" y=\"8\" width=\"12\" height=\"12\" rx=\"2\"/>
-;;   <path d=\"M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2\"/>
-;; </svg>');
-;; }
+.md-code__button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  background-size: 24px 24px;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* Tabler 'copy' icon as inline SVG data URI */
+  background-image: url('data:image/svg+xml;utf8,
+<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"%23000\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\">
+  <rect x=\"8\" y=\"8\" width=\"12\" height=\"12\" rx=\"2\"/>
+  <path d=\"M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2\"/>
+</svg>');
+}
 
-;; .code-container { position: relative; }
-;; </style>
+.code-container { position: relative; }
+</style>
 
-;; <script>
-;; document.addEventListener('DOMContentLoaded', function () {
-;;   document.querySelectorAll('pre.src').forEach(function (block) {
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('pre.src').forEach(function (block) {
 
-;;     const wrapper = document.createElement('div');
-;;     wrapper.className = 'code-container';
-;;     block.parentNode.insertBefore(wrapper, block);
-;;     wrapper.appendChild(block);
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-container';
+    block.parentNode.insertBefore(wrapper, block);
+    wrapper.appendChild(block);
 
-;;     const nav = document.createElement('nav');
-;;     nav.className = 'md-code__nav';
+    const nav = document.createElement('nav');
+    nav.className = 'md-code__nav';
 
-;;     const btn = document.createElement('button');
-;;     btn.className = 'md-code__button';
-;;     btn.title = 'Copy code';
+    const btn = document.createElement('button');
+    btn.className = 'md-code__button';
+    btn.title = 'Copy code';
 
-;;     btn.onclick = function () {
-;;       navigator.clipboard.writeText(block.innerText);
-;;       btn.style.filter = 'invert(40%)';
-;;       setTimeout(() => btn.style.filter = '', 600);
-;;     };
+    btn.onclick = function () {
+      navigator.clipboard.writeText(block.innerText);
+      btn.style.filter = 'invert(40%)';
+      setTimeout(() => btn.style.filter = '', 600);
+    };
 
-;;     nav.appendChild(btn);
-;;     wrapper.appendChild(nav);
-;;   });
-;; });
-;; </script>")
+    nav.appendChild(btn);
+    wrapper.appendChild(nav);
+  });
+});
+</script>")
 #+end_src
 
 
