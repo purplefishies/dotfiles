@@ -19,11 +19,16 @@
 [includeIf "gitdir:/home/jdamon/Scripts/**"]
     path = ~/.gitconfig-personal
 
+
+
 [includeIf "gitdir:/home/jdamon/Projects/vc_mipi_nvidia/**"]
     path = ~/.gitconfig-personal
 
 [includeIf "gitdir:/home/jdamon/Projects/**"]
     path = ~/.gitconfig-personal
+
+[includeIf "gitdir:/home/jdamon/Projects/sparrow_bots/**"]
+    path = ~/.gitconfig-botsu
 
 [includeIf "gitdir:/home/jdamon/.config/**"]
     path = ~/.gitconfig-personal
@@ -170,3 +175,7 @@
 	rebase = false
 [http]
 	sslVerify = false
+[http "https://qpm-git.qualcomm.com"]
+	followredirects = true
+[http "https://chipmaster2.qti.qualcomm.com"]
+	followRedirects = true
