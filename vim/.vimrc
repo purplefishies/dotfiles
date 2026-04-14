@@ -2,7 +2,7 @@
 set nocompatible
 syntax on
 set number              " line numbers
-set relativenumber      " relative numbers (great for navigation)
+set norelativenumber    " relative numbers (great for navigation)
 set cursorline          " highlight current line
 set showmatch           " highlight matching brackets
 set termguicolors       " true color support (if terminal supports it)
