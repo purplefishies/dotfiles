@@ -1,6 +1,4 @@
 alias lock="xscreensaver-command -lock"
-alias ls='ls --color=auto --hyperlink=auto'
-alias ll='ls -l --color=auto --hyperlink=auto'
 alias cd..='cd ..'
 alias l='ll' #
 alias lh='ll --si -r' # For displaying Nice labels
@@ -21,12 +19,18 @@ alias hist="ls $HISTDIRECTORY | tac"
 alias ggrep='grep --color=always -d skip'
 alias ack='ack --color'
 alias ltn='function _ltn(){ if [ "$#" -eq 1 ]; then ls -ltr | tail -n "$1"; else ls -ltr "$2" | tail -n "$1"; fi; }; _ltn'    
+                                                                                                                                                           alias pless='python3 /home/jdamon/Scripts/lesspipe_pygmentize.py | less -R'
+
 
 if [[ $(uname) =~ [Cc][Yy][Gg][Ww][Ii][Nn] ]]; then
+    alias ls='/usr/bin/mls --color=always --hyperlink=always'
+    alias ll='ls -l --color=always --hyperlink=always'
     alias open='cygstart'
     alias pbcopy=putclip
     alias pbpaste=getclip
 elif [[ $(uname) =~ Linux ]]; then
+    alias ls='/usr/bin/mls --color=always --hyperlink=always'
+    alias ll='ls -l --color=always --hyperlink=always'
     alias open='gio open'
     alias pbcopy='xclip -i -selection clipboard'
     alias pbpaste='xclip -selection clipboard -o'
