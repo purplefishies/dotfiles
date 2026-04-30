@@ -1,12 +1,13 @@
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
+local act = wezterm.action
 
 -- ----------------------------
 -- Default shell: WSL Ubuntu 24.04
 -- ----------------------------
 config.default_prog = {
   'wsl.exe',
-  '--distribution', 'Ubuntu-24.04',
+  '--distribution', 'Ubuntu-22.04',
 }
 
 -- config.disable_default_key_bindings = true
@@ -18,9 +19,27 @@ config.default_prog = {
 config.mouse_bindings = {
   {
     event = { Up = { streak = 1, button = 'Left' } },
+    mods = 'NONE',
+    action = wezterm.action.Nop,
+  },
+  {
+    event = { Up = { streak = 1, button = 'Left' } },
     mods = 'CTRL|SHIFT',
     action = wezterm.action.OpenLinkAtMouseCursor,
-  }
+  },
+  { 
+     event = { Down = { streak = 1, button = 'Right' } },
+     mods = "NONE", 
+     action = wezterm.action_callback(function(window,pane)
+	      local has_action = window:get_selection_text_for_pane(pane) ~= ""
+	      if has_selection then
+		      window:perform_action(act.CopyTo("ClipboardAndPrimarySelection"),pane )
+		      window:perform_action(act.ClearSelection,pane )
+	      else
+		      window:perform_action(act({PasteFrom = "Clipboard" }),pane )
+	      end
+      end),
+   },
 }
 
 
@@ -67,6 +86,8 @@ config.color_scheme = "Bamboo"
 config.enable_tab_bar = true
 config.hide_tab_bar_if_only_one_tab = true
 config.audible_bell = 'Disabled'
+config.selection_word_boundary = ' |\t\n{}[]()"\'`'
+
 
 -- ----------------------------
 -- Env tweaks
@@ -80,13 +101,18 @@ config.set_environment_variables = {
 -- ----------------------------
 config.keys = {
     { key = 'Enter', mods = 'ALT', action = wezterm.action.DisableDefaultAssignment, },
-    { key = 'Enter', mods = 'CTRL|SHIFT', action = wezterm.action.ToggleFullScreen, },
+    { key = '_'    , mods = 'CTRL|SHIFT', action = wezterm.action.DisableDefaultAssignment },
+    { key = 'Enter', mods = 'ALT|SHIFT', action = wezterm.action.ToggleFullScreen, },
     { key = 'L', mods = 'CTRL|SHIFT', action = wezterm.action.ShowLauncher },
     { key = 'P', mods = 'CTRL|SHIFT', action = wezterm.action.ActivateCommandPalette },
     { key = 'R', mods = 'CTRL|SHIFT', action = wezterm.action.ReloadConfiguration },
     { key = 'LeftArrow', mods = 'CTRL|SHIFT' , action = wezterm.action.ActivateTabRelative(-1) },
     { key = 'RightArrow', mods = 'CTRL|SHIFT' , action = wezterm.action.ActivateTabRelative(1) },
-
+ {
+    key = 'n',
+    mods = 'SHIFT|CTRL',
+    action = wezterm.action.ToggleFullScreen,
+  },
 }
 
 -- ----------------------------
@@ -120,6 +146,26 @@ table.insert(config.hyperlink_rules, {
 table.insert(config.hyperlink_rules, {
   regex = [[((?:/home|/mnt|/usr|/opt|/etc|/tmp|/workspace)/[^\s:]+):(\d+)]],
   format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2',
+})
+
+config.hyperlink_rules = wezterm.default_hyperlink_rules()
+
+-- /path/file:line:column:
+table.insert(config.hyperlink_rules, {
+  regex = [[(/[^:\s]+):(\d+):(\d+):?]],
+  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2:$3',
+})
+
+-- /path/file:line:
+table.insert(config.hyperlink_rules, {
+  regex = [[(/[^:\s]+):(\d+):?]],
+  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2',
+})
+
+-- bare /path/file
+table.insert(config.hyperlink_rules, {
+  regex = [[(/[^:\s]+)]],
+  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1',
 })
 
 return config
