@@ -2,6 +2,9 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 local act = wezterm.action
 
+local is_windows = wezterm.target_triple:find("windows") ~= nil
+local is_linux = wezterm.target_triple:find("linux") ~= nil
+
 -- ----------------------------
 -- Default shell: WSL Ubuntu 24.04
 -- ----------------------------
@@ -46,6 +49,7 @@ config.mouse_bindings = {
 -- ----------------------------
 -- Launcher menu
 -- ----------------------------
+if is_windows then  
 config.launch_menu = {
   {
     label = 'WSL Ubuntu 24.04',
@@ -74,6 +78,15 @@ config.launch_menu = {
     args = { 'cmd.exe' },
   },
 }
+else 
+
+  config.default_prog = { '/usr/bin/zsh', '-l' }
+
+  config.launch_menu = {
+    { label = 'zsh', args = { '/usr/bin/zsh', '-l' } },
+    { label = 'bash', args = { '/bin/bash', '-l' } },
+  }
+end
 
 -- ----------------------------
 -- Appearance
