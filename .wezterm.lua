@@ -100,7 +100,7 @@ config.color_scheme = "Bamboo"
 config.enable_tab_bar = true
 config.hide_tab_bar_if_only_one_tab = true
 config.audible_bell = 'Disabled'
-config.selection_word_boundary = ' |\t\n{}[]()"\'`'
+config.selection_word_boundary = ' |↑\t\n{}[]()"\'`'
 
 
 -- ----------------------------
