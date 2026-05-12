@@ -84,7 +84,7 @@ else
 
   config.launch_menu = {
     { label = 'zsh', args = { '/usr/bin/zsh', '-l' } },
-    { label = 'bash', args = { '/bin/bash', '-l' } },
+    { label = 'bash', args = { '/usr/bin/bash', '-l' } },
   }
 end
 
@@ -134,53 +134,87 @@ config.keys = {
 -- ----------------------------
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
 
--- WSL paths → VSCode (Remote WSL)
-table.insert(config.hyperlink_rules, {
-  regex = [[((?:/home|/mnt|/usr|/opt|/etc|/tmp)/[^\s:]+):(\d+)]],
-  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2',
-})
+-- if is_windows then  
+--    -- WSL paths → VSCode (Remote WSL)
+--    table.insert(config.hyperlink_rules, {
+--                    regex = [[((?:/home|/mnt|/usr|/opt|/etc|/tmp)/[^\s:]+):(\d+)]],
+--                    format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2',
+--    })
 
--- Windows paths
-table.insert(config.hyperlink_rules, {
-  regex = [[(([A-Za-z]:\\(?:[^\\\s:]+\\)*[^\\\s:]+)):(\d+)]],
-  format = 'file:///$1',
-})
+--    table.insert(config.hyperlink_rules, {
+--                    regex = [[((?:/home|/mnt|/usr|/opt|/etc|/tmp|/workspace)/[^\s:]+):(\d+):(\d+)]],
+--                    format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2:$3',
+--    })
 
--- Cygwin paths → Windows
-table.insert(config.hyperlink_rules, {
-  regex = [[(/cygdrive/([a-zA-Z])/[^\s:]+):(\d+)]],
-  format = 'file:///$2:/$1',
-})
+--    table.insert(config.hyperlink_rules, {
+--                    regex = [[((?:/home|/mnt|/usr|/opt|/etc|/tmp|/workspace)/[^\s:]+):(\d+)]],
+--                    format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2',
+--    })
 
-table.insert(config.hyperlink_rules, {
-  regex = [[((?:/home|/mnt|/usr|/opt|/etc|/tmp|/workspace)/[^\s:]+):(\d+):(\d+)]],
-  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2:$3',
-})
+--    -- /path/file:line:column:
+--    table.insert(config.hyperlink_rules, {
+--                    regex = [[(/[^:\s]+):(\d+):(\d+):?]],
+--                    format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2:$3',
+--    })
+   
+--    -- /path/file:line:
+--    table.insert(config.hyperlink_rules, {
+--                    regex = [[(/[^:\s]+):(\d+):?]],
+--                    format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2',
+--    })
+   
+--    -- bare /path/file
+--    table.insert(config.hyperlink_rules, {
+--                    regex = [[(/[^:\s]+)]],
+--                    format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1',
+--    })
 
-table.insert(config.hyperlink_rules, {
-  regex = [[((?:/home|/mnt|/usr|/opt|/etc|/tmp|/workspace)/[^\s:]+):(\d+)]],
-  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2',
-})
+--    -- Windows paths
+--    table.insert(config.hyperlink_rules, {
+--                    regex = [[(([A-Za-z]:\\(?:[^\\\s:]+\\)*[^\\\s:]+)):(\d+)]],
+--                    format = 'file:///$1',
+--    })
+   
+--    -- Cygwin paths → Windows
+--    table.insert(config.hyperlink_rules, {
+--                    regex = [[(/cygdrive/([a-zA-Z])/[^\s:]+):(\d+)]],
+--                    format = 'file:///$2:/$1',
+--    })
 
-config.hyperlink_rules = wezterm.default_hyperlink_rules()
+-- else
 
--- /path/file:line:column:
-table.insert(config.hyperlink_rules, {
-  regex = [[(/[^:\s]+):(\d+):(\d+):?]],
-  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2:$3',
-})
+   table.insert(config.hyperlink_rules, {
+                   regex = [[((?:/home|/mnt|/usr|/opt|/etc|/tmp)/[^\s:]+):(\d+)]],
+                   format = 'vscode://file$1:$2',
+   })
 
--- /path/file:line:
-table.insert(config.hyperlink_rules, {
-  regex = [[(/[^:\s]+):(\d+):?]],
-  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2',
-})
+   table.insert(config.hyperlink_rules, {
+                   regex = [[((?:/home|/mnt|/usr|/opt|/etc|/tmp|/workspace)/[^\s:]+):(\d+):(\d+)]],
+                   format = 'vscode://file$1:$2:$3',
+   })
 
--- bare /path/file
-table.insert(config.hyperlink_rules, {
-  regex = [[(/[^:\s]+)]],
-  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1',
-})
+   -- /path/vscode:line:column:
+   table.insert(config.hyperlink_rules, {
+                   regex = [[(/[^:\s]+):(\d+):(\d+):?]],
+                   format = 'vscode://file$1:$2:$3',
+   })
+   
+   -- /path/vscode:line:
+   table.insert(config.hyperlink_rules, {
+                   regex = [[(/[^:\s]+):(\d+):?]],
+                   format = 'vscode://file$1:$2',
+   })
+   
+   -- bare /path/file
+   table.insert(config.hyperlink_rules, {
+                   regex = [[(/[^:\s]+)]],
+                   format = 'vscode://file$1',
+   })
+
+-- end
+   
+
+-- config.hyperlink_rules = wezterm.default_hyperlink_rules()
 
 return config
 
