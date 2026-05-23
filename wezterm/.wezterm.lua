@@ -20,39 +20,46 @@ config.default_prog = {
 -- -------------------------
 -- Ctrl-click will open the link under the mouse cursor
 config.mouse_bindings = {
-  {
-    event = { Up = { streak = 1, button = 'Left' } },
-    mods = 'NONE',
-    action = wezterm.action.Nop,
-  },
+  -- Ctrl+Shift+Left opens hyperlinks
   {
     event = { Up = { streak = 1, button = 'Left' } },
     mods = 'CTRL|SHIFT',
-    action = wezterm.action.OpenLinkAtMouseCursor,
+    action = act.OpenLinkAtMouseCursor,
   },
-  { 
-     event = { Down = { streak = 1, button = 'Right' } },
-     mods = "NONE", 
-     action = wezterm.action_callback(function(window,pane)
-	      local has_action = window:get_selection_text_for_pane(pane) ~= ""
-	      if has_selection then 
-					window:perform_action(
-						act.CopyTo("Clipboard"),
-						pane
-					)
-					window.perform_action(
-						act.ClearSelection,
-						pane
-					)
-			else
-				window:perform_action(
-						act.PasteFrom("Clipboard"),
-						pane
-					)
-      end),
-   },
-}
 
+  -- Single right click:
+  -- If text selected -> copy to clipboard
+  -- Else -> paste
+  {
+    event = { Down = { streak = 1, button = 'Right' } },
+    mods = 'NONE',
+    action = wezterm.action_callback(function(window, pane)
+      local selection = window:get_selection_text_for_pane(pane)
+
+      if selection and selection ~= '' then
+        window:perform_action(act.CopyTo('Clipboard'), pane)
+        window:perform_action(act.ClearSelection, pane)
+      else
+        window:perform_action(act.PasteFrom('Clipboard'), pane)
+      end
+    end),
+  },
+
+  -- Double right click:
+  -- Copy selected text to PRIMARY selection buffer
+  {
+    event = { Down = { streak = 2, button = 'Right' } },
+    mods = 'NONE',
+    action = wezterm.action_callback(function(window, pane)
+      local selection = window:get_selection_text_for_pane(pane)
+
+      if selection and selection ~= '' then
+        window:perform_action(act.CopyTo('PrimarySelection'), pane)
+        window:perform_action(act.ClearSelection, pane)
+      end
+    end),
+  },
+}
 
 -- ----------------------------
 -- Launcher menu
