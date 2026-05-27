@@ -152,7 +152,7 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 -- WSL paths → VSCode (Remote WSL)
 table.insert(config.hyperlink_rules, {
   regex = [[((?:/home|/mnt|/usr|/opt|/etc|/tmp)/[^\s:]+):(\d+)]],
-  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2',
+  format = 'emacs://$1:$2',
 })
 
 -- Windows paths
@@ -169,12 +169,12 @@ table.insert(config.hyperlink_rules, {
 
 table.insert(config.hyperlink_rules, {
   regex = [[((?:/home|/mnt|/usr|/opt|/etc|/tmp|/workspace)/[^\s:]+):(\d+):(\d+)]],
-  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2:$3',
+  format = 'emacs://$1:$2:$3',
 })
 
 table.insert(config.hyperlink_rules, {
   regex = [[((?:/home|/mnt|/usr|/opt|/etc|/tmp|/workspace)/[^\s:]+):(\d+)]],
-  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2',
+  format = 'emacs://$1:$2',
 })
 
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
@@ -182,19 +182,19 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 -- /path/file:line:column:
 table.insert(config.hyperlink_rules, {
   regex = [[(/[^:\s]+):(\d+):(\d+):?]],
-  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2:$3',
+  format = 'emacs://$1:$2:$3',
 })
 
 -- /path/file:line:
 table.insert(config.hyperlink_rules, {
   regex = [[(/[^:\s]+):(\d+):?]],
-  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1:$2',
+  format = 'emacs://$1:$2',
 })
 
 -- bare /path/file
 table.insert(config.hyperlink_rules, {
   regex = [[(/[^:\s]+)]],
-  format = 'vscode://vscode-remote/wsl+Ubuntu-24.04$1',
+  format = 'emacs://$1',
 })
 
 return config
