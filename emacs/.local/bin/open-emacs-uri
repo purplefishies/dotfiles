@@ -9,16 +9,29 @@ import urllib.parse
 arg = sys.argv[1] if len(sys.argv) > 1 else ""
 
 def strip_scheme(s):
+    # Absolute emacs/file URIs:
+    #   emacs:///home/me/file.c -> /home/me/file.c
+    #   file:///home/me/file.c  -> /home/me/file.c
     for prefix in (
         "file://localhost.localdomain/",
         "file://localhost/",
         "emacs:///",
         "file:///",
-        "emacs://",
-        "file://",
     ):
         if s.startswith(prefix):
             return "/" + s[len(prefix):]
+
+    # Hostless/custom emacs URIs:
+    #   emacs://./driver/src/qdma_mod.c -> ./driver/src/qdma_mod.c
+    #   emacs://foo/bar.c               -> foo/bar.c
+    #
+    # Do NOT prepend "/" here. Prepending "/" is what turned
+    # ./driver/src/qdma_mod.c into /driver/src/qdma_mod.c.
+    if s.startswith("emacs://"):
+        return s[len("emacs://"):]
+
+    if s.startswith("file://"):
+        return s[len("file://"):]
 
     if s.startswith("emacs:"):
         return s[6:]
@@ -40,6 +53,13 @@ else:
     m = re.match(r"^(.+):([0-9]+)$", path)
     if m:
         path, line = m.group(1), int(m.group(2))
+
+# Resolve relative paths against the caller's working directory.
+# When invoked as `xdg-open emacs://./driver/src/qdma_mod.c` from a shell,
+# xdg-open normally inherits PWD, and the handler inherits it from xdg-open.
+if path.startswith("./") or path.startswith("../"):
+    cwd = os.environ.get("PWD") or os.getcwd()
+    path = os.path.abspath(os.path.join(cwd, path))
 
 elisp = f'''
 (progn

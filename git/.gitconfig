@@ -20,6 +20,9 @@
 [includeIf "gitdir:~/Projects/**"]
     path = ~/.gitconfig.personal
 
+[includeIf "gitdir:~/Projects/galt_*/**"]
+    path = ~/.gitconfig.work
+
 [includeIf "gitdir:~/Projects/dotfiles/.git"]
     path = ~/.config/git/dotfiles.gitconfig
 

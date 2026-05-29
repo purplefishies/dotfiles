@@ -177,46 +177,50 @@ table.insert(config.hyperlink_rules, {
   format = 'emacs://$1:$2',
 })
 
-config.hyperlink_rules = wezterm.default_hyperlink_rules()
 
--- /path/file:line:column:
+-- ----------------------------
+-- Hyperlink rules
+-- ----------------------------
+config.hyperlink_rules = {}
+
+-- Keep normal web links clickable.
+table.insert(config.hyperlink_rules, {
+  regex = [[\b\w+://[^\s]+]],
+  format = '$0',
+})
+
+-- tar-style ./relative/path/file:line:column
+-- Convert ./foo into an absolute path rooted at the tar starting directory.
+table.insert(config.hyperlink_rules, {
+  regex = [[\./([^:\s]+):(\d+):(\d+):?]],
+  format = 'emacs:///home/jdamon/Projects/dma_ip_drivers/QDMA/linux-kernel/apps/$1:$2:$3',
+})
+
+-- tar-style ./relative/path/file:line
+table.insert(config.hyperlink_rules, {
+  regex = [[\./([^:\s]+):(\d+):?]],
+  format = 'emacs:///home/jdamon/Projects/dma_ip_drivers/QDMA/linux-kernel/apps/$1:$2',
+})
+
+-- bare tar-style ./relative/path/file
+table.insert(config.hyperlink_rules, {
+  regex = [[\./([^:\s]+)]],
+  format = 'emacs:///home/jdamon/Projects/dma_ip_drivers/QDMA/linux-kernel/apps/$1',
+})
+
+-- Absolute paths with line/column
 table.insert(config.hyperlink_rules, {
   regex = [[(/[^:\s]+):(\d+):(\d+):?]],
   format = 'emacs://$1:$2:$3',
 })
 
--- /path/file:line:
+-- Absolute paths with line
 table.insert(config.hyperlink_rules, {
   regex = [[(/[^:\s]+):(\d+):?]],
   format = 'emacs://$1:$2',
 })
 
--- bare /path/file
-table.insert(config.hyperlink_rules, {
-  regex = [[(/[^:\s]+)]],
-  format = 'emacs://$1',
-})
+-- Intentionally no bare /absolute/path rule.
+-- It would steal /dma-utils/... from ./dma-utils/... in tar output.
 
 return config
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
