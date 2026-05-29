@@ -1,0 +1,32 @@
+# Linux defaults. Keep BCompare as the default diff/merge tool here.
+
+[credential]
+    helper = cache --timeout=3600
+
+[core]
+    filemode = true
+    autocrlf = false
+
+[diff]
+    tool = bc3
+
+[difftool]
+    prompt = false
+
+[merge]
+    tool = bc3
+
+[mergetool "bc3"]
+    trustExitCode = true
+    keepBackup = false
+
+# If your Linux install uses Beyond Compare 4 instead of 3, switch the three
+# occurrences of bc3 above to bc4 and uncomment/adapt these commands:
+#
+# [difftool "bc4"]
+#     cmd = bcompare "$LOCAL" "$REMOTE"
+#
+# [mergetool "bc4"]
+#     cmd = bcompare "$LOCAL" "$REMOTE" "$BASE" "$MERGED"
+#     trustExitCode = true
+#     keepBackup = false

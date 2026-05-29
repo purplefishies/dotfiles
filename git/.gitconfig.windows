@@ -1,18 +1,25 @@
+# Windows-specific defaults. Include this from the Windows global config.
 
-[alias]
-        trash = "!git status --porcelain -z | perl -ne 's/( M [^\\0]+\\0)//g; s/(\\A|\\0)\\?\\?\\s/\\0/g;print;' | perl -pne 's/^\\0//g' | xargs -0 -n 50 --verbose trash -v "
-
+[core]
+    filemode = false
+    autocrlf = false
 
 [diff]
-	tool = bc4
-[difftool "bc4"]
-	cmd = '"C:/Users/jdamon/AppData/Local/Beyond Compare 4/BComp.exe"' "$(cygpath -w $LOCAL)" "$(cygpath -w $REMOTE)" 
+    tool = bc4
+
 [difftool]
-	prompt = false
+    prompt = false
+
+[difftool "bc4"]
+    cmd = '"C:/Users/jdamon/AppData/Local/Beyond Compare 4/BComp.exe"' "$(cygpath -w $LOCAL)" "$(cygpath -w $REMOTE)"
+
 [merge]
-	tool = bc4
+    tool = bc4
 
 [mergetool "bc4"]
-        cmd = '"C:/Users/jdamon/AppData/Local/Beyond Compare 4/BComp.exe"' "$(cygpath -w $LOCAL)" "$(cygpath -w $REMOTE)" "$(cygpath -w $BASE)" "$(cygpath -w $MERGED)"
-	bc4 = trustExitCode
-        keepBackup = false
+    cmd = '"C:/Users/jdamon/AppData/Local/Beyond Compare 4/BComp.exe"' "$(cygpath -w $LOCAL)" "$(cygpath -w $REMOTE)" "$(cygpath -w $BASE)" "$(cygpath -w $MERGED)"
+    trustExitCode = true
+    keepBackup = false
+
+[alias]
+    trash = "!git status --porcelain -z | perl -ne 's/( M [^\\0]+\\0)//g; s/(\\A|\\0)\\?\\?\\s/\\0/g;print;' | perl -pne 's/^\\0//g' | xargs -0 -n 50 --verbose trash -v "

@@ -1,0 +1,16 @@
+[diff]
+    tool = meld
+[difftool]
+    prompt = false
+    trustExitCode = true 
+[difftool "meld"]
+   cmd = meld --newtab "$LOCAL" "$REMOTE" 
+
+
+[merge]
+    tool = meld
+[mergetool] 
+    prompt = false 
+    trustExitCode = false 
+[mergetool]
+    cmd = meld "$LOCAL" "$BASE" "$REMOTE"  --output "$MERGED"
