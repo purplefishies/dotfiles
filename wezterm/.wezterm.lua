@@ -45,6 +45,7 @@ end
 -- don't open hyperlinks; normal selection still works from the mouse-down
 -- defaults below/inside wezterm.
 config.mouse_bindings = {
+  -- Ctrl+Shift+Left opens hyperlinks
   {
     event = { Up = { streak = 1, button = 'Left' } },
     mods = 'CTRL',
@@ -101,7 +102,7 @@ config.mouse_bindings = {
       local selection = window:get_selection_text_for_pane(pane)
 
       if selection and selection ~= '' then
-        window:perform_action(act.CopyTo('Clipboard'), pane)
+         window:perform_action(act.CopyTo('ClipboardAndPrimarySelection'), pane)
         window:perform_action(act.ClearSelection, pane)
       else
         window:perform_action(act.PasteFrom('Clipboard'), pane)
@@ -118,7 +119,7 @@ config.mouse_bindings = {
       local selection = window:get_selection_text_for_pane(pane)
 
       if selection and selection ~= '' then
-        window:perform_action(act.CopyTo('PrimarySelection'), pane)
+         window:perform_action(act.CopyTo('ClipboardAndPrimarySelection'), pane)
         window:perform_action(act.ClearSelection, pane)
       end
     end),
