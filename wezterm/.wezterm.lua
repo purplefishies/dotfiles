@@ -172,7 +172,9 @@ end
 -- Appearance
 -- ----------------------------
 config.font = wezterm.font('DejaVuSansM Nerd Font')
-config.font_size = 18 
+config.font_size = 18
+config.initial_cols = 160
+config.initial_rows = 40
 config.text_background_opacity = 1.0
 config.window_background_opacity = 0.95
 -- config.color_scheme = 'Builtin Solarized Dark'

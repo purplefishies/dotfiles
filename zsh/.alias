@@ -31,7 +31,6 @@ if [[ $(uname) =~ [Cc][Yy][Gg][Ww][Ii][Nn] ]]; then
 elif [[ $(uname) =~ Linux ]]; then
     alias ls='/usr/bin/mls --color=always --hyperlink=always'
     alias ll='ls -l --color=always --hyperlink=always'
-    alias less='bat'
     alias open='gio open'
     alias pbcopy='xclip -i -selection clipboard'
     alias pbpaste='xclip -selection clipboard -o'
