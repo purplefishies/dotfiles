@@ -19,8 +19,8 @@ alias hist="ls $HISTDIRECTORY | tac"
 alias ggrep='grep --color=always -d skip'
 alias ack='ack --color'
 alias ltn='function _ltn(){ if [ "$#" -eq 1 ]; then ls -ltr | tail -n "$1"; else ls -ltr "$2" | tail -n "$1"; fi; }; _ltn'    
-                                                                                                                                                           alias pless='python3 /home/jdamon/Scripts/lesspipe_pygmentize.py | less -R'
-
+alias pless='python3 /home/jdamon/Scripts/lesspipe_pygmentize.py | less -R'
+alias chunk='find . -type f -print0 | tar --null -T - -cf - | dd bs=400 skip=3 count=1 '
 
 if [[ $(uname) =~ [Cc][Yy][Gg][Ww][Ii][Nn] ]]; then
     alias ls='/usr/bin/mls --color=always --hyperlink=always'
