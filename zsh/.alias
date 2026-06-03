@@ -32,6 +32,6 @@ elif [[ $(uname) =~ Linux ]]; then
     alias ls='/usr/bin/mls --color=always --hyperlink=always'
     alias ll='ls -l --color=always --hyperlink=always'
     alias open='gio open'
-    alias pbcopy='xclip -i -selection clipboard'
-    alias pbpaste='xclip -selection clipboard -o'
+    alias pbcopy='xsel --clipboard --input'
+    alias pbpaste='xsel --clipboard --output'
 fi
