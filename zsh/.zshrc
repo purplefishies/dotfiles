@@ -72,6 +72,9 @@ alias ztheme='(){ export ZSH_THEME="$@" && source $ZSH/oh-my-zsh.sh }'
 HIST_STAMPS="yyyy-mm-dd"
 HISTFILE=$HOME/.zsh_history
 
+setopt BANG_HIST
+unsetopt HIST_VERIFY
+
 export HISTTIMEFORMAT="[%F %T] "
 
 setopt EXTENDED_HISTORY
