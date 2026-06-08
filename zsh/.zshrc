@@ -218,6 +218,7 @@ else
     fi
     export TERM=xterm-256color
     export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
+    export RPROMPT=''
     export PROMPT_COLOR=${PROMPT_COLOR:-147}
     if [[ -z "${PROMPT_STRING}" ]] ; then
         export PROMPT_STRING="%m"
