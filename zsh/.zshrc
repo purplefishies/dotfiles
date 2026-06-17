@@ -290,3 +290,17 @@ if [[ -f $HOME/.zshrc_work ]] ; then
     source $HOME/.zshrc_work
 fi
 
+
+# >>> juliaup initialize >>>
+
+# !! Contents within this block are managed by juliaup !!
+
+path=('/home/jdamon/.juliaup/bin' $path)
+export PATH
+# Tab completion for juliaup and julia channel selection
+[ -f "/home/jdamon/.julia/juliaup/completions/zsh.zsh" ] && source "/home/jdamon/.julia/juliaup/completions/zsh.zsh"
+
+# <<< juliaup initialize <<<
+export PATH="/home/jdamon/bin:$PATH"
+
+export WOKWI_CLI_TOKEN=JnU9NDY3MTAxODk4NzAxMTE1MzkzJm49SmltaStEYW1vbiZlPWpkYW1vbiU0MGdtYWlsLmNvbSZ4PTIwMjYwNzE3AIpsm2noqR0ywTF4_PqybhyLnu9qc_PrsLdOM8UByYQ7SfQ5MhPxazk6b0V_SiGCu6i9NWuU3YWjbOzp5p_PsjMUXjyI84MFQJqvXPW_PviaXU5JJ2WlJptJiUGSPnWc5aagzuXlyz_SU_SgOlgkF11nuGYuz3N3kmiRMPyvHV0krdzTV4i_SZxN_S1izBVaG4pPKGahO5Pe_PkVVgsXpfBe7dFwpxAgFSxtbB7bkYAmnT5PrsBqMyXtQUhGBs5uAP1qgX7tWNbhb41FY72rgcw_PGu7YVioxkjm49eZpE9aR9YQA9BeADXHwKGvtR_St7u6w8Zg4MlACnN3FTuPf8eKPbrKebdoPFs
