@@ -29,7 +29,7 @@ if [[ $(uname) =~ [Cc][Yy][Gg][Ww][Ii][Nn] ]]; then
     alias pbcopy=putclip
     alias pbpaste=getclip
 elif [[ $(uname) =~ Linux ]]; then
-    alias ls='/usr/bin/mls --color=always --hyperlink=always'
+    alias ls='/usr/bin/ls --color=always --hyperlink=always'
     alias ll='ls -l --color=always --hyperlink=always'
     alias open='gio open'
     alias pbcopy='xsel --clipboard --input'
