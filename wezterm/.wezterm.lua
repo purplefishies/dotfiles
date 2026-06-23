@@ -282,6 +282,11 @@ table.insert(config.hyperlink_rules, {
   format = 'emacs://$1:$2',
 }) 
 
+table.insert(config.hyperlink_rules, {
+                regex = [[(/(?:home|mnt|usr|opt|etc|tmp|workspace)/[^\s:]+)]],
+                format = 'emacs://$1',
+})
+
 
 
 return config
