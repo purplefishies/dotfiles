@@ -1,3 +1,4 @@
+# -*- mode: sh; sh-shell: zsh -*-
 alias lock="xscreensaver-command -lock"
 alias cd..='cd ..'
 alias l='ll' #
