@@ -7,7 +7,10 @@ export ZSH_DISABLE_COMPFIX=true
 export ZSH="$HOME/.oh-my-zsh"
 if [[ -f $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh   ]] ; then
 	source $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh                         
+
 fi
+
+export COMPLETION_WAITING_DOTS=true
 export XDG_CONFIG_HOME=$HOME/.config
 
 # Set name of the theme to load --- if set to "random", it will
