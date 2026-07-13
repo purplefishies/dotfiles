@@ -9,7 +9,6 @@ if [[ -f $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh   ]] ; then
 	source $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh                         
 
 fi
-
 export COMPLETION_WAITING_DOTS=true
 export XDG_CONFIG_HOME=$HOME/.config
 
