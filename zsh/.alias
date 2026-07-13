@@ -35,4 +35,8 @@ elif [[ $(uname) =~ Linux ]]; then
     alias open='gio open'
     alias pbcopy='xsel --clipboard --input'
     alias pbpaste='xsel --clipboard --output'
+    if (( ${plugins[(Ie)zshmarks]} )); then
+        alias cdb='jump' 
+        alias mark='bookmark'
+    fi      
 fi
