@@ -50,3 +50,5 @@
 
 [includeIf "gitdir:~/Projects/sparrow_bots/**"]
     path = ~/.gitconfig.botsu
+[safe]
+	directory = /home/jdamon/Projects/gnuradio
