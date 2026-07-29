@@ -2,7 +2,8 @@
     tool = meld
 [difftool]
     prompt = false
-    trustExitCode = true 
+    # Do not stop a multi-file difftool run on a comparison-result exit code.
+    trustExitCode = false
 [difftool "meld"]
    cmd = meld --newtab "$LOCAL" "$REMOTE" 
 
