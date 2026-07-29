@@ -1,0 +1,4 @@
+--wrap=never
+
+# Always use color
+--color=always
