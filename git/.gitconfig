@@ -52,3 +52,5 @@
     path = ~/.gitconfig.botsu
 [safe]
 	directory = /home/jdamon/Projects/gnuradio
+[alias]
+	ls = "!f() { git log --stat \"$@\" | bat --paging=always; }; f"
