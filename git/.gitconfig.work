@@ -1,0 +1,23 @@
+# GALT SW / current job config.
+# This is intentionally separate from Linux defaults so work repos use Meld
+# while normal Linux repos keep BCompare.
+
+[user]
+    name = Jimi Damon
+    email = jimi.damon@galt.aero
+
+[diff]
+    tool = meld
+
+[difftool]
+    prompt = false
+
+[difftool "meld"]
+    trustExitCode = true
+
+[merge]
+    tool = meld
+
+[mergetool "meld"]
+    trustExitCode = true
+    keepBackup = false

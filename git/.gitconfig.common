@@ -1,0 +1,125 @@
+# Common Git settings shared by Linux and Windows.
+# Identity and OS-specific tool settings live in separate include files.
+
+[color]
+    ui = true
+
+[color "branch"]
+    current = 227 reverse
+    local = white bold
+    remote = green
+
+[color "diff"]
+    meta = 210
+    frag = 45 bold
+    old = 197 strike
+    new = 29 italic
+    commit = 105
+    whitespace = red reverse
+
+[color "status"]
+    added = 227 bold
+    changed = 42
+    untracked = 23
+    branch = 125 bold italic
+
+[color "decorate"]
+    head = 227 bold
+    branch = 155 bold
+    remoteBranch = 209 bold
+    tag = 227 bold
+
+[core]
+    whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+    pager = delta
+    abbrev = 12
+
+[pretty]
+    fixes = Fixes: %h ("%s")
+
+[alias]
+        st = status
+        ci = commit
+        br = branch
+        co = checkout
+        df = diff
+        #trash = "!git status --porcelain -z | perl -ne 's/^([\\A\\0\\s]*M\s+[^\\0]+\\0)//g;s/(\\A|\\0)\\?\\?\\s/\\0/g;print;' | perl -pne 's/^\\0//g' | xargs -0 --verbose -I{} trash {}"
+        #trash = "!git status --porcelain -z | perl -ne 's/(\\A|\\0)\\?\\?\\s/\\0/g;print;' | perl -pne 's/^\\0//g' | xargs -0 --verbose -I{} trash {}"
+        trash = "!git status --porcelain -z | perl -ne 's/([\\A\\0\\s]*M\\s+[^\\0]+\\0)//g;s/(\\A|\\0)\\?\\?\\s/\\0/g;print;' | perl -pne 's/^\\0//g' | xargs -0 --verbose -I{} trash {}"
+
+        lg = log -p
+        glg = log --graph --oneline --decorate
+        week = log --after=\"one week ago\"  --pretty=format=\"The author of %Cred%h%Creset was %Cgreen%an%Creset, %ar%n%s%n\"
+        wl = log --after=\"last friday\"  --pretty=format:\"The author of %Cred%h%Creset was %Cgreen%an%Creset, %ar%n%s%n\"
+        llog = log --date=local --pretty=oneline
+        plog = log --pretty=format:\"%Cgreen%h%Creset %s\"
+        phlog = log --pretty=format:\"%Cgreen%h%Creset %Cred%ar%Creset %s\"
+        phulog = log --pretty=format:\"%C(114)%h%Creset %C(125)%<(20,mtrunc)%d %C(bold 110)%<(25,trunc)%ae %C(141)%ar%Creset %s\"
+        rmdfiles = log  --diff-filter=D --summary --stat
+	pl =  log --pretty=format:\"%C(114)%h%Creset %C(bold 110)%ae %C(141)%ar%Creset %s\"
+        untracked = ls-files --others --exclude-standard7
+        ls-untracked = ls-files --others --exclude-standard
+        suno = status -uno        
+        dt = difftool
+        # Explicit GUI choices; arguments such as a commit or --dir-diff can
+        # be appended. Plain `git dt` still uses the repo's configured default.
+	dt-bc = "!f() { if ! pgrep -x BCompare >/dev/null 2>&1; then nohup bcompare >/dev/null 2>&1 & i=0; while ! pgrep -x BCompare >/dev/null 2>&1; do i=$((i + 1)); if test \"$i\" -ge 50; then break; fi; sleep 0.1; done; sleep 0.5; fi; git difftool --no-prompt --no-trust-exit-code --tool=bc \"$@\"; }; f"
+        dt-meld = difftool --tool=meld
+        mt-bc = mergetool --tool=bc
+        mt-meld = mergetool --tool=meld
+        new-files  = ls-files -o  --exclude-standard
+        ls-files-u = ls-files --others --exclude-standard
+        common-ancestor = "!git merge-base $(git branch | grep '^*'  | perl -ane 'print $F[1]')"
+        ca = "!f() { git merge-base \"$1\" \"$2\"; } ; f "
+        log-since = "!f() { base=$(git common-ancestor \"$1\"); git phulog -n $(git log --pretty=oneline \"$base\"..HEAD | wc -l); }; f"
+        bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
+        bclean2 = "!f() { cur=$(git branch | grep '^*'  | perl -ane 'print $F[1]'); git branch --merged ${1-${cur}} | grep -v " ${1-${cur}}$" | xargs -r git branch -d; }; f"
+        sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
+        bsort = "!git for-each-ref --sort='-committerdate' --format='%(refname)%09%(committerdate)' refs/heads | sed -e 's-refs/heads/--'"
+        rtags = ls-remote --tags
+        rbranchsort="!f() { for i in foo bar;  do ; echo \"$i\"; done; }; f"
+#        logbranch = "for-each-ref --sort=-committerdate refs/heads/ --format=\"%1B[0;38;5;114m%(objectname:short) %1B[0;38;5;125m%(align:32)%(refname:short)%(end) %(color:110 bold)%(align:30,left)%(authoremail:trim)%(end) %1B[0;38;5;141m %(creatordate) %1B[m%(align:40,left)%(subject)%(end)' \""
+        logbranches = "for-each-ref --color=always --format='%(color:114)%(objectname:short) %(align:44,left)%(color:125)%(refname:strip=2)%(end) %(color:110 bold)%(align:30)%(authoremail:trim)%(end)   %(color:reset)%(subject)'  --sort=-committerdate refs/heads "
+        rlogbranches = "for-each-ref --color=always --format='%(color:114)%(objectname:short) %(align:40,left)%(color:125)%(refname:strip=3)%(end) %(color:110 bold)%(align:30)%(authoremail:trim)%(end)   %(color:141 bold)%(authordate:format:%c) %(color:reset)%(subject)'  --sort=-committerdate refs/remotes "
+        mytest = "for-each-ref --shell --format=\"a=blah%0aref=%(refname)\" refs/heads | while read entry ; do eval '$entry'; printf \"%s\t\t%s\n\" \"$a\" \"$ref\" ; done"
+        reattr = !sh -c "\"git stash save; rm .git/index; git checkout HEAD -- \\\"$(git rev-parse --show-toplevel)\\\"; git stash pop\""
+        log-emoji = "!git log --pretty=format:'%h %s' | python3 -c 'import sys, emoji; [print(emoji.emojize(line, language=\"alias\"), end=\"\") for line in sys.stdin]'"
+        ephulog = "!git log --pretty=format:\"%C(114)%h%Creset %C(125)%<(20,mtrunc)%d %C(bold 110)%<(25,trunc)%ae %C(141)%ar%Creset %s\" | python3 -c 'import sys, emoji; [print(emoji.emojize(line, language=\"alias\"), end=\"\") for line in sys.stdin]'"
+        stashcheckout = checkout stash@{0} --theirs . 
+#        diffs = "!git diff --color=always | delta --side-by-side --line-numbers"
+        diffs = "!git -c delta.side-by-side=true -c delta.line-numbers=true diff"
+        old = restore --source
+
+# mytest = "for-each-ref --count=1 --sort='-*authordate' \
+# --format='%(*refname)|%(*authorname)|%(*authoremail)|%(*subject)|%(*authordate)' 'refs/tags' --shell  \
+# while IFS='|' read refname authorname authoremail subject authordate \
+# do  \
+#     echo   \"Ref      : $refname\" \
+#     echo  \"From     : $authorname $authoremail\n\" \
+#     printf \"Subject  : FOO%.30s\\n\" \"$subject\" \
+#     echo   \"Date     : $authordate\" \
+# done"
+#%(authordate:format:%Y/%m/%d %I:%M %p)
+#38;5;29m
+#refname:short
+#git co \"${i}\" 2>/dev/null | grep -v -P \"(Your|git pull)\"; git phulog --decorate -n 1; done}; f"
+
+[filter "indent"]
+
+[rerere]
+    enabled = true
+
+[push]
+    default = matching
+
+[pager]
+    status = true
+
+[format]
+    signoff = true
+
+[log]
+    graphColors = 254,123,211,210,2,23,45,216,97,153,181,209,41,195,132,230,55
+
+[pull]
+    rebase = false

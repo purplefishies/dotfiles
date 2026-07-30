@@ -1,3 +1,4 @@
+# -*- mode: sh; sh-shell: zsh -*-
 alias lock="xscreensaver-command -lock"
 alias cd..='cd ..'
 alias l='ll' #
@@ -19,7 +20,7 @@ alias hist="ls $HISTDIRECTORY | tac"
 alias ggrep='grep --color=always -d skip'
 alias ack='ack --color'
 alias ltn='function _ltn(){ if [ "$#" -eq 1 ]; then ls -ltr | tail -n "$1"; else ls -ltr "$2" | tail -n "$1"; fi; }; _ltn'    
-alias pless='python3 /home/jdamon/Scripts/lesspipe_pygmentize.py | less -R'
+
 alias chunk='find . -type f -print0 | tar --null -T - -cf - | dd bs=400 skip=3 count=1 '
 
 if [[ $(uname) =~ [Cc][Yy][Gg][Ww][Ii][Nn] ]]; then
@@ -29,9 +30,14 @@ if [[ $(uname) =~ [Cc][Yy][Gg][Ww][Ii][Nn] ]]; then
     alias pbcopy=putclip
     alias pbpaste=getclip
 elif [[ $(uname) =~ Linux ]]; then
-    alias ls='/usr/bin/ls --color=always --hyperlink=always'
+    alias ls='ls --color=always --hyperlink=always'
     alias ll='ls -l --color=always --hyperlink=always'
+    alias less='bat --wrap=never '
     alias open='gio open'
     alias pbcopy='xsel --clipboard --input'
     alias pbpaste='xsel --clipboard --output'
+    if (( ${plugins[(Ie)zshmarks]} )); then
+        alias cdb='jump' 
+        alias mark='bookmark'
+    fi      
 fi

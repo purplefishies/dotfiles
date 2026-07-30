@@ -1,0 +1,34 @@
+# Linux defaults. Beyond Compare is the default, but both Beyond Compare and
+# Meld are configured so either can be selected per invocation.
+
+[credential]
+    helper = cache --timeout=3600
+
+[core]
+    filemode = true
+    autocrlf = false
+
+[diff]
+    # Git's version-neutral "bc" driver supports Beyond Compare 5.
+    tool = bc
+
+[difftool]
+    prompt = false
+    # GUI comparison tools can use nonzero statuses to describe differences.
+    # Ignoring those statuses lets Git continue through every changed file.
+    trustExitCode = false
+
+[merge]
+    tool = bc
+
+[mergetool "bc"]
+    trustExitCode = true
+    keepBackup = false
+
+[difftool "meld"]
+    trustExitCode = true
+
+[mergetool "meld"]
+    # Meld returns a useful exit status when invoked by Git.
+    trustExitCode = true
+    keepBackup = false

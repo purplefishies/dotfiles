@@ -7,3 +7,9 @@
 [submodule "ohmyzsh-custom/.oh-my-zsh/custom/plugins/git-prompt"]
 	path = ohmyzsh-custom/.oh-my-zsh/custom/plugins/git-prompt
 	url = https://github.com/woefe/git-prompt.zsh.git
+[submodule "bat/.config/bat/syntaxes/sublime-ledger-syntax"]
+	path = bat/.config/bat/syntaxes/sublime-ledger-syntax
+	url = https://github.com/moeffju/sublime-ledger-syntax.git
+[submodule "bat/.config/bat/syntaxes/tmux-sublime"]
+	path = bat/.config/bat/syntaxes/tmux-sublime
+	url = https://github.com/Edditoria/tmux-sublime.git
