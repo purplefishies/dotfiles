@@ -1,3 +1,4 @@
+# -*- mode: sh; sh-shell: zsh -*-
 alias lock="xscreensaver-command -lock"
 alias cd..='cd ..'
 alias l='ll' #
@@ -31,7 +32,12 @@ if [[ $(uname) =~ [Cc][Yy][Gg][Ww][Ii][Nn] ]]; then
 elif [[ $(uname) =~ Linux ]]; then
     alias ls='/usr/bin/mls --color=always --hyperlink=always'
     alias ll='ls -l --color=always --hyperlink=always'
+    alias less='bat --wrap=never '
     alias open='gio open'
-    alias pbcopy='xclip -i -selection clipboard'
-    alias pbpaste='xclip -selection clipboard -o'
+    alias pbcopy='xsel --clipboard --input'
+    alias pbpaste='xsel --clipboard --output'
+    if (( ${plugins[(Ie)zshmarks]} )); then
+        alias cdb='jump' 
+        alias mark='bookmark'
+    fi      
 fi

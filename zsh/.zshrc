@@ -7,7 +7,9 @@ export ZSH_DISABLE_COMPFIX=true
 export ZSH="$HOME/.oh-my-zsh"
 if [[ -f $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh   ]] ; then
 	source $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh                         
+
 fi
+export COMPLETION_WAITING_DOTS=true
 export XDG_CONFIG_HOME=$HOME/.config
 
 # Set name of the theme to load --- if set to "random", it will
@@ -72,6 +74,9 @@ alias ztheme='(){ export ZSH_THEME="$@" && source $ZSH/oh-my-zsh.sh }'
 HIST_STAMPS="yyyy-mm-dd"
 HISTFILE=$HOME/.zsh_history
 
+setopt BANG_HIST
+unsetopt HIST_VERIFY
+
 export HISTTIMEFORMAT="[%F %T] "
 
 setopt EXTENDED_HISTORY
@@ -118,7 +123,7 @@ if [[ "${GIT_PROMPT_MODE}" == "OLD" ]] ; then
 else 
     if [[ -n $(command -v fzf) ]] ; then
         echo "fzf found, loading oh-my-zsh fzf plugin"
-        plugins=(git virtualenv fzf zshmarks zsh-autosuggestions docker ssh)
+        plugins=(git virtualenv fzf zshmarks zsh-autosuggestions docker ssh  zoxide git-prompt zsh-syntax-highlighting ) #  
     else
         echo "no fzf was found in the path"
         plugins=(git virtualenv zshmarks zsh-autosuggestions docker ssh)
@@ -215,6 +220,7 @@ else
     fi
     export TERM=xterm-256color
     export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
+    export RPROMPT=''
     export PROMPT_COLOR=${PROMPT_COLOR:-147}
     if [[ -z "${PROMPT_STRING}" ]] ; then
         export PROMPT_STRING="%m"
@@ -286,3 +292,23 @@ if [[ -f $HOME/.zshrc_work ]] ; then
     source $HOME/.zshrc_work
 fi
 
+
+# >>> juliaup initialize >>>
+
+# !! Contents within this block are managed by juliaup !!
+
+path=('/home/jdamon/.juliaup/bin' $path)
+export PATH
+# Tab completion for juliaup and julia channel selection
+[ -f "/home/jdamon/.julia/juliaup/completions/zsh.zsh" ] && source "/home/jdamon/.julia/juliaup/completions/zsh.zsh"
+
+# <<< juliaup initialize <<<
+export PATH="/home/jdamon/bin:$PATH"
+
+export DISABLE_AUTO_TITLE="true"
+
+
+export WOKWI_CLI_TOKEN=JnU9NDY3MTAxODk4NzAxMTE1MzkzJm49SmltaStEYW1vbiZlPWpkYW1vbiU0MGdtYWlsLmNvbSZ4PTIwMjYwNzE3AIpsm2noqR0ywTF4_PqybhyLnu9qc_PrsLdOM8UByYQ7SfQ5MhPxazk6b0V_SiGCu6i9NWuU3YWjbOzp5p_PsjMUXjyI84MFQJqvXPW_PviaXU5JJ2WlJptJiUGSPnWc5aagzuXlyz_SU_SgOlgkF11nuGYuz3N3kmiRMPyvHV0krdzTV4i_SZxN_S1izBVaG4pPKGahO5Pe_PkVVgsXpfBe7dFwpxAgFSxtbB7bkYAmnT5PrsBqMyXtQUhGBs5uAP1qgX7tWNbhb41FY72rgcw_PGu7YVioxkjm49eZpE9aR9YQA9BeADXHwKGvtR_St7u6w8Zg4MlACnN3FTuPf8eKPbrKebdoPFs
+
+
+compdef '_arguments "*:directory:_directories"' tree

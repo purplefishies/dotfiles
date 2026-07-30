@@ -14,6 +14,9 @@ config.default_prog = {
 }
 
 
+config.enable_scroll_bar = true
+
+
 -- Determine if the foreground process is a shell
 local function is_shell(foreground_process_name)
    local shell_names = { 'bash', 'zsh', 'fish', 'sh', 'ksh', 'dash' }
@@ -172,13 +175,140 @@ end
 -- Appearance
 -- ----------------------------
 config.font = wezterm.font('DejaVuSansM Nerd Font')
-config.font_size = 18 
+config.font_size = 18
+config.initial_cols = 160
+config.initial_rows = 40
 config.text_background_opacity = 1.0
 config.window_background_opacity = 0.95
 -- config.color_scheme = 'Builtin Solarized Dark'
 config.color_scheme = "Bamboo"
+--config.color_scheme = "Catppuccin Mocha"
 config.enable_tab_bar = true
 config.hide_tab_bar_if_only_one_tab = true
+
+config.colors = {
+   cursor_bg = "teal",
+   cursor_fg = "#000000",
+   cursor_border = "teal",
+
+   selection_bg = 'mediumseagreen',
+   --selection_bg = "#4d7cff",
+   --selection_bg = '#fefefe'
+   selection_fg = "#ffffff",
+   scrollbar_thumb = 'seagreen',
+
+
+   tab_bar = {
+      background = "#10151f",
+
+      active_tab = {
+         bg_color = "MediumSeaGreen",
+         fg_color = "#ffffff",
+         intensity = "Bold",
+         underline = "None",
+         italic = false,
+         strikethrough = false,
+      },
+
+      inactive_tab = {
+         bg_color = "#24553c",
+         fg_color = "#c8c8c8",
+      },
+
+      inactive_tab_hover = {
+         bg_color = "#3b4d66",
+         fg_color = "#ffffff",
+         italic = false,
+      },
+
+      new_tab = {
+         bg_color = "#222833",
+         fg_color = "#bfbfbf",
+      },
+
+      new_tab_hover = {
+         bg_color = "#4f7cff",
+         fg_color = "#ffffff",
+         italic = false,
+      },
+   },
+}
+
+-- config.colors = {
+--   tab_bar = {
+--     -- The color of the strip that goes along the top of the window
+--     -- (does not apply when fancy tab bar is in use)
+--     background = '#0b0022',
+
+--     -- The active tab is the one that has focus in the window
+--     active_tab = {
+--       -- The color of the background area for the tab
+--       bg_color = '#2b2042',
+--       -- The color of the text for the tab
+--       fg_color = '#c0c0c0',
+
+--       -- Specify whether you want "Half", "Normal" or "Bold" intensity for the
+--       -- label shown for this tab.
+--       -- The default is "Normal"
+--       intensity = 'Normal',
+
+--       -- Specify whether you want "None", "Single" or "Double" underline for
+--       -- label shown for this tab.
+--       -- The default is "None"
+--       underline = 'None',
+
+--       -- Specify whether you want the text to be italic (true) or not (false)
+--       -- for this tab.  The default is false.
+--       italic = false,
+
+--       -- Specify whether you want the text to be rendered with strikethrough (true)
+--       -- or not for this tab.  The default is false.
+--       strikethrough = false,
+--     },
+
+--     -- Inactive tabs are the tabs that do not have focus
+--     inactive_tab = {
+--       bg_color = '#1b1032',
+--       fg_color = '#808080',
+
+--       -- The same options that were listed under the `active_tab` section above
+--       -- can also be used for `inactive_tab`.
+--     },
+
+--     -- You can configure some alternate styling when the mouse pointer
+--     -- moves over inactive tabs
+--     inactive_tab_hover = {
+--       bg_color = '#3b3052',
+--       fg_color = '#909090',
+--       italic = true,
+
+--       -- The same options that were listed under the `active_tab` section above
+--       -- can also be used for `inactive_tab_hover`.
+--     },
+
+--     -- The new tab button that let you create new tabs
+--     new_tab = {
+--       bg_color = '#1b1032',
+--       fg_color = '#808080',
+
+--       -- The same options that were listed under the `active_tab` section above
+--       -- can also be used for `new_tab`.
+--     },
+
+--     -- You can configure some alternate styling when the mouse pointer
+--     -- moves over the new tab button
+--     new_tab_hover = {
+--       bg_color = '#3b3052',
+--       fg_color = '#909090',
+--       italic = true
+
+--       -- The same options that were listed under the `active_tab` section above
+--       -- can also be used for `new_tab_hover`.
+--     },
+--   },
+-- }
+
+
 config.audible_bell = 'Disabled'
 config.selection_word_boundary = ' |↑\t\n{}[]()"\'`'
 
@@ -190,11 +320,11 @@ config.set_environment_variables = {
   CHERE_INVOKING = '1',
 }
 
--- ----------------------------
+----------------------------
 -- Keybindings
--- ----------------------------
+----------------------------
 config.keys = {
-    { key = 'Enter', mods = 'ALT', action = wezterm.action.DisableDefaultAssignment, },
+    { key = 'Enter', mods = 'ALT', action = wezterm.action.DisableDefaultAssignment },
     { key = '_'    , mods = 'CTRL|SHIFT', action = wezterm.action.DisableDefaultAssignment },
     { key = 'Enter', mods = 'ALT|SHIFT', action = wezterm.action.ToggleFullScreen, },
     { key = 'L', mods = 'CTRL|SHIFT', action = wezterm.action.ShowLauncher },
@@ -202,11 +332,7 @@ config.keys = {
     { key = 'R', mods = 'CTRL|SHIFT', action = wezterm.action.ReloadConfiguration },
     { key = 'LeftArrow', mods = 'CTRL|SHIFT' , action = wezterm.action.ActivateTabRelative(-1) },
     { key = 'RightArrow', mods = 'CTRL|SHIFT' , action = wezterm.action.ActivateTabRelative(1) },
- {
-    key = 'n',
-    mods = 'SHIFT|CTRL',
-    action = wezterm.action.ToggleFullScreen,
-  },
+    { key = 'n',       mods = 'SHIFT|CTRL',    action = wezterm.action.ToggleFullScreen }
 }
 
 -- ----------------------------
@@ -279,6 +405,11 @@ table.insert(config.hyperlink_rules, {
   regex = [[(/[^:\s]+):(\d+):?]],
   format = 'emacs://$1:$2',
 }) 
+
+table.insert(config.hyperlink_rules, {
+                regex = [[(/(?:home|mnt|usr|opt|etc|tmp|workspace)/[^\s:]+)]],
+                format = 'emacs://$1',
+})
 
 
 

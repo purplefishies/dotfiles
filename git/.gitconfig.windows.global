@@ -1,0 +1,18 @@
+# Windows global ~/.gitconfig or %USERPROFILE%\.gitconfig
+# If these files are in your Windows home directory, this top-level config
+# loads common settings, then Windows-specific BCompare 4 settings.
+
+[include]
+    path = ~/.gitconfig.common
+    path = ~/.gitconfig.windows
+
+# Personal repos
+[includeIf "gitdir/i:C:/Users/jdamon/Projects/"]
+    path = ~/.gitconfig.personal
+
+# Current job / GALT SW repos. Edit path if your checkout lives elsewhere.
+[includeIf "gitdir/i:C:/Users/jdamon/work/galt/"]
+    path = ~/.gitconfig.work
+
+[includeIf "gitdir/i:C:/Users/jdamon/Projects/GALT/"]
+    path = ~/.gitconfig.work

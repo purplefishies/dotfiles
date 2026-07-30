@@ -1,0 +1,17 @@
+[diff]
+    tool = meld
+[difftool]
+    prompt = false
+    # Do not stop a multi-file difftool run on a comparison-result exit code.
+    trustExitCode = false
+[difftool "meld"]
+   cmd = meld --newtab "$LOCAL" "$REMOTE" 
+
+
+[merge]
+    tool = meld
+[mergetool] 
+    prompt = false 
+    trustExitCode = false 
+[mergetool]
+    cmd = meld "$LOCAL" "$BASE" "$REMOTE"  --output "$MERGED"

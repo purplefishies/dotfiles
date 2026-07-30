@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Emacs URI Handler
+Exec=/home/jdamon/.local/bin/open-emacs-uri %u
+Type=Application
+Terminal=false
+MimeType=x-scheme-handler/emacs;
+Categories=Utility;TextEditor;
+NoDisplay=true
