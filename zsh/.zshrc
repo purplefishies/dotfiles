@@ -88,9 +88,11 @@ setopt HIST_NO_FUNCTIONS
 setopt nonomatch
 setopt no_hist_verify
 
-export HISTFILESIZE=1000000000
+# Zsh keeps HISTSIZE entries in memory and writes SAVEHIST entries to HISTFILE.
+# Set both before Oh My Zsh loads so its lower defaults do not take effect.
+HISTSIZE=1000000000
+SAVEHIST=1000000000
 export HISTCONTROL=ignorespace
-export HISTSIZE=1000000000
 export HISTORY_IGNORE="ls*|ll*|more *|fortune|lless *|pwd|history|history *|source .bashrc|clear_last_history|tmux *attach|reboot|restart|sudo*reboot|ssh"
 
 export MODULEPATH=$HOME/Modules
