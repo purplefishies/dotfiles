@@ -120,15 +120,34 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 #export GIT_PROMPT_MODE="OLD"
 export GIT_PROMPT_MODE="NEW"
 
+container_plugin_for_os() {
+    local ID="" ID_LIKE=""
+
+    [[ -r /etc/os-release ]] && source /etc/os-release
+
+    case "${ID:l}" in
+        ubuntu)
+            print -r -- docker
+            ;;
+        almalinux|rhel|redhat)
+            print -r -- podman
+            ;;
+        *)
+            print -r -- podman
+            ;;
+    esac
+}
+
+container_plugin="$(container_plugin_for_os)"
+unset -f container_plugin_for_os
+
 if [[ "${GIT_PROMPT_MODE}" == "OLD" ]] ; then
     plugins=(git git-prompt virtualenv zshmarks)
 else 
     if [[ -n $(command -v fzf) ]] ; then
-        echo "fzf found, loading oh-my-zsh fzf plugin"
-        plugins=(git virtualenv fzf zshmarks zsh-autosuggestions docker ssh  zoxide git-prompt zsh-syntax-highlighting ) #  
+        plugins=(git virtualenv fzf zshmarks zsh-autosuggestions "$container_plugin" ssh zoxide git-prompt zsh-syntax-highlighting)
     else
-        echo "no fzf was found in the path"
-        plugins=(git virtualenv zshmarks zsh-autosuggestions docker ssh)
+        plugins=(git virtualenv zshmarks zsh-autosuggestions "$container_plugin" ssh)
     fi
 fi
 
@@ -315,14 +334,34 @@ export WOKWI_CLI_TOKEN=JnU9NDY3MTAxODk4NzAxMTE1MzkzJm49SmltaStEYW1vbiZlPWpkYW1vb
 
 compdef '_arguments "*:directory:_directories"' tree
 
+# Load RVM before running Ruby-backed startup commands such as lolcat.
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
 
 # Show one random quote in Tux at the start of each interactive shell.
 if [[ -o interactive && -r "$HOME/Quotes.txt" ]] \
   && (( $+commands[awk] && $+commands[cowsay] )) \
   && [[ -x $HOME/.local/bin/lolcat ]]; then
-    awk 'BEGIN { RS = "\n%\n"; srand() }
-         NF { quote[++count] = $0 }
-         END { if (count) print quote[1 + int(rand() * count)] }' \
+    awk '
+      function consider_quote() {
+          # Ignore padding around each quote, then select one uniformly.
+          while (current ~ /^[[:space:]]*\n/) sub(/^[[:space:]]*\n/, "", current)
+          while (current ~ /\n[[:space:]]*$/) sub(/\n[[:space:]]*$/, "", current)
+          if (current ~ /[^[:space:]]/) {
+              ++count
+              if (int(rand() * count) == 0) selected = current
+          }
+          current = ""
+      }
+
+      BEGIN { srand() }
+      /^[[:space:]]*%[[:space:]]*$/ { consider_quote(); next }
+      { current = current (current == "" ? "" : "\n") $0 }
+      END {
+          consider_quote()
+          if (count) print selected
+      }
+    ' \
       "$HOME/Quotes.txt" \
       | cowsay -f tux \
       | lolcat --truecolor
