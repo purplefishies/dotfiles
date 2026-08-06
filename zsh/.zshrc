@@ -325,5 +325,5 @@ if [[ -o interactive && -r "$HOME/Quotes.txt" ]] \
          END { if (count) print quote[1 + int(rand() * count)] }' \
       "$HOME/Quotes.txt" \
       | cowsay -f tux \
-      | $HOME/.local/bin/lolcat --truecolor
+      | lolcat --truecolor
 fi
