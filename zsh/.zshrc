@@ -314,3 +314,16 @@ export WOKWI_CLI_TOKEN=JnU9NDY3MTAxODk4NzAxMTE1MzkzJm49SmltaStEYW1vbiZlPWpkYW1vb
 
 
 compdef '_arguments "*:directory:_directories"' tree
+
+
+# Show one random quote in Tux at the start of each interactive shell.
+if [[ -o interactive && -r "$HOME/Quotes.txt" ]] \
+  && (( $+commands[awk] && $+commands[cowsay] )) \
+  && [[ -x $HOME/.local/bin/lolcat ]]; then
+    awk 'BEGIN { RS = "\n%\n"; srand() }
+         NF { quote[++count] = $0 }
+         END { if (count) print quote[1 + int(rand() * count)] }' \
+      "$HOME/Quotes.txt" \
+      | cowsay -f tux \
+      | $HOME/.local/bin/lolcat --truecolor
+fi
