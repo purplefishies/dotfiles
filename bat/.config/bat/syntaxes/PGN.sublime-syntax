@@ -1,0 +1,60 @@
+%YAML 1.2
+---
+name: PGN
+file_extensions:
+  - pgn
+scope: source.pgn
+
+contexts:
+  main:
+    # PGN tag pairs:
+    # [Event "F/S Return Match"]
+    - match: '^\s*(\[)([A-Za-z0-9_]+)(\s+)("(?:\\.|[^"])*")(\])'
+      captures:
+        1: punctuation.section.brackets.begin.pgn
+        2: entity.name.tag.pgn
+        3: text.whitespace
+        4: string.quoted.double.pgn
+        5: punctuation.section.brackets.end.pgn
+
+    # Brace comments
+    - match: '\{'
+      scope: punctuation.definition.comment.begin.pgn
+      push:
+        - meta_scope: comment.block.pgn
+        - match: '\}'
+          scope: punctuation.definition.comment.end.pgn
+          pop: true
+
+    # Semicolon comments
+    - match: ';.*$'
+      scope: comment.line.semicolon.pgn
+
+    # Numeric Annotation Glyphs: $1, $14, etc.
+    - match: '\$\d+'
+      scope: constant.numeric.annotation.pgn
+
+    # Common symbolic annotations
+    - match: '(?<!\S)(?:!!|\?\?|!\?|\?!|!|\?)(?!\S)'
+      scope: keyword.operator.annotation.pgn
+
+    # Move numbers: 1. 23. 23...
+    - match: '\b\d+\.(?:\.\.)?'
+      scope: constant.numeric.move-number.pgn
+
+    # Castling
+    - match: '\b(?:O-O-O|O-O|0-0-0|0-0)(?:[+#])?'
+      scope: entity.name.function.castling.pgn
+
+    # SAN moves:
+    # e4, Nf3, Rxe8+, exd8=Q#, etc.
+    - match: '\b(?:[KQRBN])?(?:[a-h1-8]{0,2})?x?[a-h][1-8](?:=[QRBN])?[+#]?\b'
+      scope: variable.function.move.pgn
+
+    # Game results
+    - match: '(?<!\S)(?:1-0|0-1|1/2-1/2|\*)(?!\S)'
+      scope: constant.language.result.pgn
+
+    # Variations
+    - match: '[()]'
+      scope: punctuation.section.parens.pgn
