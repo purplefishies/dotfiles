@@ -320,9 +320,17 @@ compdef '_arguments "*:directory:_directories"' tree
 if [[ -o interactive && -r "$HOME/Quotes.txt" ]] \
   && (( $+commands[awk] && $+commands[cowsay] )) \
   && [[ -x $HOME/.local/bin/lolcat ]]; then
-    awk 'BEGIN { RS = "\n%\n"; srand() }
-         NF { quote[++count] = $0 }
-         END { if (count) print quote[1 + int(rand() * count)] }' \
+    awk 'function keep_quote() {
+           if (current ~ /[^[:space:]]/) {
+             ++count
+             if (rand() < 1 / count) chosen = current
+           }
+           current = ""
+         }
+         BEGIN { srand() }
+         /^[[:space:]]*%[[:space:]]*$/ { keep_quote(); next }
+         { current = current (current == "" ? "" : ORS) $0 }
+         END { keep_quote(); if (count) print chosen }' \
       "$HOME/Quotes.txt" \
       | cowsay -f tux \
       | $HOME/.local/bin/lolcat --truecolor
