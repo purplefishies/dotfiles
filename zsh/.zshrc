@@ -1,3 +1,13 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
+
+# Powerlevel10k is opt-in. Its instant-prompt cache must not be loaded here,
+# because the default theme below is the custom "dst" prompt.
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -327,18 +337,23 @@ export PATH
 export PATH="/home/jdamon/bin:$PATH"
 
 export DISABLE_AUTO_TITLE="true"
+# ZSH_THEME="dst". Repeated calls simply reload the existing P10k prompt.
+enable-p10k() {
+    local p10k_theme="$ZSH/custom/themes/powerlevel10k/powerlevel10k.zsh-theme"
 
+    if [[ ! -r "$p10k_theme" ]]; then
+        print -u2 -- "Powerlevel10k theme not found: $p10k_theme"
+        return 1
+    fi
 
-export WOKWI_CLI_TOKEN=JnU9NDY3MTAxODk4NzAxMTE1MzkzJm49SmltaStEYW1vbiZlPWpkYW1vbiU0MGdtYWlsLmNvbSZ4PTIwMjYwNzE3AIpsm2noqR0ywTF4_PqybhyLnu9qc_PrsLdOM8UByYQ7SfQ5MhPxazk6b0V_SiGCu6i9NWuU3YWjbOzp5p_PsjMUXjyI84MFQJqvXPW_PviaXU5JJ2WlJptJiUGSPnWc5aagzuXlyz_SU_SgOlgkF11nuGYuz3N3kmiRMPyvHV0krdzTV4i_SZxN_S1izBVaG4pPKGahO5Pe_PkVVgsXpfBe7dFwpxAgFSxtbB7bkYAmnT5PrsBqMyXtQUhGBs5uAP1qgX7tWNbhb41FY72rgcw_PGu7YVioxkjm49eZpE9aR9YQA9BeADXHwKGvtR_St7u6w8Zg4MlACnN3FTuPf8eKPbrKebdoPFs
+    if (( $+functions[p10k] )); then
+        p10k reload
+        return
+    fi
 
-
-compdef '_arguments "*:directory:_directories"' tree
-
-# Load RVM before running Ruby-backed startup commands such as lolcat.
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
-
-
-# Show one random quote in Tux at the start of each interactive shell.
+    source "$p10k_theme"
+    [[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
+}
 if [[ -o interactive && -r "$HOME/Quotes.txt" ]] \
   && (( $+commands[awk] && $+commands[cowsay] )) \
   && [[ -x $HOME/.local/bin/lolcat ]]; then
@@ -366,3 +381,6 @@ if [[ -o interactive && -r "$HOME/Quotes.txt" ]] \
       | cowsay -f tux \
       | $HOME/.local/bin/lolcat --truecolor
 fi
+
+# or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

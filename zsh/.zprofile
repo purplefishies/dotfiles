@@ -87,6 +87,7 @@ elif [[ $(uname) == *Linux* ]] ; then
                 esac
                 case $HOST in
                     nice)
+                        export PATH=$PATH:${HOME}/go/bin
                         export PGN_GAMES=/media/jdamon/NAS/Chess/PGNGames
                         ;;
                     mrroboto)
@@ -114,7 +115,7 @@ elif [[ $(uname) == *Linux* ]] ; then
             *)
         esac
     fi
-    export PATH="/usr/bin:/usr/sbin:/usr/local/bin:/opt/local/bin:/usr/local/cuda/bin:/usr/games"
+    export PATH="$PATH:/usr/bin:/usr/sbin:/usr/local/bin:/opt/local/bin:/usr/local/cuda/bin:/usr/games"
     export PATH="$PATH:/mnt/c/Users/jdamon/AppData/Local/Programs/Microsoft VS Code/bin"
     export PATH="$PATH:$HOME/vcpkg"
     export PATH="$PATH:$HOME/Scripts"
