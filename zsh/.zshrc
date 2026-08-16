@@ -157,7 +157,7 @@ else
     if [[ -n $(command -v fzf) ]] ; then
         plugins=(git virtualenv fzf zshmarks zsh-autosuggestions "$container_plugin" ssh zoxide git-prompt zsh-syntax-highlighting)
     else
-        plugins=(git virtualenv zshmarks zsh-autosuggestions "$container_plugin" ssh)
+        plugins=(git virtualenv zshmarks zsh-autosuggestions "$container_plugin" ssh zoxide git-prompt zsh-syntax-highlighting )
     fi
 fi
 
@@ -384,3 +384,5 @@ fi
 
 # or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"

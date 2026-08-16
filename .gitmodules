@@ -7,6 +7,12 @@
 [submodule "ohmyzsh-custom/.oh-my-zsh/custom/plugins/git-prompt"]
 	path = ohmyzsh-custom/.oh-my-zsh/custom/plugins/git-prompt
 	url = https://github.com/woefe/git-prompt.zsh.git
+[submodule "ohmyzsh-custom/.oh-my-zsh/custom/plugins/zoxide"]
+	path = ohmyzsh-custom/.oh-my-zsh/custom/plugins/zoxide
+	url = https://github.com/ajeetdsouza/zoxide.git
+[submodule "ohmyzsh-custom/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
+	path = ohmyzsh-custom/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
 [submodule "bat/.config/bat/syntaxes/sublime-ledger-syntax"]
 	path = bat/.config/bat/syntaxes/sublime-ledger-syntax
 	url = https://github.com/moeffju/sublime-ledger-syntax.git
