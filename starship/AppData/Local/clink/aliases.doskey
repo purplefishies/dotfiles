@@ -1,0 +1,8 @@
+ll=ls --color=auto -al 
+ls=ls --color=auto 
+gs=git status $*
+gl=git log --oneline --graph $*
+..=cd ..
+...=cd ..\..
+c=cls
+mkcd=mkdir "$1" $T cd /d "$1"
