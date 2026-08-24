@@ -48,6 +48,24 @@ end
 -- don't open hyperlinks; normal selection still works from the mouse-down
 -- defaults below/inside wezterm.
 config.mouse_bindings = {
+   {
+      event = { Down = { streak = 1, button = 'Middle' } },
+      mods = 'NONE',
+      action = act.Nop,
+   },
+   {
+      event = { Up = { streak = 1, button = 'Middle' } },
+      mods = 'NONE',
+      action = wezterm.action_callback(function(window, pane)
+            local has_selection = window:get_selection_text_for_pane(pane) ~= ""
+            if has_selection then
+               window:perform_action(act.CopyTo("ClipboardAndPrimarySelection"), pane)
+               window:perform_action(act.ClearSelection, pane)
+            else
+               window:perform_action(act({ PasteFrom = "Clipboard" }), pane)
+            end
+      end),
+   },
   -- Ctrl+Shift+Left opens hyperlinks
   {
     event = { Up = { streak = 1, button = 'Left' } },
@@ -88,13 +106,6 @@ config.mouse_bindings = {
     action = act.Nop,
   },
 
-  -- Middle click pastes from the clipboard.
-  {
-    event = { Down = { streak = 1, button = 'Middle' } },
-    mods = 'NONE',
-    action = act.PasteFrom 'Clipboard',
-  },
-
   -- Single right click:
   -- If text selected -> copy to clipboard
   -- Else -> paste
@@ -102,31 +113,30 @@ config.mouse_bindings = {
     event = { Down = { streak = 1, button = 'Right' } },
     mods = 'NONE',
     action = wezterm.action_callback(function(window, pane)
-      local selection = window:get_selection_text_for_pane(pane)
-
-      if selection and selection ~= '' then
-         window:perform_action(act.CopyTo('ClipboardAndPrimarySelection'), pane)
-        window:perform_action(act.ClearSelection, pane)
-      else
-        window:perform_action(act.PasteFrom('Clipboard'), pane)
-      end
+          local has_selection = window:get_selection_text_for_pane(pane) ~= ""
+          if has_selection then      
+             window:perform_action(act.CopyTo('ClipboardAndPrimarySelection'), pane)
+             window:perform_action(act.ClearSelection, pane)      
+          else 
+             window:perform_action(act({ PasteFrom = "Clipboard" }), pane)    
+             -- window:perform_action(act.ClearSelection, pane)      
+          end
     end),
   },
 
   -- Double right click:
   -- Copy selected text to PRIMARY selection buffer
-  {
-    event = { Down = { streak = 2, button = 'Right' } },
-    mods = 'NONE',
-    action = wezterm.action_callback(function(window, pane)
-      local selection = window:get_selection_text_for_pane(pane)
-
-      if selection and selection ~= '' then
-         window:perform_action(act.CopyTo('ClipboardAndPrimarySelection'), pane)
-        window:perform_action(act.ClearSelection, pane)
-      end
-    end),
-  },
+  -- {
+  --   event = { Down = { streak = 2, button = 'Right' } },
+  --   mods = 'NONE',
+  --   action = wezterm.action_callback(function(window, pane)
+  --     local selection = window:get_selection_text_for_pane(pane)
+  --     if selection and selection ~= '' then
+  --        window:perform_action(act.CopyTo('ClipboardAndPrimarySelection'), pane)
+  --       window:perform_action(act.ClearSelection, pane)
+  --     end
+  --   end),
+  -- },
 }
 
 -- ----------------------------
