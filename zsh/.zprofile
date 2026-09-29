@@ -100,10 +100,21 @@ elif [[ $(uname) == *Linux* ]] ; then
                 export PATH="$HOME/.local/bin:$PATH"                # Needed for pygmentize
 		;;
             22.04*) 
-                export DISTRO_NAME="ubuntu22" 
-                export PROMPT_COLOR=29
+		case $(hostname) in
+		    jdamon-virtual-machine)
+			export PROMPT_COLOR=49
+			export PROMPT_STRING="vm-kubuntu"
+		    ;;
+		    *)
+			export PROMPT_COLOR=29
+			export PROMPT_STRING="ros-dev-%m"
+			;;
+		esac
+		    
+
+		export DISTRO_NAME="ubuntu22" 
                 export PYGMENTIZE_TERMINAL=terminal16m
-                export PROMPT_STRING="ros-dev-%m"
+
                 ;;
             20.04*) 
                 export DISTRO_NAME="ubuntu20" 

@@ -273,16 +273,32 @@ ZSH_THEME_GIT_PROMPT_PREFIX="("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")"
 ZSH_THEME_GIT_PROMPT_SEPARATOR="|"
 ZSH_THEME_GIT_PROMPT_BRANCH="%{%F{35}%}"
-ZSH_THEME_GIT_PROMPT_STAGED="%{$fg[red]%}%{●%G%}"
+ZSH_THEME_GIT_PROMPT_STAGED="%{%F{227}%}%{●%G%}"
 ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{✖%G%}"
-ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[blue]%}%{✚%G%}"
+ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[green]%}%{✚%G%}"
+ZSH_THEME_GIT_PROMPT_UNSTAGED="%{%F{#0e9662}%}✚"
 ZSH_THEME_GIT_PROMPT_DELETED="%{$fg[blue]%}%{-%G%}"
 ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%G%}"
 ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
-ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}%{…%G%}"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{%F{cyan}%}%{…%G%}"
 ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[yellow]%}%{⚑%G%}"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{✔%G%}"
 ZSH_THEME_GIT_PROMPT_UPSTREAM_SEPARATOR="->"
+
+#source $HOME/completion.zsh
+#source $HOME/key-bindings.zsh
+#bindkey '^[[A' fzf-history-widget
+#bindkey "^A" beginning-of-line
+#bindkey "^[A" accept-and-hold
+#bindkey "^[OA" up-line-or-beginning-search
+#bindkey "^[[1;2A" up-line-or-history
+if [[ -f $HOME/.secrets ]] ; then
+    source $HOME/.secrets
+fi
+
+bindkey '^W' kill-region
+
+export XDG_CONFIG_HOME=$HOME/.config
 
 #source $HOME/completion.zsh
 #source $HOME/key-bindings.zsh

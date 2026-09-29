@@ -18,7 +18,8 @@
     whitespace = red reverse
 
 [color "status"]
-    added = 227 bold
+    added = bold "#ffff5f"
+    new = '#ffaabb'
     changed = 42
     untracked = 23
     branch = 125 bold italic
