@@ -61,14 +61,28 @@ if path.startswith("./") or path.startswith("../"):
     cwd = os.environ.get("PWD") or os.getcwd()
     path = os.path.abspath(os.path.join(cwd, path))
 
+# Evaluate entirely inside the server.  Deliberately choose an existing,
+# visible graphical frame rather than asking emacsclient to create or reuse a
+# client frame: terminal links must never create a new Emacs window.
 elisp = f'''
-(progn
-  (select-frame-set-input-focus (selected-frame))
-  (find-file {json.dumps(path)})
-  (goto-char (point-min))
-  (forward-line {max(line - 1, 0)})
-  (move-to-column {max(col - 1, 0)})
-  (recenter)
+(let ((target-frame
+       (catch 'found
+         (dolist (frame (frame-list))
+           (when (and (frame-live-p frame)
+                      (display-graphic-p frame)
+                      (eq (frame-visible-p frame) t))
+             (throw 'found frame)))
+         nil)))
+  (unless target-frame
+    (error "No visible graphical Emacs frame is available"))
+  (with-selected-frame target-frame
+    (with-selected-window (frame-selected-window target-frame)
+      (find-file {json.dumps(path)})
+      (goto-char (point-min))
+      (forward-line {max(line - 1, 0)})
+      (move-to-column {max(col - 1, 0)})
+      (recenter))
+    (select-frame-set-input-focus target-frame))
   t)
 '''
 
@@ -76,5 +90,5 @@ sys.exit(subprocess.call([
     "emacsclient",
     "-n",
     "-e",
-    elisp
+    elisp,
 ]))
