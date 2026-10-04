@@ -44,9 +44,7 @@ end
 -- Mouse clicks
 -- -------------------------
 -- Only Ctrl+Left-click will open the link under the mouse cursor.
--- Plain single/double left-clicks are explicitly ignored here so they
--- don't open hyperlinks; normal selection still works from the mouse-down
--- defaults below/inside wezterm.
+-- Plain left-clicks complete selections without opening hyperlinks.
 config.mouse_bindings = {
    {
       event = { Down = { streak = 1, button = 'Middle' } },
@@ -73,55 +71,37 @@ config.mouse_bindings = {
     action = act.OpenLinkAtMouseCursor,
   },
 
-  -- Disable plain left-click hyperlink opening.
+  -- Finish a drag selection and copy it on mouse release, without opening links.
   {
     event = { Up = { streak = 1, button = 'Left' } },
     mods = 'NONE',
-    action = act.Nop,
+    action = act.CompleteSelection 'ClipboardAndPrimarySelection',
   },
 
-  -- Double left click:
-  -- Select the word under the mouse cursor and copy it to the clipboard.
-  -- This does not open hyperlinks because plain double-click is handled here.
+  -- Double-click selects a word; releasing copies it.
   {
     event = { Down = { streak = 2, button = 'Left' } },
     mods = 'NONE',
-    action = act.Multiple {
-      act.SelectTextAtMouseCursor 'Word',
-      act.CopyTo 'Clipboard',
-    },
+    action = act.SelectTextAtMouseCursor 'Word',
   },
-
-  -- Ignore the matching double-left release so it cannot open hyperlinks.
   {
     event = { Up = { streak = 2, button = 'Left' } },
     mods = 'NONE',
-    action = act.Nop,
+    action = act.CompleteSelection 'ClipboardAndPrimarySelection',
   },
 
-  -- Disable plain triple-left-click hyperlink opening too, while we're here.
+  -- Triple-click selects a line using WezTerm's default mouse-down binding.
   {
     event = { Up = { streak = 3, button = 'Left' } },
     mods = 'NONE',
-    action = act.Nop,
+    action = act.CompleteSelection 'ClipboardAndPrimarySelection',
   },
 
-  -- Single right click:
-  -- If text selected -> copy to clipboard
-  -- Else -> paste
+  -- Paste the text copied when the left-button selection was completed.
   {
     event = { Down = { streak = 1, button = 'Right' } },
     mods = 'NONE',
-    action = wezterm.action_callback(function(window, pane)
-          local has_selection = window:get_selection_text_for_pane(pane) ~= ""
-          if has_selection then      
-             window:perform_action(act.CopyTo('ClipboardAndPrimarySelection'), pane)
-             window:perform_action(act.ClearSelection, pane)      
-          else 
-             window:perform_action(act({ PasteFrom = "Clipboard" }), pane)    
-             -- window:perform_action(act.ClearSelection, pane)      
-          end
-    end),
+    action = act.PasteFrom 'Clipboard',
   },
 
   -- Double right click:
