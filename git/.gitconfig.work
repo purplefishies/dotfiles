@@ -7,17 +7,13 @@
     email = jimi.damon@galt.aero
 
 [diff]
-    tool = meld
+	tool = bc
 
-[difftool]
-    prompt = false
+#[difftool]
+#    prompt = false
 
-[difftool "meld"]
-    trustExitCode = true
+#[difftool "meld"]
+#    trustExitCode = true
 
-[merge]
-    tool = meld
-
-[mergetool "meld"]
-    trustExitCode = true
-    keepBackup = false
+#[merge]
+#	tool = bc

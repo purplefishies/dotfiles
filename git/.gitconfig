@@ -54,3 +54,8 @@
 	directory = /home/jdamon/Projects/gnuradio
 [alias]
 	ls = "!f() { git log --stat \"$@\" | bat --paging=always; }; f"
+[user]
+	name = Jimi Damon
+	email = jimi.damon@galt.aero
+[rerere]
+	enabled = true

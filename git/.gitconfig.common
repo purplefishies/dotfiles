@@ -34,6 +34,15 @@
     pager = delta
     abbrev = 12
 
+[difftool]
+    prompt = false
+
+[difftool "emacs-terminal"]
+    cmd = "emacs -nw --eval \"(progn (setq ediff-window-setup-function 'ediff-setup-windows-plain ediff-split-window-function 'split-window-horizontally) (add-hook 'ediff-after-quit-hook-internal 'kill-emacs) (ediff-files (pop command-line-args-left) (pop command-line-args-left)))\" \"$LOCAL\" \"$REMOTE\""
+
+[mergetool "emacs-terminal"]
+    cmd = "emacs -nw --eval \"(progn (setq ediff-window-setup-function 'ediff-setup-windows-plain ediff-split-window-function 'split-window-horizontally) (ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" nil \\\"$MERGED\\\"))\""
+
 [pretty]
     fixes = Fixes: %h ("%s")
 
@@ -65,8 +74,10 @@
         # be appended. Plain `git dt` still uses the repo's configured default.
 	dt-bc = "!f() { if ! pgrep -x BCompare >/dev/null 2>&1; then nohup bcompare >/dev/null 2>&1 & i=0; while ! pgrep -x BCompare >/dev/null 2>&1; do i=$((i + 1)); if test \"$i\" -ge 50; then break; fi; sleep 0.1; done; sleep 0.5; fi; git difftool --no-prompt --no-trust-exit-code --tool=bc \"$@\"; }; f"
         dt-meld = difftool --tool=meld
+        dt-emacs = difftool --tool=emacs-terminal
         mt-bc = mergetool --tool=bc
         mt-meld = mergetool --tool=meld
+        mt-emacs = mergetool --tool=emacs-terminal
         new-files  = ls-files -o  --exclude-standard
         ls-files-u = ls-files --others --exclude-standard
         common-ancestor = "!git merge-base $(git branch | grep '^*'  | perl -ane 'print $F[1]')"
@@ -89,6 +100,8 @@
 #        diffs = "!git diff --color=always | delta --side-by-side --line-numbers"
         diffs = "!git -c delta.side-by-side=true -c delta.line-numbers=true diff"
         old = restore --source
+        pushf = "push --force-with-lease --force-if-includes"
+
 
 # mytest = "for-each-ref --count=1 --sort='-*authordate' \
 # --format='%(*refname)|%(*authorname)|%(*authoremail)|%(*subject)|%(*authordate)' 'refs/tags' --shell  \
