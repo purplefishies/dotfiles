@@ -315,6 +315,7 @@ config.set_environment_variables = {
 ----------------------------
 config.keys = {
     { key = 'Enter', mods = 'ALT', action = wezterm.action.DisableDefaultAssignment },
+    { key = 'Enter', mods = 'CTRL|SHIFT', action = wezterm.action.SendKey { key = 'j', mods = 'CTRL' } },
     { key = '_'    , mods = 'CTRL|SHIFT', action = wezterm.action.DisableDefaultAssignment },
     { key = 'Enter', mods = 'ALT|SHIFT', action = wezterm.action.ToggleFullScreen, },
     { key = 'L', mods = 'CTRL|SHIFT', action = wezterm.action.ShowLauncher },
