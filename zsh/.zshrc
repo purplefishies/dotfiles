@@ -249,7 +249,7 @@ else
         nodocker=1
         DOCKERPROMPT=""
     fi
-      export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
+    export RPROMPT='%{%F{167}%}%*%{$reset_color%}'
     export RPROMPT=''
     export PROMPT_COLOR=${PROMPT_COLOR:-147}
     if [[ -z "${PROMPT_STRING}" ]] ; then
