@@ -314,7 +314,7 @@ fpath+=~/.zfunc; autoload -Uz compinit; compinit
 
 
 
-zstyle ':completion:*' menu select
+#zstyle ':completion:*' menu select
 
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && source  "$NVM_DIR/nvm.sh"  # This loads nvm
