@@ -125,6 +125,7 @@ if [[ -f ${LS_COLOR_FILE} ]] ; then
 else 
     eval $(dircolors -b $HOME/.ls_colors )
 fi
+zstyle ':completion:*' menu no
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 #export GIT_PROMPT_MODE="OLD"
@@ -385,4 +386,6 @@ fi
 # or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+if [[ -z "$SSH_AUTH_SOCK" ]]; then
+    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+fi
