@@ -19,7 +19,7 @@ if [[ -f $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh   ]] ; then
 	source $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh                         
 
 fi
-export COMPLETION_WAITING_DOTS=true
+export COMPLETION_WAITING_DOTS=false
 export XDG_CONFIG_HOME=$HOME/.config
 
 # Set name of the theme to load --- if set to "random", it will
@@ -125,6 +125,7 @@ if [[ -f ${LS_COLOR_FILE} ]] ; then
 else 
     eval $(dircolors -b $HOME/.ls_colors )
 fi
+
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 #export GIT_PROMPT_MODE="OLD"
@@ -162,6 +163,8 @@ else
 fi
 
 setopt correct
+export FZF_COMPLETION_TRIGGER="**"
+fpath+=(~/.zfunc)
 source $ZSH/oh-my-zsh.sh
 
 
@@ -176,7 +179,7 @@ fi
 
 
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# fzf is initialized by the Oh My Zsh plugin above.
 
 
 
@@ -308,11 +311,11 @@ if [[ -f $HOME/.alias ]] ; then
 fi
 
 
-fpath+=~/.zfunc; autoload -Uz compinit; compinit
+# Oh My Zsh initializes completion.
 
 
 
-zstyle ':completion:*' menu select
+#zstyle ':completion:*' menu select
 
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && source  "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -384,4 +387,6 @@ fi
 # or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+if [[ -z "$SSH_AUTH_SOCK" ]]; then
+    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+fi
