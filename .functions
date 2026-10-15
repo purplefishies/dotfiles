@@ -27,7 +27,7 @@ function emacs {
 }
 
 function set_tmux_environment {
-    for i in SSH_AUTH_SOCK DISPLAY DBUS_SESSION_BUS_ADDRESS GNOME_KEYRING_CONTROL SSH_AGENT_PID GPG_AGENT_INFO ; 
+    for i in SSH_AUTH_SOCK DISPLAY DBUS_SESSION_BUS_ADDRESS GNOME_KEYRING_CONTROL SSH_AGENT_PID GPG_AGENT_INFO XAUTHORITY ; 
     do
         cmd="tmux set-environment $i \$${i}"
         eval $cmd
@@ -42,6 +42,7 @@ function refresh {
     export $(tmux show-environment | grep "^DBUS_SESSION_BUS_ADDRESS")  > /dev/null 2>&1
     export $(tmux show-environment | grep "^GPG_AGENT_INFO" )  > /dev/null 2>&1
     export $(tmux show-environment | grep "^GNOME_KEYRING_CONTROL" ) > /dev/null 2>&1
+    export $(tmux show-environment | grep "^XAUTHORITY" ) > /dev/null 2>&1
 }
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -124,13 +125,13 @@ function save() {
 }
 
 
-function __git_modified_files {
+function __jd_git_modified_files_count {
     expr $(git status --porcelain 2>/dev/null| grep "^M" | wc -l)
 }
-function __git_modified_unadded {
+function __jd_git_modified_unadded_count {
     expr $(git status --porcelain 2>/dev/null| grep "^ M" | wc -l)
 }
-function __git_uncommited {
+function __jd_git_uncommitted_count {
     expr $(git status --porcelain 2>/dev/null| grep "^??" | wc -l)
 };
 

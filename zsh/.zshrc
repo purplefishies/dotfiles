@@ -19,7 +19,7 @@ if [[ -f $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh   ]] ; then
 	source $HOME/.oh-my-zsh/plugins/git-prompt.zsh/git-prompt.zsh                         
 
 fi
-export COMPLETION_WAITING_DOTS=true
+export COMPLETION_WAITING_DOTS=false
 export XDG_CONFIG_HOME=$HOME/.config
 
 # Set name of the theme to load --- if set to "random", it will
@@ -163,6 +163,8 @@ else
 fi
 
 setopt correct
+export FZF_COMPLETION_TRIGGER="**"
+fpath+=(~/.zfunc)
 source $ZSH/oh-my-zsh.sh
 
 
@@ -177,7 +179,7 @@ fi
 
 
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# fzf is initialized by the Oh My Zsh plugin above.
 
 
 
@@ -310,7 +312,7 @@ if [[ -f $HOME/.alias ]] ; then
 fi
 
 
-fpath+=~/.zfunc; autoload -Uz compinit; compinit
+# Oh My Zsh initializes completion.
 
 
 
