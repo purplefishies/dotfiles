@@ -125,7 +125,7 @@ if [[ -f ${LS_COLOR_FILE} ]] ; then
 else 
     eval $(dircolors -b $HOME/.ls_colors )
 fi
-zstyle ':completion:*' menu no
+
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 #export GIT_PROMPT_MODE="OLD"
