@@ -33,15 +33,24 @@
     whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
     pager = delta
     abbrev = 12
+    # Uses the running Emacs server, opening a GUI frame when one is available.
+    # For a remote terminal: GIT_EDITOR='emacsclient -t' git commit
+    editor = emacsclient
 
 [difftool]
     prompt = false
 
-[difftool "emacs-terminal"]
-    cmd = "emacs -nw --eval \"(progn (setq ediff-window-setup-function 'ediff-setup-windows-plain ediff-split-window-function 'split-window-horizontally) (add-hook 'ediff-after-quit-hook-internal 'kill-emacs) (ediff-files (pop command-line-args-left) (pop command-line-args-left)))\" \"$LOCAL\" \"$REMOTE\""
+[difftool "emacsclient"]
+    cmd = "emacsclient --create-frame --suppress-output --eval \"(let ((ediff-after-quit-hook-internal (cons #'exit-recursive-edit ediff-after-quit-hook-internal))) (setq ediff-window-setup-function 'ediff-setup-windows-plain ediff-split-window-function 'split-window-horizontally) (ediff-files \\\"$LOCAL\\\" \\\"$REMOTE\\\") (recursive-edit))\""
 
-[mergetool "emacs-terminal"]
-    cmd = "emacs -nw --eval \"(progn (setq ediff-window-setup-function 'ediff-setup-windows-plain ediff-split-window-function 'split-window-horizontally) (ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" nil \\\"$MERGED\\\"))\""
+[difftool "emacsclient-terminal"]
+    cmd = "emacsclient -t --suppress-output --eval \"(let ((ediff-after-quit-hook-internal (cons #'exit-recursive-edit ediff-after-quit-hook-internal))) (setq ediff-window-setup-function 'ediff-setup-windows-plain ediff-split-window-function 'split-window-horizontally) (ediff-files \\\"$LOCAL\\\" \\\"$REMOTE\\\") (recursive-edit))\""
+
+[mergetool "emacsclient"]
+    cmd = "emacsclient --create-frame --suppress-output --eval \"(let ((ediff-after-quit-hook-internal (cons #'exit-recursive-edit ediff-after-quit-hook-internal))) (setq ediff-window-setup-function 'ediff-setup-windows-plain ediff-split-window-function 'split-window-horizontally) (ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" nil \\\"$MERGED\\\") (recursive-edit))\""
+
+[mergetool "emacsclient-terminal"]
+    cmd = "emacsclient -t --suppress-output --eval \"(let ((ediff-after-quit-hook-internal (cons #'exit-recursive-edit ediff-after-quit-hook-internal))) (setq ediff-window-setup-function 'ediff-setup-windows-plain ediff-split-window-function 'split-window-horizontally) (ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" nil \\\"$MERGED\\\") (recursive-edit))\""
 
 [pretty]
     fixes = Fixes: %h ("%s")
@@ -74,10 +83,12 @@
         # be appended. Plain `git dt` still uses the repo's configured default.
 	dt-bc = "!f() { if ! pgrep -x BCompare >/dev/null 2>&1; then nohup bcompare >/dev/null 2>&1 & i=0; while ! pgrep -x BCompare >/dev/null 2>&1; do i=$((i + 1)); if test \"$i\" -ge 50; then break; fi; sleep 0.1; done; sleep 0.5; fi; git difftool --no-prompt --no-trust-exit-code --tool=bc \"$@\"; }; f"
         dt-meld = difftool --tool=meld
-        dt-emacs = difftool --tool=emacs-terminal
+        dt-emacs = "!f() { tool=emacsclient; if [ \"$1\" = -nw ]; then tool=emacsclient-terminal; shift; fi; git difftool --tool=\"$tool\" \"$@\"; }; f"
+        dt-emacs-nw = difftool --tool=emacsclient-terminal
         mt-bc = mergetool --tool=bc
         mt-meld = mergetool --tool=meld
-        mt-emacs = mergetool --tool=emacs-terminal
+        mt-emacs = "!f() { tool=emacsclient; if [ \"$1\" = -nw ]; then tool=emacsclient-terminal; shift; fi; git mergetool --tool=\"$tool\" \"$@\"; }; f"
+        mt-emacs-nw = mergetool --tool=emacsclient-terminal
         new-files  = ls-files -o  --exclude-standard
         ls-files-u = ls-files --others --exclude-standard
         common-ancestor = "!git merge-base $(git branch | grep '^*'  | perl -ane 'print $F[1]')"
@@ -101,6 +112,7 @@
         diffs = "!git -c delta.side-by-side=true -c delta.line-numbers=true diff"
         old = restore --source
         pushf = "push --force-with-lease --force-if-includes"
+	mybranch = "!f() { branch=$(git branch --show-current); if [ -n \"$branch\" ]; then printf \"%s\n\" \"$branch\"; else git log -n 1 --pretty=%D; fi; }; f"
 
 
 # mytest = "for-each-ref --count=1 --sort='-*authordate' \
